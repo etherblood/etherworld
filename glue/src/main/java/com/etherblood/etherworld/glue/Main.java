@@ -75,9 +75,16 @@ class Main {
         data.set(tabby, new OwnerId(player));
         data.set(tabby, new CharacterId("Tabby"));
         data.set(tabby, Direction.RIGHT);
-        data.set(tabby, new Animation("Tabby", "Stand", 0));
+        data.set(tabby, new Animation("Stand", 0));
         data.set(tabby, new Position(0, 0));
         data.set(tabby, new Speed(0, 0));
+
+        int dummy = data.createEntity();
+        data.set(dummy, new CharacterId("Tabby"));
+        data.set(dummy, Direction.LEFT);
+        data.set(dummy, new Animation("Stand", 0));
+        data.set(dummy, new Position(1024 * converter.getPixelSize(), 0));
+        data.set(dummy, new Speed(0, 0));
 
         Gui gui = new Gui();
         gui.start();
@@ -256,16 +263,16 @@ class Main {
                 AseFrame aseFrame = sprite.frames().get(frameIndex);
                 int ticks = Math.round(fps * aseFrame.duration() / 1000f);
                 List<AseSliceKey> damageKeys = sprite.meta().slices().stream()
-                        .filter(x -> x.name().equalsIgnoreCase("Damage"))
+                        .filter(x -> x.name().equals("Damage"))
                         .flatMap(x -> x.keys().stream())
                         .filter(key -> key.frame() == frameIndex)
                         .toList();
                 GameSpriteHitbox[] attackHitboxes = damageKeys.stream()
-                        .map(x -> new GameSpriteHitbox(
-                                converter.pixelToPosition(x.bounds().x()),
-                                converter.pixelToPosition(x.bounds().y()),
-                                converter.pixelToPosition(x.bounds().w()),
-                                converter.pixelToPosition(x.bounds().h())))
+                        .map(box -> new GameSpriteHitbox(
+                                converter.pixelToPosition(box.bounds().x() - hitboxKey.pivot().x() - hitboxKey.bounds().x()),
+                                converter.pixelToPosition(box.bounds().y() - hitboxKey.pivot().y() - hitboxKey.bounds().y()),
+                                converter.pixelToPosition(box.bounds().w()),
+                                converter.pixelToPosition(box.bounds().h())))
                         .toArray(GameSpriteHitbox[]::new);
                 frames.add(new GameSpriteFrame(frameIndex, ticks, attackHitboxes));
             }

@@ -15,6 +15,7 @@ import com.etherblood.etherworld.engine.components.Position;
 import com.etherblood.etherworld.engine.components.Speed;
 import com.etherblood.etherworld.engine.sprites.GameSprite;
 import com.etherblood.etherworld.engine.sprites.GameSpriteAnimation;
+import com.etherblood.etherworld.engine.sprites.GameSpriteFrame;
 import com.etherblood.etherworld.engine.sprites.GameSpriteHitbox;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -64,10 +65,12 @@ public class Etherworld {
                     if (actions.contains(PlayerAction.JUMP) && data.has(entity, OnGround.class)) {
                         vy = -jumpStrength;
                     }
-//                    if (actions.contains(PlayerAction.ATTACK) && !"Attack".equals(character.state)) {
-//                        character.state = "Attack";
-//                        character.animationStartNanos = System.nanoTime();
-//                    }
+                    Animation animation = data.get(entity, Animation.class);
+                    if (animation != null && actions.contains(PlayerAction.ATTACK)
+                            && !"Attack".equals(animation.animationId())
+                            && !"Hit".equals(animation.animationId())) {
+                        data.set(entity, new Animation("Attack", 0));
+                    }
                 }
 
                 boolean grounded = false;
@@ -159,8 +162,9 @@ public class Etherworld {
 
 
         for (int entity : data.list(Animation.class)) {
+            String characterId = data.get(entity, CharacterId.class).id();
             Animation animation = data.get(entity, Animation.class);
-            GameSprite sprite = sprites.apply(animation.spriteId());
+            GameSprite sprite = sprites.apply(characterId);
             GameSpriteAnimation spriteAnimation = sprite.animations().get(animation.animationId());
 
             int ticks = animation.elapsedTicks() + 1;
@@ -202,16 +206,41 @@ public class Etherworld {
                     }
                 }
             }
+            Animation next;
             if (nextAnimation.equals(animation.animationId())) {
-                data.set(entity, new Animation(
-                        animation.spriteId(),
+                next = new Animation(
                         animation.animationId(),
-                        ticks % spriteAnimation.totalTicks()));
+                        ticks % spriteAnimation.totalTicks());
             } else {
-                data.set(entity, new Animation(
-                        animation.spriteId(),
+                next = new Animation(
                         nextAnimation,
-                        0));
+                        0);
+            }
+            data.set(entity, next);
+            GameSpriteAnimation nextSpriteAnimation = sprite.animations().get(nextAnimation);
+            GameSpriteFrame frame = nextSpriteAnimation.frameByTick(next.elapsedTicks());
+            Position position = data.get(entity, Position.class);
+            for (GameSpriteHitbox attack : frame.attacks()) {
+                GameSpriteHitbox attackHitbox;
+                if (data.get(entity, Direction.class) == Direction.RIGHT) {
+                    attackHitbox = attack.translate(position.x(), position.y());
+                } else {
+                    attackHitbox = new GameSpriteHitbox(-attack.x() - attack.width(), attack.y(), attack.width(), attack.height()).translate(position.x(), position.y());
+                }
+                for (int other : data.list(CharacterId.class)) {
+                    if (entity == other) {
+                        continue;
+                    }
+                    GameSpriteHitbox otherHitbox = sprites.apply(data.get(other, CharacterId.class).id()).hitbox();
+                    Position otherPosition = data.get(other, Position.class);
+                    GameSpriteHitbox translated = otherHitbox.translate(otherPosition.x(), otherPosition.y());
+                    if (attackHitbox.intersects(translated)) {
+                        Animation otherAnimation = data.get(other, Animation.class);
+                        if (!"Hit".equals(otherAnimation.animationId())) {
+                            data.set(other, new Animation("Hit", 0));
+                        }
+                    }
+                }
             }
         }
     }

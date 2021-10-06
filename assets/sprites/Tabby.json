@@ -217,7 +217,7 @@
   ],
   "slices": [
    { "name": "Hitbox", "color": "#0000ffff", "keys": [{ "frame": 0, "bounds": {"x": 48, "y": 24, "w": 16, "h": 72 }, "pivot": {"x": 8, "y": 72 } }, { "frame": 17, "bounds": {"x": 48, "y": 24, "w": 16, "h": 72 }, "pivot": {"x": 8, "y": 72 } }] },
-   { "name": "Damage", "color": "#0000ffff", "keys": [{ "frame": 0, "bounds": {"x": 64, "y": 48, "w": 32, "h": 24 } }] }
+   { "name": "Damage", "color": "#0000ffff", "keys": [{ "frame": 9, "bounds": {"x": 64, "y": 48, "w": 32, "h": 24 } }] }
   ]
  }
 }
