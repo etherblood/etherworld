@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+    <parent>
+        <artifactId>parent</artifactId>
+        <groupId>com.etherblood.etherworld</groupId>
+        <version>0.1.0</version>
+    </parent>
+    <artifactId>jlink</artifactId>
+    <packaging>jlink</packaging>
+
+    <build>
+        <plugins>
+            <plugin>
+                <artifactId>maven-jlink-plugin</artifactId>
+                <version>3.1.0</version>
+                <extensions>true</extensions>
+                <configuration>
+                    <launcher>
+                        launcher=com.etherblood.etherworld.glue/com.etherblood.etherworld.glue.Main
+                    </launcher>
+                    <stripDebug>true</stripDebug>
+                    <noHeaderFiles>true</noHeaderFiles>
+                    <noManPages>true</noManPages>
+                    <compress>2</compress>
+                    <finalName>Etherworld</finalName>
+                    <classifier>0.1.0</classifier>
+                </configuration>
+            </plugin>
+        </plugins>
+    </build>
+
+    <dependencies>
+        <dependency>
+            <groupId>com.etherblood.etherworld</groupId>
+            <artifactId>glue</artifactId>
+        </dependency>
+    </dependencies>
+</project>

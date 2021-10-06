@@ -43,14 +43,14 @@ import java.util.function.Function;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
-public class Main {
+class Main {
 
     private static final int FPS = 60;
 
     public static void main(String... args) {
         AssetLoader assetLoader = new AssetLoader(
-                "assets/src/main/resources/aseprite/chunks/export",
-                "assets/src/main/resources/aseprite/sprites/export");
+                "assets/chunks",
+                "assets/sprites");
 
         // only chunks from this set can be loaded
         // TODO: create world/map file with chunkPosition -> chunkFile mapping

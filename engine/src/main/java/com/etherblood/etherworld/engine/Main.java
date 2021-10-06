@@ -5,7 +5,7 @@ import com.etherblood.etherworld.engine.chunks.ChunkManager;
 import com.etherblood.etherworld.engine.sprites.GameSprite;
 import java.util.HashMap;
 
-public class Main {
+class Main {
     public static void main(String... args) {
         HashMap<String, GameSprite> sprites = new HashMap<>();
         Etherworld etherworld = new Etherworld(new EntityDatabase(), sprites::get, new PositionConverter(), new ChunkManager(x -> null));

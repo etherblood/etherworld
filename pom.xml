@@ -14,6 +14,7 @@
         <module>gui</module>
         <module>spriteloader</module>
         <module>glue</module>
+        <module>jlink</module>
     </modules>
 
     <properties>
@@ -36,6 +37,12 @@
                         </goals>
                     </execution>
                 </executions>
+            </plugin>
+
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-compiler-plugin</artifactId>
+                <version>3.8.1</version>
             </plugin>
         </plugins>
     </build>
@@ -60,6 +67,11 @@
             <dependency>
                 <groupId>com.etherblood.etherworld</groupId>
                 <artifactId>gui</artifactId>
+                <version>0.1.0</version>
+            </dependency>
+            <dependency>
+                <groupId>com.etherblood.etherworld</groupId>
+                <artifactId>glue</artifactId>
                 <version>0.1.0</version>
             </dependency>
 
