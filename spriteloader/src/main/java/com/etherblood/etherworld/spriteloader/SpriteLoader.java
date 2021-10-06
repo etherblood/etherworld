@@ -18,7 +18,7 @@ public class SpriteLoader {
 
     public SpriteData getFullSprite(String path, String name) throws IOException {
         AseSprite data = getSpriteInfo(path, name);
-        File file = Paths.get(path, data.meta.image).toFile();
+        File file = Paths.get(path, data.meta().image()).toFile();
         BufferedImage image = ImageIO.read(file);
         return new SpriteData(data, image);
     }

@@ -2,14 +2,14 @@ package com.etherblood.etherworld.spriteloader.aseprite;
 
 import java.util.List;
 
-public class AseMeta {
-    public String app;
-    public String version;
-    public String image;
-    public String format;
-    public AseSize size;
-    public int scale;
-    public List<AseFrameTag> frameTags;
-    public List<AseLayer> layers;
-    public List<AseSlice> slices;
+public record AseMeta(
+        String app,
+        String version,
+        String image,
+        String format,
+        AseSize size,
+        int scale,
+        List<AseFrameTag> frameTags,
+        List<AseLayer> layers,
+        List<AseSlice> slices) {
 }

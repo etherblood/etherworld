@@ -1,5 +1,6 @@
 package com.etherblood.etherworld.spriteloader.aseprite;
 
-public class AsePoint {
-    public int x, y;
+public record AsePoint(
+        int x,
+        int y) {
 }

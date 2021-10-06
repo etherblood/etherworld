@@ -131,18 +131,18 @@ public class Main {
                     }
                 }
             }
-            AseSlice hitboxSlice = spriteData.info.meta.slices.stream().filter(x -> x.name.equals("Hitbox")).findFirst().get();
-            AseSliceKey hitboxKey = hitboxSlice.keys.get(0);
+            AseSlice hitboxSlice = spriteData.info.meta().slices().stream().filter(x -> x.name().equals("Hitbox")).findFirst().get();
+            AseSliceKey hitboxKey = hitboxSlice.keys().get(0);
             PixelPosition spriteOffset = new PixelPosition(
-                    -hitboxKey.bounds.x - hitboxKey.pivot.x,
-                    -hitboxKey.bounds.y - hitboxKey.pivot.y);
+                    -hitboxKey.bounds().x() - hitboxKey.pivot().x(),
+                    -hitboxKey.bounds().y() - hitboxKey.pivot().y());
 
-            AseFrame activeFrame = spriteData.info.frames.get(activeFrameIndex);
+            AseFrame activeFrame = spriteData.info.frames().get(activeFrameIndex);
             RenderRectangle dest = new RenderRectangle(
-                    activeFrame.spriteSourceSize().x + spriteOffset.x() + pixelPosition.x(),
-                    activeFrame.spriteSourceSize().y + spriteOffset.y() + pixelPosition.y(),
-                    activeFrame.spriteSourceSize().w,
-                    activeFrame.spriteSourceSize().h);
+                    activeFrame.spriteSourceSize().x() + spriteOffset.x() + pixelPosition.x(),
+                    activeFrame.spriteSourceSize().y() + spriteOffset.y() + pixelPosition.y(),
+                    activeFrame.spriteSourceSize().w(),
+                    activeFrame.spriteSourceSize().h());
             if (data.get(character, Direction.class) == Direction.LEFT) {
                 dest = new RenderRectangle(
                         2 * pixelPosition.x() - dest.x(),
@@ -152,10 +152,10 @@ public class Main {
                 );
             }
             RenderRectangle source = new RenderRectangle(
-                    activeFrame.frame().x,
-                    activeFrame.frame().y,
-                    activeFrame.frame().w,
-                    activeFrame.frame().h);
+                    activeFrame.frame().x(),
+                    activeFrame.frame().y(),
+                    activeFrame.frame().w(),
+                    activeFrame.frame().h());
             sprites.add(new RenderSprite(source, dest, spriteData.image));
 
             // TODO: render hitbox
@@ -176,9 +176,9 @@ public class Main {
                 ChunkPosition point = new ChunkPosition(x, y);
                 SpriteData chunk = chunkMap.apply(point);
                 if (chunk != null) {
-                    AseFrame hitboxFrame = chunk.info.frames.stream().filter(t -> t.filename().equals("Hitbox")).findFirst().get();
-                    AseFrame backgroundFrame = chunk.info.frames.stream().filter(t -> t.filename().equals("Background")).findFirst().get();
-                    AseFrame foregroundFrame = chunk.info.frames.stream().filter(t -> t.filename().equals("Foreground")).findFirst().get();
+                    AseFrame hitboxFrame = chunk.info.frames().stream().filter(t -> t.filename().equals("Hitbox")).findFirst().get();
+                    AseFrame backgroundFrame = chunk.info.frames().stream().filter(t -> t.filename().equals("Background")).findFirst().get();
+                    AseFrame foregroundFrame = chunk.info.frames().stream().filter(t -> t.filename().equals("Foreground")).findFirst().get();
                     PixelPosition pixelPosition = world.getConverter().toPixel(point);
                     RenderRectangle dest = new RenderRectangle(
                             pixelPosition.x(),
@@ -197,9 +197,9 @@ public class Main {
 //
 //                    visibleChunks.put(point, chunk);
                     chunks.add(new RenderChunk(
-                            new RenderRectangle(backgroundFrame.frame().x, backgroundFrame.frame().y, backgroundFrame.frame().w, backgroundFrame.frame().h),
-                            new RenderRectangle(hitboxFrame.frame().x, hitboxFrame.frame().y, hitboxFrame.frame().w, hitboxFrame.frame().h),
-                            new RenderRectangle(foregroundFrame.frame().x, foregroundFrame.frame().y, foregroundFrame.frame().w, foregroundFrame.frame().h),
+                            new RenderRectangle(backgroundFrame.frame().x(), backgroundFrame.frame().y(), backgroundFrame.frame().w(), backgroundFrame.frame().h()),
+                            new RenderRectangle(hitboxFrame.frame().x(), hitboxFrame.frame().y(), hitboxFrame.frame().w(), hitboxFrame.frame().h()),
+                            new RenderRectangle(foregroundFrame.frame().x(), foregroundFrame.frame().y(), foregroundFrame.frame().w(), foregroundFrame.frame().h()),
                             dest,
                             chunk.image
                     ));
@@ -213,7 +213,7 @@ public class Main {
     }
 
     private static Chunk convert(SpriteData spriteData, PositionConverter converter) {
-        AseFrame hitboxFrame = spriteData.info.frames.stream().filter(t -> t.filename().equals("Hitbox")).findFirst().get();
+        AseFrame hitboxFrame = spriteData.info.frames().stream().filter(t -> t.filename().equals("Hitbox")).findFirst().get();
         Chunk chunk = new Chunk(converter.getChunkSize());
 
         for (int y = 0; y < converter.getChunkSize().y(); y++) {
@@ -221,8 +221,8 @@ public class Main {
                 LocalTilePosition localTilePosition = new LocalTilePosition(x, y);
                 PixelPosition pixelPosition = converter.toPixel(localTilePosition);
                 Color color = new Color(spriteData.image.getRGB(
-                        hitboxFrame.frame().x + pixelPosition.x(),
-                        hitboxFrame.frame().y + pixelPosition.y()),
+                        hitboxFrame.frame().x() + pixelPosition.x(),
+                        hitboxFrame.frame().y() + pixelPosition.y()),
                         true);
                 chunk.setObstacle(localTilePosition, color.getAlpha() != 0);
             }
@@ -231,13 +231,13 @@ public class Main {
     }
 
     private static GameSprite convert(String id, AseSprite sprite, PositionConverter converter, int fps) {
-        AseSlice hitboxSlice = sprite.meta.slices.stream().filter(x -> x.name.equals("Hitbox")).findFirst().get();
-        AseSliceKey hitboxKey = hitboxSlice.keys.get(0);
+        AseSlice hitboxSlice = sprite.meta().slices().stream().filter(x -> x.name().equals("Hitbox")).findFirst().get();
+        AseSliceKey hitboxKey = hitboxSlice.keys().get(0);
         RenderRectangle pixelHitbox = new RenderRectangle(
-                -hitboxKey.pivot.x,
-                -hitboxKey.pivot.y,
-                hitboxKey.bounds.w,
-                hitboxKey.bounds.h);
+                -hitboxKey.pivot().x(),
+                -hitboxKey.pivot().y(),
+                hitboxKey.bounds().w(),
+                hitboxKey.bounds().h());
         GameSpriteHitbox hitbox = new GameSpriteHitbox(
                 converter.pixelToPosition(pixelHitbox.x()),
                 converter.pixelToPosition(pixelHitbox.y()),
@@ -245,27 +245,27 @@ public class Main {
                 converter.pixelToPosition(pixelHitbox.height()));
 
         Map<String, GameSpriteAnimation> animations = new HashMap<>();
-        Set<String> tagNames = sprite.meta.frameTags.stream().map(x -> x.name).collect(Collectors.toSet());
+        Set<String> tagNames = sprite.meta().frameTags().stream().map(x -> x.name()).collect(Collectors.toSet());
         for (String tagName : tagNames) {
-            int[] frameIndices = sprite.meta.frameTags.stream()
-                    .filter(x -> x.name.equals(tagName))
-                    .flatMapToInt(x -> IntStream.rangeClosed(x.from, x.to))
+            int[] frameIndices = sprite.meta().frameTags().stream()
+                    .filter(x -> x.name().equals(tagName))
+                    .flatMapToInt(x -> IntStream.rangeClosed(x.from(), x.to()))
                     .toArray();
             List<GameSpriteFrame> frames = new ArrayList<>();
             for (int frameIndex : frameIndices) {
-                AseFrame aseFrame = sprite.frames.get(frameIndex);
+                AseFrame aseFrame = sprite.frames().get(frameIndex);
                 int ticks = Math.round(fps * aseFrame.duration() / 1000f);
-                List<AseSliceKey> damageKeys = sprite.meta.slices.stream()
-                        .filter(x -> x.name.equalsIgnoreCase("Damage"))
-                        .flatMap(x -> x.keys.stream())
-                        .filter(key -> key.frame == frameIndex)
+                List<AseSliceKey> damageKeys = sprite.meta().slices().stream()
+                        .filter(x -> x.name().equalsIgnoreCase("Damage"))
+                        .flatMap(x -> x.keys().stream())
+                        .filter(key -> key.frame() == frameIndex)
                         .toList();
                 GameSpriteHitbox[] attackHitboxes = damageKeys.stream()
                         .map(x -> new GameSpriteHitbox(
-                                converter.pixelToPosition(x.bounds.x),
-                                converter.pixelToPosition(x.bounds.y),
-                                converter.pixelToPosition(x.bounds.w),
-                                converter.pixelToPosition(x.bounds.h)))
+                                converter.pixelToPosition(x.bounds().x()),
+                                converter.pixelToPosition(x.bounds().y()),
+                                converter.pixelToPosition(x.bounds().w()),
+                                converter.pixelToPosition(x.bounds().h())))
                         .toArray(GameSpriteHitbox[]::new);
                 frames.add(new GameSpriteFrame(frameIndex, ticks, attackHitboxes));
             }

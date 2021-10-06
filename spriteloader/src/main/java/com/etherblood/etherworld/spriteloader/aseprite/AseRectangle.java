@@ -1,5 +1,8 @@
 package com.etherblood.etherworld.spriteloader.aseprite;
 
-public class AseRectangle {
-    public int x, y, w, h;
+public record AseRectangle(
+        int x,
+        int y,
+        int w,
+        int h) {
 }

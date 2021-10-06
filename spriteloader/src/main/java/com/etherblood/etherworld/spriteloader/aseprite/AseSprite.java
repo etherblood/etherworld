@@ -2,7 +2,7 @@ package com.etherblood.etherworld.spriteloader.aseprite;
 
 import java.util.List;
 
-public class AseSprite {
-    public List<AseFrame> frames;
-    public AseMeta meta;
+public record AseSprite(
+        List<AseFrame> frames,
+        AseMeta meta) {
 }
