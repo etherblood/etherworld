@@ -1,0 +1,26 @@
+{ "frames": [
+   {
+    "filename": "0",
+    "frame": { "x": 0, "y": 0, "w": 100, "h": 90 },
+    "rotated": false,
+    "trimmed": true,
+    "spriteSourceSize": { "x": 44, "y": 38, "w": 100, "h": 90 },
+    "sourceSize": { "w": 144, "h": 144 },
+    "duration": 400
+   }
+ ],
+ "meta": {
+  "app": "http://www.aseprite.org/",
+  "version": "1.2.29-x64",
+  "image": "amara-sheet.png",
+  "format": "RGBA8888",
+  "size": { "w": 100, "h": 90 },
+  "scale": "1",
+  "frameTags": [
+   { "name": "Stand", "from": 0, "to": 0, "direction": "forward" }
+  ],
+  "slices": [
+   { "name": "Hitbox", "color": "#0000ffff", "keys": [{ "frame": 0, "bounds": {"x": 64, "y": 48, "w": 16, "h": 80 }, "pivot": {"x": 8, "y": 80 } }] }
+  ]
+ }
+}

@@ -1,6 +1,6 @@
-package com.etherblood.etherworld.engine.components;
+package com.etherblood.etherworld.gui;
 
-public record Hitbox(int x, int y, int width, int height) {
+public record RenderRectangle(int x, int y, int width, int height) {
     public int minX() {
         return x;
     }
@@ -17,11 +17,11 @@ public record Hitbox(int x, int y, int width, int height) {
         return y + height;
     }
 
-    public Hitbox translate(int x, int y) {
-        return new Hitbox(this.x + x, this.y + y, width, height);
+    public RenderRectangle translate(int x, int y) {
+        return new RenderRectangle(this.x + x, this.y + y, width, height);
     }
 
-    public boolean intersects(Hitbox other) {
+    public boolean intersects(RenderRectangle other) {
         return minX() < other.maxX() && other.minX() < maxX()
                 && minY() < other.maxY() && other.minY() < maxY();
     }

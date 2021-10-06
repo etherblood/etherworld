@@ -11,6 +11,8 @@
     <modules>
         <module>engine</module>
         <module>data</module>
+        <module>gui</module>
+        <module>spriteloader</module>
     </modules>
 
     <properties>
@@ -48,6 +50,22 @@
                 <groupId>com.etherblood.etherworld</groupId>
                 <artifactId>engine</artifactId>
                 <version>0.1.0</version>
+            </dependency>
+            <dependency>
+                <groupId>com.etherblood.etherworld</groupId>
+                <artifactId>spriteloader</artifactId>
+                <version>0.1.0</version>
+            </dependency>
+
+            <dependency>
+                <groupId>com.fasterxml.jackson.core</groupId>
+                <artifactId>jackson-annotations</artifactId>
+                <version>2.12.5</version>
+            </dependency>
+            <dependency>
+                <groupId>com.fasterxml.jackson.core</groupId>
+                <artifactId>jackson-databind</artifactId>
+                <version>2.12.5</version>
             </dependency>
         </dependencies>
     </dependencyManagement>

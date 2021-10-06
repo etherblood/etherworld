@@ -1,0 +1,38 @@
+{ "frames": [
+   {
+    "filename": "Hitbox",
+    "frame": { "x": 0, "y": 0, "w": 1024, "h": 512 },
+    "rotated": false,
+    "trimmed": false,
+    "spriteSourceSize": { "x": 0, "y": 0, "w": 1024, "h": 512 },
+    "sourceSize": { "w": 1024, "h": 512 },
+    "duration": 100
+   },
+   {
+    "filename": "Background",
+    "frame": { "x": 0, "y": 512, "w": 1024, "h": 512 },
+    "rotated": false,
+    "trimmed": false,
+    "spriteSourceSize": { "x": 0, "y": 0, "w": 1024, "h": 512 },
+    "sourceSize": { "w": 1024, "h": 512 },
+    "duration": 100
+   },
+   {
+    "filename": "Foreground",
+    "frame": { "x": 0, "y": 1024, "w": 1024, "h": 512 },
+    "rotated": false,
+    "trimmed": false,
+    "spriteSourceSize": { "x": 0, "y": 0, "w": 1024, "h": 512 },
+    "sourceSize": { "w": 1024, "h": 512 },
+    "duration": 100
+   }
+ ],
+ "meta": {
+  "app": "http://www.aseprite.org/",
+  "version": "1.2.29-x64",
+  "image": "(0,0)-sheet.png",
+  "format": "RGBA8888",
+  "size": { "w": 1024, "h": 1536 },
+  "scale": "1"
+ }
+}

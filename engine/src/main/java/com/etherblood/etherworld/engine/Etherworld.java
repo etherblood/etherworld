@@ -7,14 +7,15 @@ import com.etherblood.etherworld.engine.chunks.ChunkPosition;
 import com.etherblood.etherworld.engine.chunks.LocalTilePosition;
 import com.etherblood.etherworld.engine.chunks.TilePosition;
 import com.etherblood.etherworld.engine.components.Animation;
+import com.etherblood.etherworld.engine.components.CharacterId;
 import com.etherblood.etherworld.engine.components.Direction;
-import com.etherblood.etherworld.engine.components.Hitbox;
 import com.etherblood.etherworld.engine.components.OnGround;
 import com.etherblood.etherworld.engine.components.OwnerId;
 import com.etherblood.etherworld.engine.components.Position;
 import com.etherblood.etherworld.engine.components.Speed;
-import com.etherblood.etherworld.engine.sprites.Sprite;
-import com.etherblood.etherworld.engine.sprites.SpriteAnimation;
+import com.etherblood.etherworld.engine.sprites.GameSprite;
+import com.etherblood.etherworld.engine.sprites.GameSpriteAnimation;
+import com.etherblood.etherworld.engine.sprites.GameSpriteHitbox;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -24,25 +25,29 @@ import java.util.Set;
 public class Etherworld {
 
     private final EntityData data;
-    private final Map<String, Sprite> sprites;
+    private final Map<String, GameSprite> sprites;
+    private final PositionConverter converter;
+    private final ChunkManager chunks;
 
-    public Etherworld(EntityData data, Map<String, Sprite> sprites) {
+    public Etherworld(EntityData data, Map<String, GameSprite> sprites, PositionConverter converter, ChunkManager chunks) {
         this.data = data;
         this.sprites = sprites;
+        this.converter = converter;
+        this.chunks = chunks;
     }
 
     public void tick(Map<Integer, Set<PlayerAction>> playerActions) {
-        PositionConverter converter = new PositionConverter();
         int gravityPerTick = 12;
         int jumpStrength = 16 * 16;
         int runSpeed = 8 * 16;
-        ChunkManager chunks = new ChunkManager(x -> null);// TODO
 
         for (int entity : data.list(Speed.class)) {
             Speed speed = data.get(entity, Speed.class);
             Position position = data.get(entity, Position.class);
-            Hitbox hitbox = data.get(entity, Hitbox.class);
-            if (hitbox != null) {
+            CharacterId characterId = data.get(entity, CharacterId.class);
+            if (characterId != null) {
+                GameSprite gameSprite = sprites.get(characterId.id());
+                GameSpriteHitbox hitbox = gameSprite.hitbox();
 
                 int vx = 0;
                 int vy = speed.y();
@@ -79,7 +84,7 @@ public class Etherworld {
                 TilePosition minTile = converter.floorTile(new Position(roiMinX, roiMinY));
                 TilePosition maxTile = converter.ceilTile(new Position(roiMaxX, roiMaxY));
 
-                List<Hitbox> obstacles = new ArrayList<>();
+                List<GameSpriteHitbox> obstacles = new ArrayList<>();
                 for (int y = minTile.y(); y < maxTile.y(); y++) {
                     for (int x = minTile.x(); x < maxTile.x(); x++) {
                         TilePosition tilePosition = new TilePosition(x, y);
@@ -88,7 +93,12 @@ public class Etherworld {
                         if (chunk != null) {
                             LocalTilePosition tile = converter.toLocal(tilePosition);
                             if (chunk.isObstacle(tile)) {
-                                obstacles.add(new Hitbox(x * converter.tileSize(), y * converter.tileSize(), converter.tileSize(), converter.tileSize()));
+                                int scale = converter.getTileSize() * converter.getPixelSize();
+                                obstacles.add(new GameSpriteHitbox(
+                                        x * scale,
+                                        y * scale,
+                                        scale,
+                                        scale));
                             }
                         }
                     }
@@ -98,7 +108,7 @@ public class Etherworld {
                 int targetX = position.x();
                 int targetY = position.y();
                 targetX += vx;
-                for (Hitbox obstacle : obstacles) {
+                for (GameSpriteHitbox obstacle : obstacles) {
                     if (hitbox.translate(targetX, targetY).intersects(obstacle)) {
                         if (vx > 0) {
                             int diff = targetX + hitbox.maxX() - obstacle.minX();
@@ -112,7 +122,7 @@ public class Etherworld {
                     }
                 }
                 targetY += vy;
-                for (Hitbox obstacle : obstacles) {
+                for (GameSpriteHitbox obstacle : obstacles) {
                     if (hitbox.translate(targetX, targetY).intersects(obstacle)) {
                         if (vy > 0) {
                             int diff = targetY + hitbox.maxY() - obstacle.minY();
@@ -149,14 +159,14 @@ public class Etherworld {
 
         for (int entity : data.list(Animation.class)) {
             Animation animation = data.get(entity, Animation.class);
-            Sprite sprite = sprites.get(animation.spriteId());
-            SpriteAnimation spriteAnimation = sprite.animations().get(animation.animationId());
+            GameSprite sprite = sprites.get(animation.spriteId());
+            GameSpriteAnimation spriteAnimation = sprite.animations().get(animation.animationId());
 
             int ticks = animation.elapsedTicks() + 1;
 
             // update state
             boolean fallBackState = true;
-            String nextState = animation.animationId();
+            String nextAnimation = animation.animationId();
             switch (animation.animationId()) {
                 case "Attack":
                 case "Hit":
@@ -179,29 +189,41 @@ public class Etherworld {
                 }
                 if (data.has(entity, OnGround.class)) {
                     if (speed.x() == 0) {
-                        nextState = "Stand";
+                        nextAnimation = "Stand";
                     } else {
-                        nextState = "Run";
+                        nextAnimation = "Run";
                     }
                 } else {
                     if (speed.y() < 0) {
-                        nextState = "Up";
+                        nextAnimation = "Up";
                     } else {
-                        nextState = "Down";
+                        nextAnimation = "Down";
                     }
                 }
             }
-            if (nextState.equals(animation.animationId())) {
+            if (nextAnimation.equals(animation.animationId())) {
                 data.set(entity, new Animation(
                         animation.spriteId(),
                         animation.animationId(),
-                        ticks));
+                        ticks % spriteAnimation.totalTicks()));
             } else {
                 data.set(entity, new Animation(
                         animation.spriteId(),
-                        nextState,
+                        nextAnimation,
                         0));
             }
         }
+    }
+
+    public EntityData getData() {
+        return data;
+    }
+
+    public Map<String, GameSprite> getSprites() {
+        return sprites;
+    }
+
+    public PositionConverter getConverter() {
+        return converter;
     }
 }
