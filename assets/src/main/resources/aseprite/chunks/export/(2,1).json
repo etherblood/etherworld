@@ -39,7 +39,7 @@
  "meta": {
   "app": "http://www.aseprite.org/",
   "version": "1.2.29-x64",
-  "image": "(2,1)-sheet.png",
+  "image": "(2,1).png",
   "format": "RGBA8888",
   "size": { "w": 1024, "h": 2048 },
   "scale": "1"

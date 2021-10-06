@@ -13,6 +13,7 @@
         <module>data</module>
         <module>gui</module>
         <module>spriteloader</module>
+        <module>glue</module>
     </modules>
 
     <properties>
@@ -54,6 +55,11 @@
             <dependency>
                 <groupId>com.etherblood.etherworld</groupId>
                 <artifactId>spriteloader</artifactId>
+                <version>0.1.0</version>
+            </dependency>
+            <dependency>
+                <groupId>com.etherblood.etherworld</groupId>
+                <artifactId>gui</artifactId>
                 <version>0.1.0</version>
             </dependency>
 

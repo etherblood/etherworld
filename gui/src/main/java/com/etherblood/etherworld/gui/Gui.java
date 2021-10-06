@@ -1,0 +1,173 @@
+package com.etherblood.etherworld.gui;
+
+import java.awt.BorderLayout;
+import java.awt.Color;
+import java.awt.Dimension;
+import java.awt.Graphics2D;
+import java.awt.Image;
+import java.awt.event.KeyAdapter;
+import java.awt.event.KeyEvent;
+import java.awt.geom.AffineTransform;
+import java.awt.image.BufferedImage;
+import java.util.Collections;
+import java.util.HashSet;
+import java.util.Set;
+import java.util.concurrent.atomic.AtomicReference;
+import javax.swing.JFrame;
+import javax.swing.SwingUtilities;
+import javax.swing.WindowConstants;
+
+public class Gui {
+    private final AtomicReference<RenderTask> renderTask = new AtomicReference<>();
+    private final Set<Integer> pressedKeys = Collections.synchronizedSet(new HashSet<>());
+    private boolean debug = false;
+    private long runningFrameSecond;
+    private int runningFrameCount;
+    private int frameCount;
+
+    private JFrame jFrame;
+    private PictureBox panel;
+
+    public void start() {
+        int windowWidth = 1600;
+        int windowHeight = 800;
+
+        jFrame = new JFrame("Gaem?");
+        jFrame.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
+        jFrame.setLayout(new BorderLayout());
+        panel = new PictureBox();
+        panel.setBackground(Color.DARK_GRAY);
+        panel.setPreferredSize(new Dimension(windowWidth, windowHeight));
+        panel.setVisible(true);
+        jFrame.setSize(windowWidth, windowHeight);
+        jFrame.add(panel, BorderLayout.CENTER);
+
+//        panel.addMouseListener(new MouseAdapter() {
+//            @Override
+//            public void mouseClicked(MouseEvent e) {
+//                System.out.println("Clicked on " + e.getPoint());
+//            }
+//        });
+
+        jFrame.addKeyListener(new KeyAdapter() {
+            @Override
+            public void keyPressed(KeyEvent e) {
+                pressedKeys.add(e.getKeyCode());
+                switch (e.getKeyCode()) {
+                    case KeyEvent.VK_F1 -> debug = !debug;
+                }
+            }
+
+            @Override
+            public void keyReleased(KeyEvent e) {
+                pressedKeys.remove(e.getKeyCode());
+            }
+        });
+
+        jFrame.pack();
+        jFrame.setVisible(true);
+    }
+
+    public void render(RenderTask task) {
+        renderTask.set(task);
+        SwingUtilities.invokeLater(this::update);
+    }
+
+    private void update() {
+        RenderTask task = renderTask.getAndSet(null);
+        if (task == null) {
+            return;
+        }
+        BufferedImage image = panel.createImage();
+        Graphics2D graphics = (Graphics2D) image.getGraphics();
+        render(graphics, task);
+        graphics.dispose();
+        panel.setImage(image);
+    }
+
+    private void render(Graphics2D graphics, RenderTask renderTask) {
+        AffineTransform transform = AffineTransform.getScaleInstance(2, 2);
+        transform.translate(-renderTask.camera().x(), -renderTask.camera().y());
+        graphics.setTransform(transform);
+        graphics.setBackground(Color.GRAY);
+        graphics.clearRect(
+                renderTask.camera().x(),
+                renderTask.camera().y(),
+                renderTask.camera().width(),
+                renderTask.camera().height());
+        graphics.setColor(Color.WHITE);
+        if (debug) {
+            for (RenderChunk chunk : renderTask.chunks()) {
+                renderImage(graphics, chunk.sheet(), chunk.destination(), chunk.hitbox());
+            }
+        }
+        if (!debug) {
+            for (RenderChunk chunk : renderTask.chunks()) {
+                renderImage(graphics, chunk.sheet(), chunk.destination(), chunk.background());
+            }
+        }
+        for (RenderSprite sprite : renderTask.sprites()) {
+            renderImage(graphics, sprite.sheet(), sprite.destination(), sprite.source());
+        }
+        if (!debug) {
+            for (RenderChunk chunk : renderTask.chunks()) {
+                renderImage(graphics, chunk.sheet(), chunk.destination(), chunk.foreground());
+            }
+        }
+        if (debug) {
+            for (DebugRectangle rectangle : renderTask.rectangles()) {
+                if (rectangle.fill()) {
+                    graphics.setColor(rectangle.color());
+                    graphics.fillRect(
+                            rectangle.destination().x(),
+                            rectangle.destination().y(),
+                            rectangle.destination().width(),
+                            rectangle.destination().height());
+                }
+            }
+            for (DebugRectangle rectangle : renderTask.rectangles()) {
+                if (!rectangle.fill()) {
+                    graphics.setColor(rectangle.color());
+                    graphics.drawRect(
+                            rectangle.destination().x(),
+                            rectangle.destination().y(),
+                            rectangle.destination().width(),
+                            rectangle.destination().height());
+                }
+            }
+            graphics.setColor(Color.WHITE);
+            graphics.setTransform(AffineTransform.getTranslateInstance(0, 0));
+            for (int i = 0; i < renderTask.lines().size(); i++) {
+                graphics.drawString(renderTask.lines().get(i), 20, 20 + i * graphics.getFontMetrics().getHeight());
+            }
+        }
+
+        long frameSecond = Math.floorDiv(System.nanoTime(), 1_000_000_000L);
+        runningFrameCount++;
+        if (runningFrameSecond != frameSecond) {
+            frameCount = runningFrameCount;
+            runningFrameCount = 0;
+            runningFrameSecond = frameSecond;
+        }
+        if (debug) {
+            graphics.drawString("fps: " + frameCount, 20, 20 + renderTask.lines().size() * graphics.getFontMetrics().getHeight());
+        }
+    }
+
+    private void renderImage(Graphics2D graphics, Image image, RenderRectangle destination, RenderRectangle source) {
+        graphics.drawImage(image,
+                destination.minX(),
+                destination.minY(),
+                destination.maxX(),
+                destination.maxY(),
+                source.minX(),
+                source.minY(),
+                source.maxX(),
+                source.maxY(),
+                null);
+    }
+
+    public Set<Integer> getPressedKeys() {
+        return Set.copyOf(pressedKeys);
+    }
+}

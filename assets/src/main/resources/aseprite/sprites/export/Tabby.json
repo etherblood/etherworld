@@ -201,7 +201,7 @@
  "meta": {
   "app": "http://www.aseprite.org/",
   "version": "1.2.29-x64",
-  "image": "tabby-sheet.png",
+  "image": "Tabby.png",
   "format": "RGBA8888",
   "size": { "w": 436, "h": 303 },
   "scale": "1",

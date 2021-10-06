@@ -12,7 +12,7 @@
  "meta": {
   "app": "http://www.aseprite.org/",
   "version": "1.2.29-x64",
-  "image": "amara-sheet.png",
+  "image": "Amara.png",
   "format": "RGBA8888",
   "size": { "w": 100, "h": 90 },
   "scale": "1",

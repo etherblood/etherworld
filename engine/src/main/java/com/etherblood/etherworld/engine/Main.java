@@ -8,7 +8,7 @@ import java.util.HashMap;
 public class Main {
     public static void main(String... args) {
         HashMap<String, GameSprite> sprites = new HashMap<>();
-        Etherworld etherworld = new Etherworld(new EntityDatabase(), sprites, new PositionConverter(), new ChunkManager(x -> null));
+        Etherworld etherworld = new Etherworld(new EntityDatabase(), sprites::get, new PositionConverter(), new ChunkManager(x -> null));
         GameLoop loop = new GameLoop(60, () -> {
             etherworld.tick(new HashMap<>());
             System.out.println(System.currentTimeMillis());

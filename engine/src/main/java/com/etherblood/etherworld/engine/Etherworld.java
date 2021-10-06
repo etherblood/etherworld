@@ -21,15 +21,16 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.function.Function;
 
 public class Etherworld {
 
     private final EntityData data;
-    private final Map<String, GameSprite> sprites;
+    private final Function<String, GameSprite> sprites;
     private final PositionConverter converter;
     private final ChunkManager chunks;
 
-    public Etherworld(EntityData data, Map<String, GameSprite> sprites, PositionConverter converter, ChunkManager chunks) {
+    public Etherworld(EntityData data, Function<String, GameSprite> sprites, PositionConverter converter, ChunkManager chunks) {
         this.data = data;
         this.sprites = sprites;
         this.converter = converter;
@@ -46,7 +47,7 @@ public class Etherworld {
             Position position = data.get(entity, Position.class);
             CharacterId characterId = data.get(entity, CharacterId.class);
             if (characterId != null) {
-                GameSprite gameSprite = sprites.get(characterId.id());
+                GameSprite gameSprite = sprites.apply(characterId.id());
                 GameSpriteHitbox hitbox = gameSprite.hitbox();
 
                 int vx = 0;
@@ -159,7 +160,7 @@ public class Etherworld {
 
         for (int entity : data.list(Animation.class)) {
             Animation animation = data.get(entity, Animation.class);
-            GameSprite sprite = sprites.get(animation.spriteId());
+            GameSprite sprite = sprites.apply(animation.spriteId());
             GameSpriteAnimation spriteAnimation = sprite.animations().get(animation.animationId());
 
             int ticks = animation.elapsedTicks() + 1;
@@ -219,7 +220,7 @@ public class Etherworld {
         return data;
     }
 
-    public Map<String, GameSprite> getSprites() {
+    public Function<String, GameSprite> getSprites() {
         return sprites;
     }
 
