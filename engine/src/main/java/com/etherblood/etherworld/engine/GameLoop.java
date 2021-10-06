@@ -24,8 +24,12 @@ public class GameLoop implements Runnable {
                 frames++;
             }
             try {
-                // TODO: calculate sleep duration or find better solution
-                Thread.sleep(1);
+                long sleepNanos = startNanos - System.nanoTime() + 1_000_000_000 * frames / fps;
+                if (sleepNanos <= 1_000_000) {
+                    Thread.sleep(1);
+                } else {
+                    Thread.sleep(Math.floorDiv(sleepNanos, 1_000_000L), Math.floorMod(sleepNanos, 1_000_000));
+                }
             } catch (InterruptedException e) {
                 e.printStackTrace(System.err);
             }

@@ -279,13 +279,16 @@ public class Main {
             for (int i = 0; i < renderTask.lines().size(); i++) {
                 graphics.drawString(renderTask.lines().get(i), 20, 20 + i * graphics.getFontMetrics().getHeight());
             }
-            long frameSecond = Math.floorDiv(System.nanoTime(), 1_000_000_000L);
-            runningFrameCount++;
-            if (runningFrameSecond != frameSecond) {
-                frameCount = runningFrameCount;
-                runningFrameCount = 0;
-                runningFrameSecond = frameSecond;
-            }
+        }
+
+        long frameSecond = Math.floorDiv(System.nanoTime(), 1_000_000_000L);
+        runningFrameCount++;
+        if (runningFrameSecond != frameSecond) {
+            frameCount = runningFrameCount;
+            runningFrameCount = 0;
+            runningFrameSecond = frameSecond;
+        }
+        if (debug) {
             graphics.drawString("fps: " + frameCount, 20, 20 + renderTask.lines().size() * graphics.getFontMetrics().getHeight());
         }
     }
