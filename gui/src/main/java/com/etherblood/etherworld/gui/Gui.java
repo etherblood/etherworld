@@ -118,21 +118,23 @@ public class Gui {
             for (DebugRectangle rectangle : renderTask.rectangles()) {
                 if (rectangle.fill()) {
                     graphics.setColor(rectangle.color());
+                    RenderRectangle destination = normalize(rectangle.destination());
                     graphics.fillRect(
-                            rectangle.destination().x(),
-                            rectangle.destination().y(),
-                            rectangle.destination().width(),
-                            rectangle.destination().height());
+                            destination.x(),
+                            destination.y(),
+                            destination.width(),
+                            destination.height());
                 }
             }
             for (DebugRectangle rectangle : renderTask.rectangles()) {
                 if (!rectangle.fill()) {
                     graphics.setColor(rectangle.color());
+                    RenderRectangle destination = normalize(rectangle.destination());
                     graphics.drawRect(
-                            rectangle.destination().x(),
-                            rectangle.destination().y(),
-                            rectangle.destination().width(),
-                            rectangle.destination().height());
+                            destination.x(),
+                            destination.y(),
+                            destination.width(),
+                            destination.height());
                 }
             }
             graphics.setColor(Color.WHITE);
@@ -154,16 +156,25 @@ public class Gui {
         }
     }
 
+    private RenderRectangle normalize(RenderRectangle rectangle) {
+        return new RenderRectangle(
+                Math.min(rectangle.aX(), rectangle.bX()),
+                Math.min(rectangle.aY(), rectangle.bY()),
+                Math.abs(rectangle.width()),
+                Math.abs(rectangle.height())
+        );
+    }
+
     private void renderImage(Graphics2D graphics, Image image, RenderRectangle destination, RenderRectangle source) {
         graphics.drawImage(image,
-                destination.minX(),
-                destination.minY(),
-                destination.maxX(),
-                destination.maxY(),
-                source.minX(),
-                source.minY(),
-                source.maxX(),
-                source.maxY(),
+                destination.aX(),
+                destination.aY(),
+                destination.bX(),
+                destination.bY(),
+                source.aX(),
+                source.aY(),
+                source.bX(),
+                source.bY(),
                 null);
     }
 

@@ -125,18 +125,14 @@ class Main {
 //            sprites.add(new RenderSprite())
 //            lines.add(pixelPosition.toString());
 
-            int activeFrameIndex = 0;
+            int activeFrameIndex;
             Animation animation = data.get(character, Animation.class);
             if (animation != null) {
                 int ticks = animation.elapsedTicks();
                 GameSpriteAnimation gameSpriteAnimation = gameSprite.animations().get(animation.animationId());
-                for (GameSpriteFrame frame : gameSpriteAnimation.frames()) {
-                    activeFrameIndex = frame.index();
-                    ticks -= frame.durationTicks();
-                    if (ticks <= 0) {
-                        break;
-                    }
-                }
+                activeFrameIndex = gameSpriteAnimation.frameByTick(ticks).index();
+            } else {
+                activeFrameIndex = 0;
             }
             AseSlice hitboxSlice = spriteData.info.meta().slices().stream().filter(x -> x.name().equals("Hitbox")).findFirst().get();
             AseSliceKey hitboxKey = hitboxSlice.keys().get(0);
@@ -150,7 +146,8 @@ class Main {
                     activeFrame.spriteSourceSize().y() + spriteOffset.y() + pixelPosition.y(),
                     activeFrame.spriteSourceSize().w(),
                     activeFrame.spriteSourceSize().h());
-            if (data.get(character, Direction.class) == Direction.LEFT) {
+            Direction direction = data.get(character, Direction.class);
+            if (direction == Direction.LEFT) {
                 dest = new RenderRectangle(
                         2 * pixelPosition.x() - dest.x(),
                         dest.y(),
@@ -165,7 +162,38 @@ class Main {
                     activeFrame.frame().h());
             sprites.add(new RenderSprite(source, dest, spriteData.image));
 
-            // TODO: render hitbox
+            RenderRectangle pixelHitbox = new RenderRectangle(
+                    -hitboxKey.pivot().x(),
+                    -hitboxKey.pivot().y(),
+                    hitboxKey.bounds().w(),
+                    hitboxKey.bounds().h())
+                    .translate(pixelPosition.x(), pixelPosition.y());
+            rectangles.add(new DebugRectangle(pixelHitbox, Color.BLUE, false));
+
+
+            AseSliceKey[] damages = spriteData.info.meta().slices().stream()
+                    .filter(x -> x.name().equals("Damage"))
+                    .flatMap(x -> x.keys().stream())
+                    .filter(x -> x.frame() == activeFrameIndex)
+                    .toArray(AseSliceKey[]::new);
+            for (AseSliceKey damage : damages) {
+                RenderRectangle damageDestination = new RenderRectangle(
+                        damage.bounds().x() + spriteOffset.x() + pixelPosition.x(),
+                        damage.bounds().y() + spriteOffset.y() + pixelPosition.y(),
+                        damage.bounds().w(),
+                        damage.bounds().h()
+                );
+                if (direction == Direction.LEFT) {
+                    damageDestination = new RenderRectangle(
+                            2 * pixelPosition.x() - damageDestination.x(),
+                            damageDestination.y(),
+                            -damageDestination.width(),
+                            damageDestination.height()
+                    );
+                }
+                rectangles.add(new DebugRectangle(damageDestination, Color.RED, false));
+            }
+
             if (character == cameraPerson) {
                 camera = new RenderRectangle(
                         pixelPosition.x() + cameraOffsetX,
@@ -176,8 +204,8 @@ class Main {
             }
         }
 
-        ChunkPosition cameraMin = world.getConverter().floorChunk(new PixelPosition(camera.minX(), camera.minY()));
-        ChunkPosition cameraMax = world.getConverter().ceilChunk(new PixelPosition(camera.maxX(), camera.maxY()));
+        ChunkPosition cameraMin = world.getConverter().floorChunk(new PixelPosition(camera.aX(), camera.aY()));
+        ChunkPosition cameraMax = world.getConverter().ceilChunk(new PixelPosition(camera.bX(), camera.bY()));
         for (int y = cameraMin.y(); y < cameraMax.y(); y++) {
             for (int x = cameraMin.x(); x < cameraMax.x(); x++) {
                 ChunkPosition point = new ChunkPosition(x, y);
