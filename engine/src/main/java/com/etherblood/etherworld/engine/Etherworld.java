@@ -43,6 +43,38 @@ public class Etherworld {
         int jumpStrength = 16 * 16;
         int runSpeed = 8 * 16;
 
+        for (int entity : data.list(Animation.class)) {
+            String characterId = data.get(entity, CharacterId.class).id();
+            Animation animation = data.get(entity, Animation.class);
+            GameSprite sprite = sprites.apply(characterId);
+            GameSpriteAnimation spriteAnimation = sprite.animations().get(animation.animationId());
+            GameSpriteFrame frame = spriteAnimation.frameByTick(animation.elapsedTicks());
+            Position position = data.get(entity, Position.class);
+            for (GameSpriteHitbox attack : frame.attacks()) {
+                GameSpriteHitbox attackHitbox;
+                if (data.get(entity, Direction.class) == Direction.RIGHT) {
+                    attackHitbox = attack.translate(position.x(), position.y());
+                } else {
+                    attackHitbox = new GameSpriteHitbox(-attack.x() - attack.width(), attack.y(), attack.width(), attack.height()).translate(position.x(), position.y());
+                }
+                for (int other : data.list(CharacterId.class)) {
+                    if (entity == other) {
+                        continue;
+                    }
+                    GameSpriteHitbox otherHitbox = sprites.apply(data.get(other, CharacterId.class).id()).hitbox();
+                    Position otherPosition = data.get(other, Position.class);
+                    GameSpriteHitbox translated = otherHitbox.translate(otherPosition.x(), otherPosition.y());
+                    if (attackHitbox.intersects(translated)) {
+                        Animation otherAnimation = data.get(other, Animation.class);
+                        if (!"Hit".equals(otherAnimation.animationId())) {
+                            data.set(other, new Animation("Hit", 0));
+                        }
+                    }
+                }
+            }
+        }
+
+
         for (int entity : data.list(Speed.class)) {
             Speed speed = data.get(entity, Speed.class);
             Position position = data.get(entity, Position.class);
@@ -217,31 +249,6 @@ public class Etherworld {
                         0);
             }
             data.set(entity, next);
-            GameSpriteAnimation nextSpriteAnimation = sprite.animations().get(nextAnimation);
-            GameSpriteFrame frame = nextSpriteAnimation.frameByTick(next.elapsedTicks());
-            Position position = data.get(entity, Position.class);
-            for (GameSpriteHitbox attack : frame.attacks()) {
-                GameSpriteHitbox attackHitbox;
-                if (data.get(entity, Direction.class) == Direction.RIGHT) {
-                    attackHitbox = attack.translate(position.x(), position.y());
-                } else {
-                    attackHitbox = new GameSpriteHitbox(-attack.x() - attack.width(), attack.y(), attack.width(), attack.height()).translate(position.x(), position.y());
-                }
-                for (int other : data.list(CharacterId.class)) {
-                    if (entity == other) {
-                        continue;
-                    }
-                    GameSpriteHitbox otherHitbox = sprites.apply(data.get(other, CharacterId.class).id()).hitbox();
-                    Position otherPosition = data.get(other, Position.class);
-                    GameSpriteHitbox translated = otherHitbox.translate(otherPosition.x(), otherPosition.y());
-                    if (attackHitbox.intersects(translated)) {
-                        Animation otherAnimation = data.get(other, Animation.class);
-                        if (!"Hit".equals(otherAnimation.animationId())) {
-                            data.set(other, new Animation("Hit", 0));
-                        }
-                    }
-                }
-            }
         }
     }
 
