@@ -9,6 +9,8 @@
         <version>0.1.0</version>
     </parent>
     <artifactId>jlink</artifactId>
+
+    <!-- packaging very important!-->
     <packaging>jlink</packaging>
 
     <build>
@@ -27,6 +29,9 @@
                     <compress>2</compress>
                     <finalName>Etherworld</finalName>
                     <classifier>0.1.0</classifier>
+                    <modulePaths>
+                        <modulePath>/home/etherblood/jdk-16.0.2/jmods</modulePath>
+                    </modulePaths>
                 </configuration>
             </plugin>
         </plugins>
