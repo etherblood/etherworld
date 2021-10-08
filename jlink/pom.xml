@@ -29,9 +29,7 @@
                     <compress>2</compress>
                     <finalName>Etherworld</finalName>
                     <classifier>0.1.0</classifier>
-                    <modulePaths>
-                        <modulePath>/home/etherblood/jdk-16.0.2/jmods</modulePath>
-                    </modulePaths>
+                    <sourceJdkModules>/home/etherblood/jdk-16.0.2</sourceJdkModules>
                 </configuration>
             </plugin>
         </plugins>
