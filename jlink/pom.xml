@@ -27,7 +27,7 @@
                     <noHeaderFiles>true</noHeaderFiles>
                     <noManPages>true</noManPages>
                     <compress>2</compress>
-                    <finalName>Etherworld</finalName>
+                    <finalName>jlink</finalName>
                     <classifier>0.1.0</classifier>
                     <sourceJdkModules>/home/etherblood/jdk-16.0.2</sourceJdkModules>
                 </configuration>
