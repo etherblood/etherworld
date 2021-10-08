@@ -1,9 +1,11 @@
 package com.etherblood.etherworld.gui;
 
+import java.awt.Color;
 import java.util.List;
 import java.util.Objects;
 
 public record RenderTask(
+        Color background,
         RenderRectangle camera,
         List<RenderChunk> chunks,
         List<RenderSprite> sprites,
@@ -11,6 +13,7 @@ public record RenderTask(
         List<String> lines
 ) {
     public RenderTask {
+        Objects.requireNonNull(background);
         Objects.requireNonNull(camera);
         Objects.requireNonNull(chunks);
         Objects.requireNonNull(sprites);

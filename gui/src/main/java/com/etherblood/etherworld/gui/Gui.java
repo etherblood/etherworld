@@ -89,7 +89,7 @@ public class Gui {
         AffineTransform transform = AffineTransform.getScaleInstance(2, 2);
         transform.translate(-renderTask.camera().x(), -renderTask.camera().y());
         graphics.setTransform(transform);
-        graphics.setBackground(Color.GRAY);
+        graphics.setBackground(renderTask.background());
         graphics.clearRect(
                 renderTask.camera().x(),
                 renderTask.camera().y(),

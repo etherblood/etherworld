@@ -52,9 +52,10 @@ class Main {
                 "assets/chunks",
                 "assets/sprites");
 
-        // only chunks from this set can be loaded
+        // only chunks from this set will be loaded
         // TODO: create world/map file with chunkPosition -> chunkFile mapping
         Set<ChunkPosition> worldChunks = Set.of(
+                new ChunkPosition(0, -1),
                 new ChunkPosition(-1, 0),
                 new ChunkPosition(0, 0),
                 new ChunkPosition(1, 0),
@@ -122,8 +123,6 @@ class Main {
             GameSprite gameSprite = world.getSprites().apply(data.get(character, CharacterId.class).id());
             Position position = data.get(character, Position.class);
             PixelPosition pixelPosition = world.getConverter().floorPixel(position);
-//            sprites.add(new RenderSprite())
-//            lines.add(pixelPosition.toString());
 
             int activeFrameIndex;
             Animation animation = data.get(character, Animation.class);
@@ -220,17 +219,7 @@ class Main {
                             pixelPosition.y(),
                             world.getConverter().getTileSize() * world.getConverter().getChunkSize().x(),
                             world.getConverter().getTileSize() * world.getConverter().getChunkSize().y());
-//                    graphics.setColor(Color.WHITE);
-//                    graphics.drawImage(
-//                            chunk.sprite.image,
-//                            dest.x(), dest.y(), dest.x() + dest.width(), dest.y() + dest.height(),
-//                            hitboxFrame.frame.x, hitboxFrame.frame.y, hitboxFrame.frame.x + hitboxFrame.frame.w, hitboxFrame.frame.y + hitboxFrame.frame.h,
-//                            null);
-//
-//                    graphics.setColor(Color.BLUE);
-//                    graphics.drawRect(dest.x(), dest.y(), dest.width(), dest.height());
-//
-//                    visibleChunks.put(point, chunk);
+
                     chunks.add(new RenderChunk(
                             new RenderRectangle(backgroundFrame.frame().x(), backgroundFrame.frame().y(), backgroundFrame.frame().w(), backgroundFrame.frame().h()),
                             new RenderRectangle(hitboxFrame.frame().x(), hitboxFrame.frame().y(), hitboxFrame.frame().w(), hitboxFrame.frame().h()),
@@ -243,8 +232,7 @@ class Main {
             }
         }
 
-//        lines.add(camera.toString());
-        return new RenderTask(camera, chunks, sprites, rectangles, lines);
+        return new RenderTask(Color.DARK_GRAY, camera, chunks, sprites, rectangles, lines);
     }
 
     private static Chunk convert(SpriteData spriteData, PositionConverter converter) {
@@ -306,8 +294,6 @@ class Main {
             }
             animations.put(tagName, new GameSpriteAnimation(frames.toArray(GameSpriteFrame[]::new)));
         }
-        //character.spriteOffset = new PixelPoint(-hitboxKey.bounds.x - hitboxKey.pivot.x, -hitboxKey.bounds.y - hitboxKey.pivot.y);
-
         return new GameSprite(id, animations, hitbox);
     }
 }
