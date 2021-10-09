@@ -16,6 +16,10 @@ public class PositionConverter {
         return pixel * pixelToPosition;
     }
 
+    public int positionToFloorPixel(int position) {
+        return Math.floorDiv(position, pixelToPosition);
+    }
+
     public ChunkPosition floorChunk(TilePosition position) {
         return new ChunkPosition(
                 Math.floorDiv(position.x(), chunkToTile.x()),

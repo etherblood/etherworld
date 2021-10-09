@@ -14,6 +14,7 @@ import java.util.function.Function;
 
 public class Etherworld {
 
+    private long elapsedTicks;
     private final EntityData data;
     private final Function<String, GameSprite> sprites;
     private final PositionConverter converter;
@@ -36,6 +37,11 @@ public class Etherworld {
         for (GameSystem system : systems) {
             system.tick(this, playerActions);
         }
+        elapsedTicks++;
+    }
+
+    public long getElapsedTicks() {
+        return elapsedTicks;
     }
 
     public EntityData getData() {

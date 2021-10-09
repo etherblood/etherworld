@@ -5,7 +5,7 @@ import com.etherblood.etherworld.engine.Etherworld;
 import com.etherblood.etherworld.engine.PlayerAction;
 import com.etherblood.etherworld.engine.components.Animation;
 import com.etherblood.etherworld.engine.components.CharacterId;
-import com.etherblood.etherworld.engine.components.Direction;
+import com.etherblood.etherworld.engine.components.FacingDirection;
 import com.etherblood.etherworld.engine.components.OnGround;
 import com.etherblood.etherworld.engine.components.OwnerId;
 import com.etherblood.etherworld.engine.components.Speed;
@@ -58,9 +58,9 @@ public class AnimationSystem implements GameSystem {
                     speed = new Speed(0, 0);
                 }
                 if (speed.x() < 0) {
-                    data.set(entity, Direction.LEFT);
+                    data.set(entity, FacingDirection.LEFT);
                 } else if (speed.x() > 0) {
-                    data.set(entity, Direction.RIGHT);
+                    data.set(entity, FacingDirection.RIGHT);
                 }
                 if (data.has(entity, OnGround.class)) {
                     if (speed.x() == 0) {

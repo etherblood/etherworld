@@ -1,6 +1,6 @@
-package com.etherblood.etherworld.engine.sprites;
+package com.etherblood.etherworld.engine;
 
-public record GameSpriteHitbox(int x, int y, int width, int height) {
+public record RectangleHitbox(int x, int y, int width, int height) {
     public int minX() {
         return x;
     }
@@ -17,11 +17,11 @@ public record GameSpriteHitbox(int x, int y, int width, int height) {
         return y + height;
     }
 
-    public GameSpriteHitbox translate(int x, int y) {
-        return new GameSpriteHitbox(this.x + x, this.y + y, width, height);
+    public RectangleHitbox translate(int x, int y) {
+        return new RectangleHitbox(this.x + x, this.y + y, width, height);
     }
 
-    public boolean intersects(GameSpriteHitbox other) {
+    public boolean intersects(RectangleHitbox other) {
         return minX() < other.maxX() && other.minX() < maxX()
                 && minY() < other.maxY() && other.minY() < maxY();
     }

@@ -6,6 +6,7 @@ import com.etherblood.etherworld.engine.Etherworld;
 import com.etherblood.etherworld.engine.GameLoop;
 import com.etherblood.etherworld.engine.PlayerAction;
 import com.etherblood.etherworld.engine.PositionConverter;
+import com.etherblood.etherworld.engine.RectangleHitbox;
 import com.etherblood.etherworld.engine.chunks.Chunk;
 import com.etherblood.etherworld.engine.chunks.ChunkManager;
 import com.etherblood.etherworld.engine.chunks.ChunkPosition;
@@ -13,14 +14,14 @@ import com.etherblood.etherworld.engine.chunks.LocalTilePosition;
 import com.etherblood.etherworld.engine.chunks.PixelPosition;
 import com.etherblood.etherworld.engine.components.Animation;
 import com.etherblood.etherworld.engine.components.CharacterId;
-import com.etherblood.etherworld.engine.components.Direction;
+import com.etherblood.etherworld.engine.components.FacingDirection;
+import com.etherblood.etherworld.engine.components.MovingPlatform;
 import com.etherblood.etherworld.engine.components.OwnerId;
 import com.etherblood.etherworld.engine.components.Position;
 import com.etherblood.etherworld.engine.components.Speed;
 import com.etherblood.etherworld.engine.sprites.GameSprite;
 import com.etherblood.etherworld.engine.sprites.GameSpriteAnimation;
 import com.etherblood.etherworld.engine.sprites.GameSpriteFrame;
-import com.etherblood.etherworld.engine.sprites.GameSpriteHitbox;
 import com.etherblood.etherworld.gui.DebugRectangle;
 import com.etherblood.etherworld.gui.Gui;
 import com.etherblood.etherworld.gui.RenderChunk;
@@ -75,17 +76,31 @@ class Main {
         int tabby = data.createEntity();
         data.set(tabby, new OwnerId(player));
         data.set(tabby, new CharacterId("Tabby"));
-        data.set(tabby, Direction.RIGHT);
+        data.set(tabby, FacingDirection.RIGHT);
         data.set(tabby, new Animation("Stand", 0));
         data.set(tabby, new Position(0, 0));
         data.set(tabby, new Speed(0, 0));
 
         int dummy = data.createEntity();
         data.set(dummy, new CharacterId("Tabby"));
-        data.set(dummy, Direction.LEFT);
+        data.set(dummy, FacingDirection.LEFT);
         data.set(dummy, new Animation("Stand", 0));
         data.set(dummy, new Position(1024 * converter.getPixelSize(), 0));
         data.set(dummy, new Speed(0, 0));
+
+        int platform = data.createEntity();
+        data.set(platform, new MovingPlatform(new RectangleHitbox(
+                -100 * converter.getPixelSize(),
+                -20 * converter.getPixelSize(),
+                200 * converter.getPixelSize(),
+                20 * converter.getPixelSize()
+        ), new RectangleHitbox(
+                -50 * converter.getPixelSize(),
+                -50 * converter.getPixelSize(),
+                400 * converter.getPixelSize(),
+                400 * converter.getPixelSize()
+        ), -64));
+        data.set(platform, new Position(0, 0));
 
         Gui gui = new Gui();
         gui.start();
@@ -145,8 +160,8 @@ class Main {
                     activeFrame.spriteSourceSize().y() + spriteOffset.y() + pixelPosition.y(),
                     activeFrame.spriteSourceSize().w(),
                     activeFrame.spriteSourceSize().h());
-            Direction direction = data.get(character, Direction.class);
-            if (direction == Direction.LEFT) {
+            FacingDirection direction = data.get(character, FacingDirection.class);
+            if (direction == FacingDirection.LEFT) {
                 dest = new RenderRectangle(
                         2 * pixelPosition.x() - dest.x(),
                         dest.y(),
@@ -182,7 +197,7 @@ class Main {
                         damage.bounds().w(),
                         damage.bounds().h()
                 );
-                if (direction == Direction.LEFT) {
+                if (direction == FacingDirection.LEFT) {
                     damageDestination = new RenderRectangle(
                             2 * pixelPosition.x() - damageDestination.x(),
                             damageDestination.y(),
@@ -232,6 +247,19 @@ class Main {
             }
         }
 
+        for (int entity : data.list(MovingPlatform.class)) {
+            MovingPlatform platform = data.get(entity, MovingPlatform.class);
+            Position position = data.get(entity, Position.class);
+
+            RenderRectangle dest = new RenderRectangle(
+                    world.getConverter().positionToFloorPixel(platform.hitbox().x() + position.x()),
+                    world.getConverter().positionToFloorPixel(platform.hitbox().y() + position.y()),
+                    world.getConverter().positionToFloorPixel(platform.hitbox().width()),
+                    world.getConverter().positionToFloorPixel(platform.hitbox().height())
+            );
+            rectangles.add(new DebugRectangle(dest, Color.GREEN, false));
+        }
+
         return new RenderTask(Color.DARK_GRAY, camera, chunks, sprites, rectangles, lines);
     }
 
@@ -261,7 +289,7 @@ class Main {
                 -hitboxKey.pivot().y(),
                 hitboxKey.bounds().w(),
                 hitboxKey.bounds().h());
-        GameSpriteHitbox hitbox = new GameSpriteHitbox(
+        RectangleHitbox hitbox = new RectangleHitbox(
                 converter.pixelToPosition(pixelHitbox.x()),
                 converter.pixelToPosition(pixelHitbox.y()),
                 converter.pixelToPosition(pixelHitbox.width()),
@@ -283,13 +311,13 @@ class Main {
                         .flatMap(x -> x.keys().stream())
                         .filter(key -> key.frame() == frameIndex)
                         .toList();
-                GameSpriteHitbox[] attackHitboxes = damageKeys.stream()
-                        .map(box -> new GameSpriteHitbox(
+                RectangleHitbox[] attackHitboxes = damageKeys.stream()
+                        .map(box -> new RectangleHitbox(
                                 converter.pixelToPosition(box.bounds().x() - hitboxKey.pivot().x() - hitboxKey.bounds().x()),
                                 converter.pixelToPosition(box.bounds().y() - hitboxKey.pivot().y() - hitboxKey.bounds().y()),
                                 converter.pixelToPosition(box.bounds().w()),
                                 converter.pixelToPosition(box.bounds().h())))
-                        .toArray(GameSpriteHitbox[]::new);
+                        .toArray(RectangleHitbox[]::new);
                 frames.add(new GameSpriteFrame(frameIndex, ticks, attackHitboxes));
             }
             animations.put(tagName, new GameSpriteAnimation(frames.toArray(GameSpriteFrame[]::new)));
