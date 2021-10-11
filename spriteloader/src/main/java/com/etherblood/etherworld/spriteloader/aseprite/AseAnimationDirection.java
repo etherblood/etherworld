@@ -7,6 +7,6 @@ public enum AseAnimationDirection {
     FORWARD,
     @JsonProperty("reverse")
     REVERSE,
-    @JsonProperty("ping-pong")
+    @JsonProperty("pingpong")
     PING_PONG
 }

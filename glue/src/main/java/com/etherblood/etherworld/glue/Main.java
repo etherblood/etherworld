@@ -30,6 +30,7 @@ import com.etherblood.etherworld.gui.RenderSprite;
 import com.etherblood.etherworld.gui.RenderTask;
 import com.etherblood.etherworld.spriteloader.SpriteData;
 import com.etherblood.etherworld.spriteloader.aseprite.AseFrame;
+import com.etherblood.etherworld.spriteloader.aseprite.AseFrameTag;
 import com.etherblood.etherworld.spriteloader.aseprite.AseSlice;
 import com.etherblood.etherworld.spriteloader.aseprite.AseSliceKey;
 import com.etherblood.etherworld.spriteloader.aseprite.AseSprite;
@@ -89,18 +90,16 @@ class Main {
         data.set(dummy, new Speed(0, 0));
 
         int platform = data.createEntity();
-        data.set(platform, new MovingPlatform(new RectangleHitbox(
-                -100 * converter.getPixelSize(),
-                -20 * converter.getPixelSize(),
-                200 * converter.getPixelSize(),
-                20 * converter.getPixelSize()
-        ), new RectangleHitbox(
+        data.set(platform, new CharacterId("Platform1"));
+        RectangleHitbox platformPath = new RectangleHitbox(
                 -50 * converter.getPixelSize(),
                 -50 * converter.getPixelSize(),
                 400 * converter.getPixelSize(),
-                400 * converter.getPixelSize()
-        ), -64));
-        data.set(platform, new Position(0, 0));
+                400 * converter.getPixelSize());
+        data.set(platform, new MovingPlatform(
+                platformPath,
+                -64));
+        data.set(platform, new Position(platformPath.x(), platformPath.y()));
 
         Gui gui = new Gui();
         gui.start();
@@ -247,19 +246,6 @@ class Main {
             }
         }
 
-        for (int entity : data.list(MovingPlatform.class)) {
-            MovingPlatform platform = data.get(entity, MovingPlatform.class);
-            Position position = data.get(entity, Position.class);
-
-            RenderRectangle dest = new RenderRectangle(
-                    world.getConverter().positionToFloorPixel(platform.hitbox().x() + position.x()),
-                    world.getConverter().positionToFloorPixel(platform.hitbox().y() + position.y()),
-                    world.getConverter().positionToFloorPixel(platform.hitbox().width()),
-                    world.getConverter().positionToFloorPixel(platform.hitbox().height())
-            );
-            rectangles.add(new DebugRectangle(dest, Color.GREEN, false));
-        }
-
         return new RenderTask(Color.DARK_GRAY, camera, chunks, sprites, rectangles, lines);
     }
 
@@ -296,7 +282,9 @@ class Main {
                 converter.pixelToPosition(pixelHitbox.height()));
 
         Map<String, GameSpriteAnimation> animations = new HashMap<>();
-        Set<String> tagNames = sprite.meta().frameTags().stream().map(x -> x.name()).collect(Collectors.toSet());
+        Set<String> tagNames = sprite.meta().frameTags().stream()
+                .map(AseFrameTag::name)
+                .collect(Collectors.toSet());
         for (String tagName : tagNames) {
             int[] frameIndices = sprite.meta().frameTags().stream()
                     .filter(x -> x.name().equals(tagName))

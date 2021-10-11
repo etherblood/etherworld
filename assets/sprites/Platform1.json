@@ -1,0 +1,25 @@
+{ "frames": [
+   {
+    "filename": "0",
+    "frame": { "x": 0, "y": 0, "w": 87, "h": 34 },
+    "rotated": false,
+    "trimmed": true,
+    "spriteSourceSize": { "x": 12, "y": 7, "w": 87, "h": 34 },
+    "sourceSize": { "w": 112, "h": 48 },
+    "duration": 100
+   }
+ ],
+ "meta": {
+  "app": "http://www.aseprite.org/",
+  "version": "1.2.29-x64",
+  "image": "Platform1.png",
+  "format": "RGBA8888",
+  "size": { "w": 87, "h": 34 },
+  "scale": "1",
+  "frameTags": [
+  ],
+  "slices": [
+   { "name": "Hitbox", "color": "#0000ffff", "keys": [{ "frame": 0, "bounds": {"x": 16, "y": 16, "w": 80, "h": 16 }, "pivot": {"x": 40, "y": 0 } }] }
+  ]
+ }
+}

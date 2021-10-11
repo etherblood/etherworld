@@ -145,13 +145,14 @@ public class MoveSystem implements GameSystem {
                     }
                 }
                 for (int other : data.list(MovingPlatform.class)) {
-                    MovingPlatform platform = data.get(other, MovingPlatform.class);
                     Position otherPos = data.get(other, Position.class);
+                    GameSprite otherSprite = sprites.apply(data.get(other, CharacterId.class).id());
+
                     RectangleHitbox obstacle = new RectangleHitbox(
-                            otherPos.x() + platform.hitbox().x(),
-                            otherPos.y() + platform.hitbox().y(),
-                            platform.hitbox().width(),
-                            platform.hitbox().height()
+                            otherPos.x() + otherSprite.hitbox().x(),
+                            otherPos.y() + otherSprite.hitbox().y(),
+                            otherSprite.hitbox().width(),
+                            otherSprite.hitbox().height()
                     );
                     if (hitbox.translate(targetX, targetY).intersects(obstacle)) {
                         if (vy > 0) {
@@ -210,6 +211,6 @@ public class MoveSystem implements GameSystem {
         } else {
             x += totalDistance;
         }
-        return new Position(x, y);
+        return new Position(path.x() + x, path.y() + y);
     }
 }
