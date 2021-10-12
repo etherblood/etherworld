@@ -79,7 +79,7 @@ class Main {
         data.set(tabby, new CharacterId("Tabby"));
         data.set(tabby, FacingDirection.RIGHT);
         data.set(tabby, new Animation("Stand", 0));
-        data.set(tabby, new Position(0, 0));
+        data.set(tabby, new Position(0, 23 * 16 * 16));
         data.set(tabby, new Speed(0, 0));
 
         int dummy = data.createEntity();
@@ -89,6 +89,13 @@ class Main {
         data.set(dummy, new Position(1024 * converter.getPixelSize(), 0));
         data.set(dummy, new Speed(0, 0));
 
+        int amara = data.createEntity();
+        data.set(amara, new CharacterId("Amara"));
+        data.set(amara, FacingDirection.LEFT);
+        data.set(amara, new Animation("Stand", 0));
+        data.set(amara, new Position(1400 * converter.getPixelSize(), 24 * 16 * 16));
+        data.set(amara, new Speed(0, 0));
+
         int platform = data.createEntity();
         data.set(platform, new CharacterId("Platform1"));
         RectangleHitbox platformPath = new RectangleHitbox(
@@ -96,9 +103,7 @@ class Main {
                 -50 * converter.getPixelSize(),
                 400 * converter.getPixelSize(),
                 400 * converter.getPixelSize());
-        data.set(platform, new MovingPlatform(
-                platformPath,
-                -64));
+        data.set(platform, new MovingPlatform(platformPath, -64));
         data.set(platform, new Position(platformPath.x(), platformPath.y()));
 
         Gui gui = new Gui();

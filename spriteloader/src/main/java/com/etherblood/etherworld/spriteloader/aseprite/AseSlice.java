@@ -5,5 +5,6 @@ import java.util.List;
 public record AseSlice(
         String name,
         String color,
-        List<AseSliceKey> keys) {
+        List<AseSliceKey> keys,
+        String data) {
 }
