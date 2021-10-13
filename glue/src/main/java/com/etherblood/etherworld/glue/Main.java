@@ -86,7 +86,7 @@ class Main {
         data.set(dummy, new CharacterId("Tabby"));
         data.set(dummy, FacingDirection.LEFT);
         data.set(dummy, new Animation("Stand", 0));
-        data.set(dummy, new Position(1024 * converter.getPixelSize(), 0));
+        data.set(dummy, new Position(1000 * converter.getPixelSize(), 0));
         data.set(dummy, new Speed(0, 0));
 
         int amara = data.createEntity();
@@ -102,6 +102,13 @@ class Main {
 //        data.set(fallacia, new Animation("Stand", 0));
         data.set(fallacia, new Position(1200 * converter.getPixelSize(), 24 * 16 * 16));
         data.set(fallacia, new Speed(0, 0));
+
+        int slime = data.createEntity();
+        data.set(slime, new CharacterId("Slime"));
+        data.set(slime, FacingDirection.LEFT);
+        data.set(slime, new Animation("Stand", 0));
+        data.set(slime, new Position(800 * converter.getPixelSize(), 24 * 16 * 16));
+        data.set(slime, new Speed(0, 0));
 
         int platform = data.createEntity();
         data.set(platform, new CharacterId("Platform1"));
