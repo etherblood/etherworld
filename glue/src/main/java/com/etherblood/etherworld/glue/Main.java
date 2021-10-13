@@ -96,6 +96,13 @@ class Main {
         data.set(amara, new Position(1400 * converter.getPixelSize(), 24 * 16 * 16));
         data.set(amara, new Speed(0, 0));
 
+        int fallacia = data.createEntity();
+        data.set(fallacia, new CharacterId("Fallacia"));
+        data.set(fallacia, FacingDirection.LEFT);
+//        data.set(fallacia, new Animation("Stand", 0));
+        data.set(fallacia, new Position(1200 * converter.getPixelSize(), 24 * 16 * 16));
+        data.set(fallacia, new Speed(0, 0));
+
         int platform = data.createEntity();
         data.set(platform, new CharacterId("Platform1"));
         RectangleHitbox platformPath = new RectangleHitbox(
