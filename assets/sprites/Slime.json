@@ -50,7 +50,9 @@
    { "name": "Dead", "from": 3, "to": 3, "direction": "forward" }
   ],
   "slices": [
-   { "name": "Hitbox", "color": "#0000ffff", "keys": [{ "frame": 0, "bounds": {"x": 16, "y": 32, "w": 48, "h": 32 }, "pivot": {"x": 24, "y": 32 } }] }
+   { "name": "Hitbox", "color": "#0000ffff", "keys": [{ "frame": 0, "bounds": {"x": 16, "y": 32, "w": 48, "h": 32 }, "pivot": {"x": 24, "y": 32 } }] },
+   { "name": "Damage", "color": "#0000ffff", "keys": [{ "frame": 0, "bounds": {"x": 16, "y": 32, "w": 48, "h": 32 } }] },
+   { "name": "Damage", "color": "#0000ffff", "keys": [{ "frame": 1, "bounds": {"x": 16, "y": 32, "w": 48, "h": 32 } }] }
   ]
  }
 }
