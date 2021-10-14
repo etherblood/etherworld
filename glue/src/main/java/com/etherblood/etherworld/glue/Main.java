@@ -155,8 +155,16 @@ class Main {
         List<RenderSprite> sprites = new ArrayList<>();
         List<DebugRectangle> rectangles = new ArrayList<>();
         List<String> lines = new ArrayList<>();
-
         EntityData data = world.getData();
+
+        PixelPosition cameraPersonPosition = world.getConverter().floorPixel(data.get(cameraPerson, Position.class));
+        camera = new RenderRectangle(
+                cameraPersonPosition.x() + cameraOffsetX,
+                cameraPersonPosition.y() + cameraOffsetY,
+                cameraWidth,
+                cameraHeight);
+        rectangles.add(new DebugRectangle(camera, Color.WHITE, false));
+
         for (int character : data.list(CharacterId.class)) {
             SpriteData spriteData = spriteMap.apply(data.get(character, CharacterId.class).id());
             GameSprite gameSprite = world.getSprites().apply(data.get(character, CharacterId.class).id());
@@ -198,7 +206,9 @@ class Main {
                     activeFrame.frame().y(),
                     activeFrame.frame().w(),
                     activeFrame.frame().h());
-            sprites.add(new RenderSprite(source, dest, spriteData.image));
+            if (dest.intersects(camera)) {
+                sprites.add(new RenderSprite(source, dest, spriteData.image));
+            }
 
             RenderRectangle pixelHitbox = new RenderRectangle(
                     -hitboxKey.pivot().x(),
@@ -206,7 +216,9 @@ class Main {
                     hitboxKey.bounds().w(),
                     hitboxKey.bounds().h())
                     .translate(pixelPosition.x(), pixelPosition.y());
-            rectangles.add(new DebugRectangle(pixelHitbox, Color.BLUE, false));
+            if (pixelHitbox.intersects(camera)) {
+                rectangles.add(new DebugRectangle(pixelHitbox, Color.BLUE, false));
+            }
 
 
             AseSliceKey[] damages = spriteData.info.meta().slices().stream()
@@ -229,16 +241,9 @@ class Main {
                             damageDestination.height()
                     );
                 }
-                rectangles.add(new DebugRectangle(damageDestination, Color.RED, false));
-            }
-
-            if (character == cameraPerson) {
-                camera = new RenderRectangle(
-                        pixelPosition.x() + cameraOffsetX,
-                        pixelPosition.y() + cameraOffsetY,
-                        cameraWidth,
-                        cameraHeight);
-                rectangles.add(new DebugRectangle(camera, Color.WHITE, false));
+                if (damageDestination.intersects(camera)) {
+                    rectangles.add(new DebugRectangle(damageDestination, Color.RED, false));
+                }
             }
         }
 
