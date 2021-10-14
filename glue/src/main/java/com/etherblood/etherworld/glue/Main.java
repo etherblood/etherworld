@@ -15,9 +15,11 @@ import com.etherblood.etherworld.engine.chunks.PixelPosition;
 import com.etherblood.etherworld.engine.components.Animation;
 import com.etherblood.etherworld.engine.components.CharacterId;
 import com.etherblood.etherworld.engine.components.FacingDirection;
+import com.etherblood.etherworld.engine.components.Health;
 import com.etherblood.etherworld.engine.components.MovingPlatform;
 import com.etherblood.etherworld.engine.components.OwnerId;
 import com.etherblood.etherworld.engine.components.Position;
+import com.etherblood.etherworld.engine.components.Respawn;
 import com.etherblood.etherworld.engine.components.Speed;
 import com.etherblood.etherworld.engine.sprites.GameSprite;
 import com.etherblood.etherworld.engine.sprites.GameSpriteAnimation;
@@ -80,7 +82,9 @@ class Main {
         data.set(tabby, FacingDirection.RIGHT);
         data.set(tabby, new Animation("Stand", 0));
         data.set(tabby, new Position(0, 23 * 16 * 16));
+        data.set(tabby, new Respawn(0, 23 * 16 * 16, FPS * 10));
         data.set(tabby, new Speed(0, 0));
+        data.set(tabby, new Health(5, 5));
 
         int dummy = data.createEntity();
         data.set(dummy, new CharacterId("Tabby"));
@@ -99,7 +103,7 @@ class Main {
         int fallacia = data.createEntity();
         data.set(fallacia, new CharacterId("Fallacia"));
         data.set(fallacia, FacingDirection.LEFT);
-//        data.set(fallacia, new Animation("Stand", 0));
+        data.set(fallacia, new Animation("Stand", 0));
         data.set(fallacia, new Position(1200 * converter.getPixelSize(), 24 * 16 * 16));
         data.set(fallacia, new Speed(0, 0));
 
@@ -108,7 +112,9 @@ class Main {
         data.set(slime, FacingDirection.LEFT);
         data.set(slime, new Animation("Stand", 0));
         data.set(slime, new Position(800 * converter.getPixelSize(), 24 * 16 * 16));
+        data.set(slime, new Respawn(800 * converter.getPixelSize(), 24 * 16 * 16, FPS * 10));
         data.set(slime, new Speed(0, 0));
+        data.set(slime, new Health(2, 2));
 
         int platform = data.createEntity();
         data.set(platform, new CharacterId("Platform1"));

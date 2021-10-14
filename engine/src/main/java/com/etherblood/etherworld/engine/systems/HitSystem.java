@@ -7,6 +7,7 @@ import com.etherblood.etherworld.engine.RectangleHitbox;
 import com.etherblood.etherworld.engine.components.Animation;
 import com.etherblood.etherworld.engine.components.CharacterId;
 import com.etherblood.etherworld.engine.components.FacingDirection;
+import com.etherblood.etherworld.engine.components.Health;
 import com.etherblood.etherworld.engine.components.Position;
 import com.etherblood.etherworld.engine.sprites.GameSprite;
 import com.etherblood.etherworld.engine.sprites.GameSpriteAnimation;
@@ -47,6 +48,10 @@ public class HitSystem implements GameSystem {
                         Animation otherAnimation = data.get(other, Animation.class);
                         if (!"Hit".equals(otherAnimation.animationId())) {
                             data.set(other, new Animation("Hit", 0));
+                            Health health = data.get(other, Health.class);
+                            if (health != null) {
+                                data.set(other, health.damage(1));
+                            }
                         }
                     }
                 }

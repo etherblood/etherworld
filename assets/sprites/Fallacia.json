@@ -1,12 +1,21 @@
 { "frames": [
    {
     "filename": "0",
-    "frame": { "x": 0, "y": 0, "w": 68, "h": 115 },
+    "frame": { "x": 71, "y": 0, "w": 69, "h": 115 },
     "rotated": false,
     "trimmed": true,
-    "spriteSourceSize": { "x": 18, "y": 13, "w": 68, "h": 115 },
+    "spriteSourceSize": { "x": 18, "y": 13, "w": 69, "h": 115 },
     "sourceSize": { "w": 144, "h": 144 },
-    "duration": 100
+    "duration": 250
+   },
+   {
+    "filename": "1",
+    "frame": { "x": 0, "y": 0, "w": 71, "h": 114 },
+    "rotated": false,
+    "trimmed": true,
+    "spriteSourceSize": { "x": 17, "y": 14, "w": 71, "h": 114 },
+    "sourceSize": { "w": 144, "h": 144 },
+    "duration": 250
    }
  ],
  "meta": {
@@ -14,9 +23,10 @@
   "version": "1.2.29-x64",
   "image": "Fallacia.png",
   "format": "RGBA8888",
-  "size": { "w": 68, "h": 115 },
+  "size": { "w": 140, "h": 115 },
   "scale": "1",
   "frameTags": [
+   { "name": "Stand", "from": 0, "to": 1, "direction": "forward" }
   ],
   "slices": [
    { "name": "Hitbox", "color": "#0000ffff", "keys": [{ "frame": 0, "bounds": {"x": 64, "y": 32, "w": 16, "h": 96 }, "pivot": {"x": 8, "y": 96 } }] }
