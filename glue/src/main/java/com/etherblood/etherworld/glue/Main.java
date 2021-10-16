@@ -86,24 +86,24 @@ class Main {
         data.set(tabby, new Respawn(data.get(tabby, Position.class)));
         data.set(tabby, new Health(5, 5));
 
-        int dummy = createCharacter(world, assetLoader, converter, "Tabby");
-        data.set(dummy, FacingDirection.LEFT);
-        data.set(dummy, new Position(1000 * converter.getPixelSize(), 0));
-        data.set(dummy, new Health(10, 10));
-
-        int amara = createCharacter(world, assetLoader, converter, "Amara");
-        data.set(amara, FacingDirection.LEFT);
-        data.set(amara, new Position(1400 * converter.getPixelSize(), 24 * 16 * 16));
-
-        int fallacia = createCharacter(world, assetLoader, converter, "Fallacia");
-        data.set(fallacia, FacingDirection.LEFT);
-        data.set(fallacia, new Position(1200 * converter.getPixelSize(), 24 * 16 * 16));
-
         int slime = createCharacter(world, assetLoader, converter, "Slime");
         data.set(slime, FacingDirection.LEFT);
         data.set(slime, new Position(800 * converter.getPixelSize(), 24 * 16 * 16));
         data.set(slime, new Respawn(data.get(slime, Position.class)));
         data.set(slime, new Health(2, 2));
+
+        int dummy = createCharacter(world, assetLoader, converter, "Tabby");
+        data.set(dummy, FacingDirection.LEFT);
+        data.set(dummy, new Position(900 * converter.getPixelSize(), 0));
+        data.set(dummy, new Health(10, 10));
+
+        int amara = createCharacter(world, assetLoader, converter, "Amara");
+        data.set(amara, FacingDirection.LEFT);
+        data.set(amara, new Position(1000 * converter.getPixelSize(), 24 * 16 * 16));
+
+        int fallacia = createCharacter(world, assetLoader, converter, "Fallacia");
+        data.set(fallacia, FacingDirection.LEFT);
+        data.set(fallacia, new Position(1100 * converter.getPixelSize(), 24 * 16 * 16));
 
         String name = "Platform1";
         SpriteData sprite = assetLoader.loadSprite(name);
