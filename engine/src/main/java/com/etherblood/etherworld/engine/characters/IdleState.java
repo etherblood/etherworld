@@ -6,6 +6,7 @@ import com.etherblood.etherworld.engine.Etherworld;
 import com.etherblood.etherworld.engine.PlayerAction;
 import com.etherblood.etherworld.engine.components.CharacterState;
 import com.etherblood.etherworld.engine.components.FacingDirection;
+import com.etherblood.etherworld.engine.components.GameCharacter;
 import com.etherblood.etherworld.engine.components.Health;
 import com.etherblood.etherworld.engine.components.OnGround;
 import com.etherblood.etherworld.engine.components.OwnerId;
@@ -16,15 +17,10 @@ import java.util.Set;
 
 public class IdleState implements State {
 
-    private final PhysicParams physicParams;
-
-    public IdleState(PhysicParams physicParams) {
-        this.physicParams = physicParams;
-    }
-
     @Override
-    public void tick(Etherworld world, Map<Integer, Set<PlayerAction>> playerActions, int entity, int elapsedTicks) {
+    public void tick(Etherworld world, Map<Integer, Set<PlayerAction>> playerActions, int entity, GameCharacter gameCharacter, int elapsedTicks) {
         EntityData data = world.getData();
+        PhysicParams physicParams = gameCharacter.physicParams();
         Speed speed = data.get(entity, Speed.class);
         if (speed == null) {
             speed = new Speed(0, 0);

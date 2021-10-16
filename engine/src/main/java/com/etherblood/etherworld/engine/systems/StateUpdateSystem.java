@@ -29,10 +29,10 @@ public class StateUpdateSystem implements GameSystem {
         EntityData data = world.getData();
         GameCharacter gameCharacter = data.get(entity, GameCharacter.class);
         switch (state) {
-            case IDLE -> new IdleState(gameCharacter.physicParams()).tick(world, playerActions, entity, elapsedTicks);
-            case ATTACK -> new AttackState(gameCharacter.physicParams(), gameCharacter.attackParams()).tick(world, playerActions, entity, elapsedTicks);
-            case HURT -> new HurtState(gameCharacter.hurtParams(), gameCharacter.physicParams()).tick(world, playerActions, entity, elapsedTicks);
-            case DEAD -> new DeadState(gameCharacter.hurtParams(), gameCharacter.physicParams()).tick(world, playerActions, entity, elapsedTicks);
+            case IDLE -> new IdleState().tick(world, playerActions, entity, gameCharacter, elapsedTicks);
+            case ATTACK -> new AttackState().tick(world, playerActions, entity, gameCharacter, elapsedTicks);
+            case HURT -> new HurtState().tick(world, playerActions, entity, gameCharacter, elapsedTicks);
+            case DEAD -> new DeadState().tick(world, playerActions, entity, gameCharacter, elapsedTicks);
             default -> throw new AssertionError(state);
         }
     }

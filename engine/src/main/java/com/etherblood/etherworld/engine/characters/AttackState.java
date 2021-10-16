@@ -7,6 +7,7 @@ import com.etherblood.etherworld.engine.PlayerAction;
 import com.etherblood.etherworld.engine.RectangleHitbox;
 import com.etherblood.etherworld.engine.components.CharacterState;
 import com.etherblood.etherworld.engine.components.FacingDirection;
+import com.etherblood.etherworld.engine.components.GameCharacter;
 import com.etherblood.etherworld.engine.components.Health;
 import com.etherblood.etherworld.engine.components.Hurtbox;
 import com.etherblood.etherworld.engine.components.OnGround;
@@ -19,17 +20,11 @@ import java.util.Set;
 
 public class AttackState implements State {
 
-    private final PhysicParams physicParams;
-    private final AttackParams attackParams;
-
-    public AttackState(PhysicParams physicParams, AttackParams attackParams) {
-        this.physicParams = physicParams;
-        this.attackParams = attackParams;
-    }
-
     @Override
-    public void tick(Etherworld world, Map<Integer, Set<PlayerAction>> playerActions, int entity, int elapsedTicks) {
+    public void tick(Etherworld world, Map<Integer, Set<PlayerAction>> playerActions, int entity, GameCharacter gameCharacter, int elapsedTicks) {
         EntityData data = world.getData();
+        PhysicParams physicParams = gameCharacter.physicParams();
+        AttackParams attackParams = gameCharacter.attackParams();
         Speed speed = data.get(entity, Speed.class);
         if (speed == null) {
             speed = new Speed(0, 0);
