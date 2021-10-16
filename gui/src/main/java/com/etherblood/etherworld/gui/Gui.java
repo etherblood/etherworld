@@ -130,8 +130,12 @@ public class Gui {
                             destination.height());
                 }
             }
-            graphics.setColor(Color.WHITE);
-            graphics.setTransform(AffineTransform.getTranslateInstance(0, 0));
+        }
+        
+
+        graphics.setColor(Color.WHITE);
+        graphics.setTransform(AffineTransform.getTranslateInstance(0, 0));
+        if (debug) {
             for (int i = 0; i < renderTask.lines().size(); i++) {
                 graphics.drawString(renderTask.lines().get(i), 20, 20 + i * graphics.getFontMetrics().getHeight());
             }

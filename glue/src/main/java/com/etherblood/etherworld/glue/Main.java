@@ -377,7 +377,7 @@ class Main {
             }
         }
 
-        return new RenderTask(Color.DARK_GRAY, camera, chunks, sprites, rectangles, lines);
+        return new RenderTask(world.getTick(), Color.DARK_GRAY, camera, chunks, sprites, rectangles, lines);
     }
 
     private static String convert(EntityData data, int entity, EntityState state) {

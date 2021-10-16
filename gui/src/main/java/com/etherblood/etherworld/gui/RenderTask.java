@@ -5,6 +5,7 @@ import java.util.List;
 import java.util.Objects;
 
 public record RenderTask(
+        long tick,
         Color background,
         RenderRectangle camera,
         List<RenderChunk> chunks,
