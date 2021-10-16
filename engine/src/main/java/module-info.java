@@ -2,6 +2,6 @@ module com.etherblood.etherworld.engine {
     exports com.etherblood.etherworld.engine.chunks;
     exports com.etherblood.etherworld.engine;
     exports com.etherblood.etherworld.engine.components;
-    exports com.etherblood.etherworld.engine.sprites;
+    exports com.etherblood.etherworld.engine.characters;
     requires com.etherblood.etherworld.data;
 }

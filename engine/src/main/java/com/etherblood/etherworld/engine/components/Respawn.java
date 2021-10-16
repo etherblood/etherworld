@@ -1,7 +1,9 @@
 package com.etherblood.etherworld.engine.components;
 
-public record Respawn(
-        int x,
-        int y,
-        int ticks) {
+import java.util.Objects;
+
+public record Respawn(Position position) {
+    public Respawn {
+        Objects.requireNonNull(position);
+    }
 }

@@ -25,14 +25,13 @@ public class Gui {
     private int runningFrameCount;
     private int frameCount;
 
-    private JFrame jFrame;
     private PictureBox panel;
 
     public void start() {
         int windowWidth = 1600;
         int windowHeight = 800;
 
-        jFrame = new JFrame("Gaem?");
+        JFrame jFrame = new JFrame("Gaem?");
         jFrame.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
         jFrame.setLayout(new BorderLayout());
         panel = new PictureBox();
@@ -42,19 +41,13 @@ public class Gui {
         jFrame.setSize(windowWidth, windowHeight);
         jFrame.add(panel, BorderLayout.CENTER);
 
-//        panel.addMouseListener(new MouseAdapter() {
-//            @Override
-//            public void mouseClicked(MouseEvent e) {
-//                System.out.println("Clicked on " + e.getPoint());
-//            }
-//        });
-
         jFrame.addKeyListener(new KeyAdapter() {
             @Override
             public void keyPressed(KeyEvent e) {
                 pressedKeys.add(e.getKeyCode());
                 switch (e.getKeyCode()) {
                     case KeyEvent.VK_F1 -> debug = !debug;
+                    case KeyEvent.VK_ESCAPE -> System.exit(0);
                 }
             }
 

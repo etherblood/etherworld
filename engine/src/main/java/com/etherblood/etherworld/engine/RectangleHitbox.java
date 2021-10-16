@@ -25,4 +25,8 @@ public record RectangleHitbox(int x, int y, int width, int height) {
         return minX() < other.maxX() && other.minX() < maxX()
                 && minY() < other.maxY() && other.minY() < maxY();
     }
+
+    public RectangleHitbox mirrorX(int xAxis) {
+        return new RectangleHitbox(2 * xAxis - x - width, y, width, height);
+    }
 }

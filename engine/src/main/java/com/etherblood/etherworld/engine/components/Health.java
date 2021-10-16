@@ -3,6 +3,7 @@ package com.etherblood.etherworld.engine.components;
 public record Health(
         int value,
         int max) {
+    
     public Health {
         if (value < 0) {
             throw new AssertionError("Health must be not negative.");

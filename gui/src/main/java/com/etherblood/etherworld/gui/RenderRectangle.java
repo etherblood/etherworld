@@ -41,4 +41,8 @@ public record RenderRectangle(int x, int y, int width, int height) {
     private int maxY() {
         return Math.max(aY(), bY());
     }
+
+    public RenderRectangle mirrorX(int xAxis) {
+        return new RenderRectangle(2 * xAxis - x, y, -width, height);
+    }
 }

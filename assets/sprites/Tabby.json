@@ -639,13 +639,7 @@
       {
         "name": "Hit",
         "from": 18,
-        "to": 20,
-        "direction": "forward"
-      },
-      {
-        "name": "Dead",
-        "from": 18,
-        "to": 18,
+        "to": 19,
         "direction": "forward"
       },
       {

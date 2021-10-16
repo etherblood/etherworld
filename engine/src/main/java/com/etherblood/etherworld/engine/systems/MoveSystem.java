@@ -3,47 +3,36 @@ package com.etherblood.etherworld.engine.systems;
 import com.etherblood.etherworld.data.EntityData;
 import com.etherblood.etherworld.engine.Etherworld;
 import com.etherblood.etherworld.engine.PlayerAction;
-import com.etherblood.etherworld.engine.PositionConverter;
 import com.etherblood.etherworld.engine.RectangleHitbox;
 import com.etherblood.etherworld.engine.chunks.Chunk;
 import com.etherblood.etherworld.engine.chunks.ChunkManager;
 import com.etherblood.etherworld.engine.chunks.ChunkPosition;
 import com.etherblood.etherworld.engine.chunks.LocalTilePosition;
 import com.etherblood.etherworld.engine.chunks.TilePosition;
-import com.etherblood.etherworld.engine.components.CharacterId;
+import com.etherblood.etherworld.engine.components.Movebox;
 import com.etherblood.etherworld.engine.components.MovingPlatform;
+import com.etherblood.etherworld.engine.components.Obstaclebox;
 import com.etherblood.etherworld.engine.components.OnGround;
 import com.etherblood.etherworld.engine.components.OnPlatform;
-import com.etherblood.etherworld.engine.components.OwnerId;
 import com.etherblood.etherworld.engine.components.Position;
 import com.etherblood.etherworld.engine.components.Speed;
-import com.etherblood.etherworld.engine.sprites.GameSprite;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-import java.util.function.Function;
 
 public class MoveSystem implements GameSystem {
 
     @Override
     public void tick(Etherworld world, Map<Integer, Set<PlayerAction>> playerActions) {
-        // those settings should be per character?
-        int gravityPerTick = 12;
-        int jumpStrength = 16 * 16;
-        int runSpeed = 8 * 16;
-
         EntityData data = world.getData();
-        PositionConverter converter = world.getConverter();
-        Function<String, GameSprite> sprites = world.getSprites();
         ChunkManager chunks = world.getChunks();
 
         for (int platform : data.list(MovingPlatform.class)) {
             Position position = data.get(platform, Position.class);
             MovingPlatform value = data.get(platform, MovingPlatform.class);
 
-            Position nextPos = calcPosition(value.path(), value.speed(), world.getElapsedTicks());
+            Position nextPos = calcPosition(value.path(), value.speed(), world.getTick());
             int vx = nextPos.x() - position.x();
             int vy = nextPos.y() - position.y();
 
@@ -57,29 +46,13 @@ public class MoveSystem implements GameSystem {
         for (int entity : data.list(Speed.class)) {
             Speed speed = data.get(entity, Speed.class);
             Position position = data.get(entity, Position.class);
-            CharacterId characterId = data.get(entity, CharacterId.class);
-            if (characterId != null) {
-                GameSprite gameSprite = sprites.apply(characterId.id());
-                RectangleHitbox hitbox = gameSprite.hitbox();
-
-                int vx = 0;
+            Movebox movebox = data.get(entity, Movebox.class);
+            if (movebox != null) {
+                RectangleHitbox hitbox = movebox.hitbox();
+                int vx = speed.x();
                 int vy = speed.y();
-                OwnerId owner = data.get(entity, OwnerId.class);
-                if (owner != null) {
-                    Set<PlayerAction> actions = playerActions.getOrDefault(owner.id(), Collections.emptySet());
-                    if (actions.contains(PlayerAction.RIGHT)) {
-                        vx += runSpeed;
-                    }
-                    if (actions.contains(PlayerAction.LEFT)) {
-                        vx -= runSpeed;
-                    }
-                    if (actions.contains(PlayerAction.JUMP) && data.has(entity, OnGround.class)) {
-                        vy = -jumpStrength;
-                    }
-                }
 
                 boolean grounded = false;
-                vy += gravityPerTick;
 
 
                 boolean collideX = false;
@@ -90,19 +63,19 @@ public class MoveSystem implements GameSystem {
                 int roiMinY = Math.min(vy, 0) + position.y() + hitbox.minY();
                 int roiMaxY = Math.max(vy, 0) + position.y() + hitbox.maxY();
 
-                TilePosition minTile = converter.floorTile(new Position(roiMinX, roiMinY));
-                TilePosition maxTile = converter.ceilTile(new Position(roiMaxX, roiMaxY));
+                TilePosition minTile = chunks.toFloorTilePosition(new Position(roiMinX, roiMinY));
+                TilePosition maxTile = chunks.toCeilTilePosition(new Position(roiMaxX, roiMaxY));
 
                 List<RectangleHitbox> obstacles = new ArrayList<>();
                 for (int y = minTile.y(); y < maxTile.y(); y++) {
                     for (int x = minTile.x(); x < maxTile.x(); x++) {
                         TilePosition tilePosition = new TilePosition(x, y);
-                        ChunkPosition chunkPosition = converter.floorChunk(tilePosition);
+                        ChunkPosition chunkPosition = chunks.toChunkPosition(tilePosition);
                         Chunk chunk = chunks.get(chunkPosition);
                         if (chunk != null) {
-                            LocalTilePosition tile = converter.toLocal(tilePosition);
+                            LocalTilePosition tile = chunks.toLocalChunkPosition(tilePosition);
                             if (chunk.isObstacle(tile)) {
-                                int scale = converter.getTileSize() * converter.getPixelSize();
+                                int scale = chunks.getTileSize();
                                 obstacles.add(new RectangleHitbox(
                                         x * scale,
                                         y * scale,
@@ -144,16 +117,11 @@ public class MoveSystem implements GameSystem {
                         }
                     }
                 }
-                for (int other : data.list(MovingPlatform.class)) {
+                for (int other : data.list(Obstaclebox.class)) {
                     Position otherPos = data.get(other, Position.class);
-                    GameSprite otherSprite = sprites.apply(data.get(other, CharacterId.class).id());
+                    Obstaclebox obstaclebox = data.get(other, Obstaclebox.class);
 
-                    RectangleHitbox obstacle = new RectangleHitbox(
-                            otherPos.x() + otherSprite.hitbox().x(),
-                            otherPos.y() + otherSprite.hitbox().y(),
-                            otherSprite.hitbox().width(),
-                            otherSprite.hitbox().height()
-                    );
+                    RectangleHitbox obstacle = obstaclebox.hitbox().translate(otherPos.x(), otherPos.y());
                     if (hitbox.translate(targetX, targetY).intersects(obstacle)) {
                         if (vy > 0) {
                             int diff = targetY + hitbox.maxY() - obstacle.minY();
