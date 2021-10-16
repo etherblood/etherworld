@@ -22,6 +22,8 @@ import com.etherblood.etherworld.engine.components.GameCharacter;
 import com.etherblood.etherworld.engine.components.Health;
 import com.etherblood.etherworld.engine.components.Hurtbox;
 import com.etherblood.etherworld.engine.components.Movebox;
+import com.etherblood.etherworld.engine.components.MovingPlatform;
+import com.etherblood.etherworld.engine.components.Obstaclebox;
 import com.etherblood.etherworld.engine.components.OwnerId;
 import com.etherblood.etherworld.engine.components.Position;
 import com.etherblood.etherworld.engine.components.Respawn;
@@ -102,15 +104,31 @@ class Main {
         data.set(slime, new Respawn(data.get(slime, Position.class)));
         data.set(slime, new Health(2, 2));
 
-//        int platform = data.createEntity();
-////        data.set(platform, new CharacterId("Platform1"));
-//        RectangleHitbox platformPath = new RectangleHitbox(
-//                -50 * converter.getPixelSize(),
-//                -50 * converter.getPixelSize(),
-//                400 * converter.getPixelSize(),
-//                400 * converter.getPixelSize());
-//        data.set(platform, new MovingPlatform(platformPath, -64));
-//        data.set(platform, new Position(platformPath.x(), platformPath.y()));
+        {
+
+            String name = "Platform1";
+            SpriteData sprite = assetLoader.loadSprite(name);
+            AseSlice hitboxSlice = sprite.info.meta().slices().stream().filter(x -> x.name().equals("Hitbox")).findFirst().get();
+            AseSliceKey hitboxKey = hitboxSlice.keys().get(0);
+            Position pivot = new Position(
+                    converter.pixelToPosition(hitboxKey.pivot().x() + hitboxKey.bounds().x()),
+                    converter.pixelToPosition(hitboxKey.pivot().y() + hitboxKey.bounds().y()));
+            RectangleHitbox hitbox = new RectangleHitbox(
+                    converter.pixelToPosition(hitboxKey.bounds().x()) - pivot.x(),
+                    converter.pixelToPosition(hitboxKey.bounds().y()) - pivot.y(),
+                    converter.pixelToPosition(hitboxKey.bounds().w()),
+                    converter.pixelToPosition(hitboxKey.bounds().h()));
+
+            int platform = data.createEntity();
+            RectangleHitbox platformPath = new RectangleHitbox(
+                    -50 * converter.getPixelSize(),
+                    -50 * converter.getPixelSize(),
+                    400 * converter.getPixelSize(),
+                    400 * converter.getPixelSize());
+            data.set(platform, new MovingPlatform(name, platformPath, -64));
+            data.set(platform, new Position(platformPath.x(), platformPath.y()));
+            data.set(platform, new Obstaclebox(hitbox));
+        }
 
         Gui gui = new Gui();
         gui.start();
@@ -226,6 +244,38 @@ class Main {
                 cameraWidth,
                 cameraHeight);
         rectangles.add(new DebugRectangle(camera, Color.WHITE, false));
+
+        for (int entity : data.list(MovingPlatform.class)) {
+            String platformId = data.get(entity, MovingPlatform.class).id();
+            SpriteData spriteData = spriteMap.apply(platformId);
+            Position position = data.get(entity, Position.class);
+            PixelPosition pixelPosition = converter.floorPixel(position);
+            int activeFrameIndex = 0;
+            AseSlice hitboxSlice = spriteData.info.meta().slices().stream().filter(x -> x.name().equals("Hitbox")).findFirst().get();
+            AseSliceKey hitboxKey = hitboxSlice.keys().get(0);
+            PixelPosition spriteOffset = new PixelPosition(
+                    -hitboxKey.bounds().x() - hitboxKey.pivot().x(),
+                    -hitboxKey.bounds().y() - hitboxKey.pivot().y());
+
+            AseFrame activeFrame = spriteData.info.frames().get(activeFrameIndex);
+            RenderRectangle dest = new RenderRectangle(
+                    activeFrame.spriteSourceSize().x() + spriteOffset.x() + pixelPosition.x(),
+                    activeFrame.spriteSourceSize().y() + spriteOffset.y() + pixelPosition.y(),
+                    activeFrame.spriteSourceSize().w(),
+                    activeFrame.spriteSourceSize().h());
+            FacingDirection direction = data.get(entity, FacingDirection.class);
+            if (direction == FacingDirection.LEFT) {
+                dest = dest.mirrorX(pixelPosition.x());
+            }
+            RenderRectangle source = new RenderRectangle(
+                    activeFrame.frame().x(),
+                    activeFrame.frame().y(),
+                    activeFrame.frame().w(),
+                    activeFrame.frame().h());
+            if (dest.intersects(camera)) {
+                sprites.add(new RenderSprite(source, dest, spriteData.image));
+            }
+        }
 
         for (int entity : data.list(GameCharacter.class)) {
             String characterId = data.get(entity, GameCharacter.class).id();
