@@ -118,6 +118,9 @@ public class MoveSystem implements GameSystem {
                     }
                 }
                 for (int other : data.list(Obstaclebox.class)) {
+                    if (entity == other) {
+                        continue;
+                    }
                     Position otherPos = data.get(other, Position.class);
                     Obstaclebox obstaclebox = data.get(other, Obstaclebox.class);
 

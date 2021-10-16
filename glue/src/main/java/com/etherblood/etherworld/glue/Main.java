@@ -61,6 +61,7 @@ class Main {
         // only chunks from this set will be loaded
         // TODO: create world/map file with chunkPosition -> chunkFile mapping
         Set<ChunkPosition> worldChunks = Set.of(
+                new ChunkPosition(-1, -1),
                 new ChunkPosition(0, -1),
                 new ChunkPosition(-1, 0),
                 new ChunkPosition(0, 0),
@@ -104,31 +105,28 @@ class Main {
         data.set(slime, new Respawn(data.get(slime, Position.class)));
         data.set(slime, new Health(2, 2));
 
-        {
+        String name = "Platform1";
+        SpriteData sprite = assetLoader.loadSprite(name);
+        AseSlice hitboxSlice = sprite.info.meta().slices().stream().filter(x -> x.name().equals("Hitbox")).findFirst().get();
+        AseSliceKey hitboxKey = hitboxSlice.keys().get(0);
+        Position pivot = new Position(
+                converter.pixelToPosition(hitboxKey.pivot().x() + hitboxKey.bounds().x()),
+                converter.pixelToPosition(hitboxKey.pivot().y() + hitboxKey.bounds().y()));
+        RectangleHitbox hitbox = new RectangleHitbox(
+                converter.pixelToPosition(hitboxKey.bounds().x()) - pivot.x(),
+                converter.pixelToPosition(hitboxKey.bounds().y()) - pivot.y(),
+                converter.pixelToPosition(hitboxKey.bounds().w()),
+                converter.pixelToPosition(hitboxKey.bounds().h()));
 
-            String name = "Platform1";
-            SpriteData sprite = assetLoader.loadSprite(name);
-            AseSlice hitboxSlice = sprite.info.meta().slices().stream().filter(x -> x.name().equals("Hitbox")).findFirst().get();
-            AseSliceKey hitboxKey = hitboxSlice.keys().get(0);
-            Position pivot = new Position(
-                    converter.pixelToPosition(hitboxKey.pivot().x() + hitboxKey.bounds().x()),
-                    converter.pixelToPosition(hitboxKey.pivot().y() + hitboxKey.bounds().y()));
-            RectangleHitbox hitbox = new RectangleHitbox(
-                    converter.pixelToPosition(hitboxKey.bounds().x()) - pivot.x(),
-                    converter.pixelToPosition(hitboxKey.bounds().y()) - pivot.y(),
-                    converter.pixelToPosition(hitboxKey.bounds().w()),
-                    converter.pixelToPosition(hitboxKey.bounds().h()));
-
-            int platform = data.createEntity();
-            RectangleHitbox platformPath = new RectangleHitbox(
-                    -50 * converter.getPixelSize(),
-                    -50 * converter.getPixelSize(),
-                    400 * converter.getPixelSize(),
-                    400 * converter.getPixelSize());
-            data.set(platform, new MovingPlatform(name, platformPath, -64));
-            data.set(platform, new Position(platformPath.x(), platformPath.y()));
-            data.set(platform, new Obstaclebox(hitbox));
-        }
+        int platform = data.createEntity();
+        RectangleHitbox platformPath = new RectangleHitbox(
+                -50 * converter.getPixelSize(),
+                -50 * converter.getPixelSize(),
+                400 * converter.getPixelSize(),
+                400 * converter.getPixelSize());
+        data.set(platform, new MovingPlatform(name, platformPath, -64));
+        data.set(platform, new Position(platformPath.x(), platformPath.y()));
+        data.set(platform, new Obstaclebox(hitbox));
 
         Gui gui = new Gui();
         gui.start();
@@ -167,7 +165,7 @@ class Main {
                 .filter(x -> x.name().equals("Damage"))
                 .flatMap(x -> x.keys().stream())
                 .findFirst();
-        AttackParams attackParams;
+        AttackParams attackParams = new AttackParams(null, -1, -1, -1, -1);
         if (optionalDamageKey.isPresent()) {
             AseSliceKey damageKey = optionalDamageKey.get();
             RectangleHitbox damagebox = new RectangleHitbox(
@@ -194,9 +192,7 @@ class Main {
                 millis += attackFrame.duration();
             }
 
-            if (startMillis == null || endMillis == null) {
-                attackParams = new AttackParams(null, -1, -1, -1, -1);
-            } else {
+            if (startMillis != null && endMillis != null) {
                 attackParams = new AttackParams(
                         damagebox,
                         startMillis * TICKS_PER_SECOND / MILLIS_PER_SECOND,
@@ -204,8 +200,6 @@ class Main {
                         1,
                         sprite.info.animationDurationMillis("Attack") * TICKS_PER_SECOND / MILLIS_PER_SECOND);
             }
-        } else {
-            attackParams = new AttackParams(null, -1, -1, -1, -1);
         }
         PhysicParams physicParams = new PhysicParams(8 * 16, 20, 16 * 16, 12);
         HurtParams hurtParams = new HurtParams(
@@ -214,11 +208,7 @@ class Main {
         int entity = data.createEntity();
         data.set(entity, new Hurtbox(hitbox));
         data.set(entity, new Movebox(hitbox));
-        data.set(entity, new GameCharacter(name,
-                physicParams,
-                attackParams,
-                hurtParams
-        ));
+        data.set(entity, new GameCharacter(name, physicParams, attackParams, hurtParams));
         data.set(entity, new Speed(0, 0));
         data.set(entity, new CharacterState(EntityState.IDLE, world.getTick()));
         data.set(entity, FacingDirection.RIGHT);
@@ -274,6 +264,16 @@ class Main {
                     activeFrame.frame().h());
             if (dest.intersects(camera)) {
                 sprites.add(new RenderSprite(source, dest, spriteData.image));
+            }
+
+            RenderRectangle pixelHitbox = new RenderRectangle(
+                    -hitboxKey.pivot().x(),
+                    -hitboxKey.pivot().y(),
+                    hitboxKey.bounds().w(),
+                    hitboxKey.bounds().h())
+                    .translate(pixelPosition.x(), pixelPosition.y());
+            if (pixelHitbox.intersects(camera)) {
+                rectangles.add(new DebugRectangle(pixelHitbox, Color.BLUE, false));
             }
         }
 

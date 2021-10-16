@@ -1,19 +1,19 @@
 { "frames": [
    {
     "filename": "0",
-    "frame": { "x": 52, "y": 0, "w": 50, "h": 87 },
+    "frame": { "x": 0, "y": 0, "w": 53, "h": 87 },
     "rotated": false,
     "trimmed": true,
-    "spriteSourceSize": { "x": 44, "y": 41, "w": 50, "h": 87 },
+    "spriteSourceSize": { "x": 41, "y": 41, "w": 53, "h": 87 },
     "sourceSize": { "w": 144, "h": 144 },
     "duration": 800
    },
    {
     "filename": "1",
-    "frame": { "x": 0, "y": 0, "w": 52, "h": 87 },
+    "frame": { "x": 53, "y": 0, "w": 53, "h": 87 },
     "rotated": false,
     "trimmed": true,
-    "spriteSourceSize": { "x": 43, "y": 41, "w": 52, "h": 87 },
+    "spriteSourceSize": { "x": 42, "y": 41, "w": 53, "h": 87 },
     "sourceSize": { "w": 144, "h": 144 },
     "duration": 800
    }
@@ -23,7 +23,7 @@
   "version": "1.2.29-x64",
   "image": "Amara.png",
   "format": "RGBA8888",
-  "size": { "w": 102, "h": 87 },
+  "size": { "w": 106, "h": 87 },
   "scale": "1",
   "frameTags": [
    { "name": "Stand", "from": 0, "to": 1, "direction": "forward" }
