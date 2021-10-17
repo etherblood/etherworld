@@ -10,7 +10,6 @@ import com.etherblood.etherworld.engine.components.FacingDirection;
 import com.etherblood.etherworld.engine.components.Health;
 import com.etherblood.etherworld.engine.components.Hurtbox;
 import com.etherblood.etherworld.engine.components.Movebox;
-import com.etherblood.etherworld.engine.components.Obstaclebox;
 import com.etherblood.etherworld.engine.components.OnGround;
 import com.etherblood.etherworld.engine.components.Position;
 import com.etherblood.etherworld.engine.components.Speed;
@@ -37,7 +36,7 @@ public class GolemSystem implements GameSystem {
         int recoverTicks = 60;
         int riseSpeed = 4 * 16;
         Position handOffset = new Position(240 * 16, 96 * 16);
-        Speed resetSpeed = new Speed(chaseSpeed, chaseSpeed / 2);
+        int resetSpeed = chaseSpeed;
         int handDamage = 2;
 
         EntityData data = world.getData();
@@ -51,7 +50,7 @@ public class GolemSystem implements GameSystem {
                 if (!stateKey.value().equals("GolemHandDead")) {
                     data.set(entity, new StateKey("GolemHandDead", world.getTick()));
                     data.remove(entity, Attackbox.class);
-                    data.remove(entity, Obstaclebox.class);
+                    data.set(head, new Position(headPosition.x(), headPosition.y() + 16 * 64));// hacky workaround, this belongs into head code
                 }
                 Speed speed = data.get(entity, Speed.class);
                 data.set(entity, new Speed(0, speed.y() + gravityPerTick));
@@ -72,19 +71,16 @@ public class GolemSystem implements GameSystem {
                             data.set(entity, new StateKey("GolemHandScan", world.getTick()));
                             data.set(entity, new Speed(0, 0));
                         } else {
-                            int vx;
-                            if (Math.abs(resetTarget.x() - position.x()) < resetSpeed.x()) {
-                                vx = resetTarget.x() - position.x();
+                            int dx = resetTarget.x() - position.x();
+                            int dy = resetTarget.y() - position.y();
+                            int distance = (int) Math.sqrt(dx * dx + dy * dy);
+                            Speed speed;
+                            if (distance > resetSpeed) {
+                                speed = new Speed(dx * resetSpeed / distance, dy * resetSpeed / distance);
                             } else {
-                                vx = Integer.signum(resetTarget.x() - position.x()) * resetSpeed.x();
+                                speed = new Speed(dx, dy);
                             }
-                            int vy;
-                            if (Math.abs(resetTarget.y() - position.y()) < resetSpeed.y()) {
-                                vy = resetTarget.y() - position.y();
-                            } else {
-                                vy = Integer.signum(resetTarget.y() - position.y()) * resetSpeed.y();
-                            }
-                            data.set(entity, new Speed(vx, vy));
+                            data.set(entity, speed);
                         }
                         break;
                     case "GolemHandScan":
