@@ -5,6 +5,7 @@ import com.etherblood.etherworld.engine.Etherworld;
 import com.etherblood.etherworld.engine.PlayerAction;
 import com.etherblood.etherworld.engine.RectangleHitbox;
 import com.etherblood.etherworld.engine.components.Attackbox;
+import com.etherblood.etherworld.engine.components.FacingDirection;
 import com.etherblood.etherworld.engine.components.Hurtbox;
 import com.etherblood.etherworld.engine.components.Movebox;
 import com.etherblood.etherworld.engine.components.OnGround;
@@ -19,7 +20,7 @@ import java.util.Set;
 public class GolemSystem implements GameSystem {
     @Override
     public void tick(Etherworld world, Map<Integer, Set<PlayerAction>> playerActions) {
-        RectangleHitbox scanBase = new RectangleHitbox(-16 * 16 * 8, 0, 16 * 16 * 16, 16 * 16 * 16);
+        RectangleHitbox scanBase = new RectangleHitbox(-16 * 16 * 12, 0, 16 * 16 * 24, 16 * 16 * 16);
         int chaseSpeed = 4 * 16;
         int jumpStrength = 4 * 16;
         int gravityPerTick = 16;
@@ -54,10 +55,21 @@ public class GolemSystem implements GameSystem {
                         data.remove(entity, ChaseTarget.class);
                         break;
                     }
+                    RectangleHitbox hitbox = data.get(entity, Movebox.class).hitbox().translate(position.x(), position.y());
+                    int head = data.get(entity, GolemHand.class).head();
+                    Position headPosition = data.get(head, Position.class);
                     if (target.maxX() < position.x()) {
-                        data.set(entity, new Speed(-chaseSpeed, 0));
+                        int vx = -chaseSpeed;
+                        if (data.get(entity, FacingDirection.class) != FacingDirection.LEFT) {
+                            vx = Math.max(vx, headPosition.x() - hitbox.minX());
+                        }
+                        data.set(entity, new Speed(vx, 0));
                     } else if (target.minX() > position.x()) {
-                        data.set(entity, new Speed(chaseSpeed, 0));
+                        int vx = chaseSpeed;
+                        if (data.get(entity, FacingDirection.class) == FacingDirection.LEFT) {
+                            vx = Math.min(vx, headPosition.x() - hitbox.maxX());
+                        }
+                        data.set(entity, new Speed(vx, 0));
                     } else {
                         data.set(entity, new StateKey("GolemHandSmash", world.getTick()));
                         data.set(entity, new Speed(0, -jumpStrength));
