@@ -1,12 +1,8 @@
 package com.etherblood.etherworld.engine;
 
 import com.etherblood.etherworld.data.EntityData;
-import com.etherblood.etherworld.engine.characters.Behaviour;
 import com.etherblood.etherworld.engine.chunks.ChunkManager;
-import com.etherblood.etherworld.engine.systems.BehaviourSystem;
 import com.etherblood.etherworld.engine.systems.GameSystem;
-import com.etherblood.etherworld.engine.systems.GolemSystem;
-import com.etherblood.etherworld.engine.systems.MoveSystem;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -18,14 +14,10 @@ public class Etherworld {
     private final ChunkManager chunks;
     private final List<GameSystem> systems;
 
-    public Etherworld(EntityData data, ChunkManager chunks, Map<String, Behaviour> behaviours) {
+    public Etherworld(EntityData data, ChunkManager chunks, List<GameSystem> systems) {
         this.data = data;
         this.chunks = chunks;
-        systems = List.of(
-                new BehaviourSystem(behaviours),
-                new GolemSystem(),
-                new MoveSystem()
-        );
+        this.systems = systems;
         tick = 0;
     }
 

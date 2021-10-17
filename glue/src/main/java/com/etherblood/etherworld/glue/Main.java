@@ -35,6 +35,9 @@ import com.etherblood.etherworld.engine.components.Respawn;
 import com.etherblood.etherworld.engine.components.Speed;
 import com.etherblood.etherworld.engine.components.StateKey;
 import com.etherblood.etherworld.engine.components.golem.GolemHand;
+import com.etherblood.etherworld.engine.systems.BehaviourSystem;
+import com.etherblood.etherworld.engine.systems.GolemSystem;
+import com.etherblood.etherworld.engine.systems.MoveSystem;
 import com.etherblood.etherworld.gui.DebugRectangle;
 import com.etherblood.etherworld.gui.Gui;
 import com.etherblood.etherworld.gui.RenderChunk;
@@ -91,7 +94,11 @@ class Main {
                         converter.getTileSize() * converter.getPixelSize(),
                         converter.getChunkSize(),
                         position -> worldChunks.contains(position) ? convert(assetLoader.loadChunk(position), converter) : null),
-                behaviours
+                List.of(
+                        new BehaviourSystem(behaviours),
+                        new GolemSystem("GolemHead" + BEHAVIOUR_HURT),
+                        new MoveSystem()
+                )
         );
 
         int player = data.createEntity();
@@ -165,7 +172,7 @@ class Main {
                     converter.pixelToPosition(hitboxKey.bounds().y()) - pivot.y(),
                     converter.pixelToPosition(hitboxKey.bounds().w()),
                     converter.pixelToPosition(hitboxKey.bounds().h()));
-
+            
             int leftHand = data.createEntity();
             data.set(leftHand, new Position(2760 * converter.getPixelSize(), 832 * converter.getPixelSize()));
             data.set(leftHand, new Movebox(hitbox));
@@ -176,7 +183,7 @@ class Main {
                     new HurtParams(0, 0));
             data.set(leftHand, gameCharacter);
             data.set(leftHand, new GolemHand(head));
-            data.set(leftHand, new StateKey("GolemHandScan", 0));
+            data.set(leftHand, new StateKey("GolemHandReset", 0));
             data.set(leftHand, FacingDirection.RIGHT);
 
             int rightHand = data.createEntity();
@@ -186,7 +193,7 @@ class Main {
             data.set(rightHand, gameCharacter);
             data.set(rightHand, new GolemHand(head));
             data.set(rightHand, FacingDirection.LEFT);
-            data.set(rightHand, new StateKey("GolemHandScan", 0));
+            data.set(rightHand, new StateKey("GolemHandReset", 0));
         }
 
         {
