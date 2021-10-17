@@ -107,7 +107,7 @@ class Main {
 
         String name = "Platform1";
         SpriteData sprite = assetLoader.loadSprite(name);
-        AseSlice hitboxSlice = sprite.info.meta().slices().stream().filter(x -> x.name().equals("Hitbox")).findFirst().get();
+        AseSlice hitboxSlice = sprite.info.meta().slices().stream().filter(x -> x.name().equals("Obstacle")).findFirst().get();
         AseSliceKey hitboxKey = hitboxSlice.keys().get(0);
         Position pivot = new Position(
                 converter.pixelToPosition(hitboxKey.pivot().x() + hitboxKey.bounds().x()),
@@ -241,7 +241,7 @@ class Main {
             Position position = data.get(entity, Position.class);
             PixelPosition pixelPosition = converter.floorPixel(position);
             int activeFrameIndex = 0;
-            AseSlice hitboxSlice = spriteData.info.meta().slices().stream().filter(x -> x.name().equals("Hitbox")).findFirst().get();
+            AseSlice hitboxSlice = spriteData.info.meta().slices().stream().filter(x -> x.name().equals("Obstacle")).findFirst().get();
             AseSliceKey hitboxKey = hitboxSlice.keys().get(0);
             PixelPosition spriteOffset = new PixelPosition(
                     -hitboxKey.bounds().x() - hitboxKey.pivot().x(),

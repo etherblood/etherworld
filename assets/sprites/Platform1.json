@@ -19,7 +19,7 @@
   "frameTags": [
   ],
   "slices": [
-   { "name": "Hitbox", "color": "#0000ffff", "keys": [{ "frame": 0, "bounds": {"x": 16, "y": 16, "w": 80, "h": 16 }, "pivot": {"x": 40, "y": 0 } }] }
+   { "name": "Obstacle", "color": "#0000ffff", "keys": [{ "frame": 0, "bounds": {"x": 16, "y": 16, "w": 80, "h": 16 }, "pivot": {"x": 40, "y": 0 } }] }
   ]
  }
 }
