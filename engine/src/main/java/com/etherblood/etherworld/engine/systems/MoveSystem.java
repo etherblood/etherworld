@@ -90,12 +90,19 @@ public class MoveSystem implements GameSystem {
                 int targetY = position.y();
                 targetX += vx;
                 for (RectangleHitbox obstacle : obstacles) {
-                    if (hitbox.translate(targetX, targetY).intersects(obstacle)) {
+                    RectangleHitbox targetHitbox = hitbox.translate(targetX, targetY);
+                    if (targetHitbox.intersects(obstacle)) {
                         if (vx > 0) {
-                            int diff = targetX + hitbox.maxX() - obstacle.minX();
+                            if (hitbox.maxX() + position.x() > obstacle.minX()) {
+                                continue;
+                            }
+                            int diff = targetHitbox.maxX() - obstacle.minX();
                             targetX -= diff;
                             collideX = true;
                         } else if (vx < 0) {
+                            if (hitbox.minX() + position.x() < obstacle.maxX()) {
+                                continue;
+                            }
                             int diff = obstacle.maxX() - (targetX + hitbox.minX());
                             targetX += diff;
                             collideX = true;
@@ -104,13 +111,20 @@ public class MoveSystem implements GameSystem {
                 }
                 targetY += vy;
                 for (RectangleHitbox obstacle : obstacles) {
-                    if (hitbox.translate(targetX, targetY).intersects(obstacle)) {
+                    RectangleHitbox targetHitbox = hitbox.translate(targetX, targetY);
+                    if (targetHitbox.intersects(obstacle)) {
                         if (vy > 0) {
-                            int diff = targetY + hitbox.maxY() - obstacle.minY();
+                            if (hitbox.maxY() + position.y() > obstacle.minY()) {
+                                continue;
+                            }
+                            int diff = targetHitbox.maxY() - obstacle.minY();
                             targetY -= diff;
                             grounded = true;
                             collideY = true;
                         } else if (vy < 0) {
+                            if (hitbox.minY() + position.y() < obstacle.maxY()) {
+                                continue;
+                            }
                             int diff = obstacle.maxY() - (targetY + hitbox.minY());
                             targetY += diff;
                             collideY = true;
@@ -125,14 +139,21 @@ public class MoveSystem implements GameSystem {
                     Obstaclebox obstaclebox = data.get(other, Obstaclebox.class);
 
                     RectangleHitbox obstacle = obstaclebox.hitbox().translate(otherPos.x(), otherPos.y());
-                    if (hitbox.translate(targetX, targetY).intersects(obstacle)) {
+                    RectangleHitbox targetHitbox = hitbox.translate(targetX, targetY);
+                    if (targetHitbox.intersects(obstacle)) {
                         if (vy > 0) {
-                            int diff = targetY + hitbox.maxY() - obstacle.minY();
+                            if (hitbox.maxY() + position.y() > obstacle.minY()) {
+                                continue;
+                            }
+                            int diff = targetHitbox.maxY() - obstacle.minY();
                             targetY -= diff;
                             grounded = true;
                             collideY = true;
                             data.set(entity, new OnPlatform(other));
                         } else if (vy < 0) {
+                            if (hitbox.minY() + position.y() < obstacle.maxY()) {
+                                continue;
+                            }
                             int diff = obstacle.maxY() - (targetY + hitbox.minY());
                             targetY += diff;
                             collideY = true;

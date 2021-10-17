@@ -1,0 +1,27 @@
+{ "frames": [
+   {
+    "filename": "0",
+    "frame": { "x": 0, "y": 0, "w": 124, "h": 124 },
+    "rotated": false,
+    "trimmed": true,
+    "spriteSourceSize": { "x": 11, "y": 7, "w": 124, "h": 124 },
+    "sourceSize": { "w": 144, "h": 368 },
+    "duration": 800
+   }
+ ],
+ "meta": {
+  "app": "http://www.aseprite.org/",
+  "version": "1.2.29-x64",
+  "image": "GolemHand.png",
+  "format": "RGBA8888",
+  "size": { "w": 124, "h": 124 },
+  "scale": "1",
+  "frameTags": [
+   { "name": "Stand", "from": 0, "to": 0, "direction": "forward" }
+  ],
+  "slices": [
+   { "name": "Hitbox", "color": "#0000ffff", "keys": [{ "frame": 0, "bounds": {"x": 16, "y": 16, "w": 112, "h": 112 }, "pivot": {"x": 56, "y": 112 } }] },
+   { "name": "Scan", "color": "#0000ffff", "keys": [{ "frame": 0, "bounds": {"x": 64, "y": 112, "w": 16, "h": 224 } }] }
+  ]
+ }
+}

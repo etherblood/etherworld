@@ -23,6 +23,9 @@ public class BehaviourSystem implements GameSystem {
             BehaviourKey state = data.get(entity, BehaviourKey.class);
             int elapsedTicks = (int) (world.getTick() - state.startTick());
             Behaviour behaviour = behaviours.get(state.value());
+            if (behaviour == null) {
+                throw new AssertionError("Behaviour " + state.value() + " not found.");
+            }
             if (elapsedTicks == 0) {
                 behaviour.setup(world, playerActions, entity, elapsedTicks);
             }

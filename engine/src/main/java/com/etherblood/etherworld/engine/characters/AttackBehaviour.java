@@ -22,10 +22,12 @@ public class AttackBehaviour implements Behaviour {
 
     private final String idleBehaviour;
     private final String hurtBehaviour;
+    private final AttackParams attackParams;
 
-    public AttackBehaviour(String idleBehaviour, String hurtBehaviour) {
+    public AttackBehaviour(String idleBehaviour, String hurtBehaviour, AttackParams attackParams) {
         this.idleBehaviour = idleBehaviour;
         this.hurtBehaviour = hurtBehaviour;
+        this.attackParams = attackParams;
     }
 
     @Override
@@ -33,7 +35,6 @@ public class AttackBehaviour implements Behaviour {
         EntityData data = world.getData();
         GameCharacter gameCharacter = data.get(entity, GameCharacter.class);
         PhysicParams physicParams = gameCharacter.physicParams();
-        AttackParams attackParams = gameCharacter.attackParams();
         Speed speed = data.get(entity, Speed.class);
         if (speed == null) {
             speed = new Speed(0, 0);

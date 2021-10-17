@@ -77,13 +77,10 @@ class Main {
                 new ChunkPosition(0, 0),
                 new ChunkPosition(1, 0),
                 new ChunkPosition(2, 0),
-                new ChunkPosition(2, 1)
+                new ChunkPosition(2, 1),
+                new ChunkPosition(2, 2)
         );
         Map<String, Behaviour> behaviours = new HashMap<>();
-        behaviours.put(BEHAVIOUR_IDLE, new IdleBehaviour(BEHAVIOUR_ATTACK, BEHAVIOUR_HURT, BEHAVIOUR_DEAD));
-        behaviours.put(BEHAVIOUR_ATTACK, new AttackBehaviour(BEHAVIOUR_IDLE, BEHAVIOUR_HURT));
-        behaviours.put(BEHAVIOUR_HURT, new HurtBehaviour(BEHAVIOUR_IDLE));
-        behaviours.put(BEHAVIOUR_DEAD, new DeadBehaviour(BEHAVIOUR_IDLE));
         EntityDatabase data = new EntityDatabase();
         PositionConverter converter = new PositionConverter();
         Etherworld world = new Etherworld(
@@ -96,55 +93,80 @@ class Main {
         );
 
         int player = data.createEntity();
-        int tabby = createCharacter(world, assetLoader, converter, "Tabby");
+        int tabby = createCharacter(world, assetLoader, behaviours, converter, "Tabby");
         data.set(tabby, new OwnerId(player));
         data.set(tabby, FacingDirection.RIGHT);
         data.set(tabby, new Position(0, 23 * 16 * 16));
         data.set(tabby, new Respawn(data.get(tabby, Position.class)));
         data.set(tabby, new Health(5, 5));
 
-        int slime = createCharacter(world, assetLoader, converter, "Slime");
+        int slime = createCharacter(world, assetLoader, behaviours, converter, "Slime");
         data.set(slime, FacingDirection.LEFT);
         data.set(slime, new Position(800 * converter.getPixelSize(), 24 * 16 * 16));
         data.set(slime, new Respawn(data.get(slime, Position.class)));
         data.set(slime, new Health(2, 2));
         data.set(slime, new Attackbox(data.get(slime, Hurtbox.class).hitbox(), 1));
 
-        int dummy = createCharacter(world, assetLoader, converter, "Tabby");
+        int dummy = createCharacter(world, assetLoader, behaviours, converter, "Tabby");
         data.set(dummy, FacingDirection.LEFT);
         data.set(dummy, new Position(900 * converter.getPixelSize(), 0));
         data.set(dummy, new Health(10, 10));
 
-        int amara = createCharacter(world, assetLoader, converter, "Amara");
+        int amara = createCharacter(world, assetLoader, behaviours, converter, "Amara");
         data.set(amara, FacingDirection.LEFT);
         data.set(amara, new Position(1000 * converter.getPixelSize(), 24 * 16 * 16));
 
-        int fallacia = createCharacter(world, assetLoader, converter, "Fallacia");
+        int fallacia = createCharacter(world, assetLoader, behaviours, converter, "Fallacia");
         data.set(fallacia, FacingDirection.LEFT);
         data.set(fallacia, new Position(1100 * converter.getPixelSize(), 24 * 16 * 16));
 
-        String name = "Platform1";
-        SpriteData sprite = assetLoader.loadSprite(name);
-        AseSlice hitboxSlice = sprite.info.meta().slices().stream().filter(x -> x.name().equals("Obstacle")).findFirst().get();
-        AseSliceKey hitboxKey = hitboxSlice.keys().get(0);
-        Position pivot = new Position(
-                converter.pixelToPosition(hitboxKey.pivot().x() + hitboxKey.bounds().x()),
-                converter.pixelToPosition(hitboxKey.pivot().y() + hitboxKey.bounds().y()));
-        RectangleHitbox hitbox = new RectangleHitbox(
-                converter.pixelToPosition(hitboxKey.bounds().x()) - pivot.x(),
-                converter.pixelToPosition(hitboxKey.bounds().y()) - pivot.y(),
-                converter.pixelToPosition(hitboxKey.bounds().w()),
-                converter.pixelToPosition(hitboxKey.bounds().h()));
+        {
+            String name = "GolemHand";
+            SpriteData sprite = assetLoader.loadSprite(name);
+            AseSlice hitboxSlice = sprite.info.meta().slices().stream().filter(x -> x.name().equals("Hitbox")).findFirst().get();
+            AseSliceKey hitboxKey = hitboxSlice.keys().get(0);
+            Position pivot = new Position(
+                    converter.pixelToPosition(hitboxKey.pivot().x() + hitboxKey.bounds().x()),
+                    converter.pixelToPosition(hitboxKey.pivot().y() + hitboxKey.bounds().y()));
+            RectangleHitbox hitbox = new RectangleHitbox(
+                    converter.pixelToPosition(hitboxKey.bounds().x()) - pivot.x(),
+                    converter.pixelToPosition(hitboxKey.bounds().y()) - pivot.y(),
+                    converter.pixelToPosition(hitboxKey.bounds().w()),
+                    converter.pixelToPosition(hitboxKey.bounds().h()));
 
-        int platform = data.createEntity();
-        RectangleHitbox platformPath = new RectangleHitbox(
-                -50 * converter.getPixelSize(),
-                -50 * converter.getPixelSize(),
-                400 * converter.getPixelSize(),
-                400 * converter.getPixelSize());
-        data.set(platform, new MovingPlatform(name, platformPath, -64));
-        data.set(platform, new Position(platformPath.x(), platformPath.y()));
-        data.set(platform, new Obstaclebox(hitbox));
+            int entity = data.createEntity();
+            data.set(entity, new Position(2750 * converter.getPixelSize(), 768 * converter.getPixelSize()));
+            data.set(entity, new Obstaclebox(hitbox));
+            data.set(entity, new GameCharacter(
+                    name,
+                    new PhysicParams(0, 0, 0, 0),
+                    new HurtParams(0, 0)));
+        }
+
+        {
+            String name = "Platform1";
+            SpriteData sprite = assetLoader.loadSprite(name);
+            AseSlice hitboxSlice = sprite.info.meta().slices().stream().filter(x -> x.name().equals("Obstacle")).findFirst().get();
+            AseSliceKey hitboxKey = hitboxSlice.keys().get(0);
+            Position pivot = new Position(
+                    converter.pixelToPosition(hitboxKey.pivot().x() + hitboxKey.bounds().x()),
+                    converter.pixelToPosition(hitboxKey.pivot().y() + hitboxKey.bounds().y()));
+            RectangleHitbox hitbox = new RectangleHitbox(
+                    converter.pixelToPosition(hitboxKey.bounds().x()) - pivot.x(),
+                    converter.pixelToPosition(hitboxKey.bounds().y()) - pivot.y(),
+                    converter.pixelToPosition(hitboxKey.bounds().w()),
+                    converter.pixelToPosition(hitboxKey.bounds().h()));
+
+            int entity = data.createEntity();
+            RectangleHitbox platformPath = new RectangleHitbox(
+                    -50 * converter.getPixelSize(),
+                    -50 * converter.getPixelSize(),
+                    400 * converter.getPixelSize(),
+                    400 * converter.getPixelSize());
+            data.set(entity, new MovingPlatform(name, platformPath, -64));
+            data.set(entity, new Position(platformPath.x(), platformPath.y()));
+            data.set(entity, new Obstaclebox(hitbox));
+        }
 
         Gui gui = new Gui();
         gui.start();
@@ -164,7 +186,7 @@ class Main {
         loop.run();
     }
 
-    private static int createCharacter(Etherworld world, AssetLoader assetLoader, PositionConverter converter, String name) {
+    private static int createCharacter(Etherworld world, AssetLoader assetLoader, Map<String, Behaviour> behaviours, PositionConverter converter, String name) {
         SpriteData sprite = assetLoader.loadSprite(name);
         EntityData data = world.getData();
         AseSlice hitboxSlice = sprite.info.meta().slices().stream().filter(x -> x.name().equals("Hitbox")).findFirst().get();
@@ -183,7 +205,6 @@ class Main {
                 .filter(x -> x.name().equals("Damage"))
                 .flatMap(x -> x.keys().stream())
                 .findFirst();
-        AttackParams attackParams = new AttackParams(null, -1, -1, -1, -1);
         if (optionalDamageKey.isPresent()) {
             AseSliceKey damageKey = optionalDamageKey.get();
             RectangleHitbox damagebox = new RectangleHitbox(
@@ -211,14 +232,20 @@ class Main {
             }
 
             if (startMillis != null && endMillis != null) {
-                attackParams = new AttackParams(
+                AttackParams attackParams = new AttackParams(
                         damagebox,
                         startMillis * TICKS_PER_SECOND / MILLIS_PER_SECOND,
                         endMillis * TICKS_PER_SECOND / MILLIS_PER_SECOND,
                         1,
                         sprite.info.animationDurationMillis("Attack") * TICKS_PER_SECOND / MILLIS_PER_SECOND);
+                behaviours.put(name + BEHAVIOUR_ATTACK, new AttackBehaviour(name + BEHAVIOUR_IDLE, name + BEHAVIOUR_HURT, attackParams));
             }
         }
+
+        behaviours.put(name + BEHAVIOUR_IDLE, new IdleBehaviour(name + BEHAVIOUR_ATTACK, name + BEHAVIOUR_HURT, name + BEHAVIOUR_DEAD));
+        behaviours.put(name + BEHAVIOUR_HURT, new HurtBehaviour(name + BEHAVIOUR_IDLE));
+        behaviours.put(name + BEHAVIOUR_DEAD, new DeadBehaviour(name + BEHAVIOUR_IDLE));
+
         PhysicParams physicParams = new PhysicParams(8 * 16, 20, 16 * 16, 12);
         HurtParams hurtParams = new HurtParams(
                 sprite.info.animationDurationMillis("Hit") * TICKS_PER_SECOND / MILLIS_PER_SECOND,
@@ -226,9 +253,9 @@ class Main {
         int entity = data.createEntity();
         data.set(entity, new Hurtbox(hitbox));
         data.set(entity, new Movebox(hitbox));
-        data.set(entity, new GameCharacter(name, physicParams, attackParams, hurtParams));
+        data.set(entity, new GameCharacter(name, physicParams, hurtParams));
         data.set(entity, new Speed(0, 0));
-        data.set(entity, new BehaviourKey(BEHAVIOUR_IDLE, world.getTick()));
+        data.set(entity, new BehaviourKey(name + BEHAVIOUR_IDLE, world.getTick()));
         data.set(entity, FacingDirection.RIGHT);
         return entity;
     }
@@ -399,31 +426,32 @@ class Main {
     }
 
     private static String convert(EntityData data, int entity, String state) {
-        switch (state) {
-            case BEHAVIOUR_IDLE:
-                Speed speed = data.get(entity, Speed.class);
-                if (speed == null) {
-                    speed = new Speed(0, 0);
-                }
-                if (speed.y() > 0) {
-                    return "Down";
-                }
-                if (speed.y() < 0) {
-                    return "Up";
-                }
-                if (speed.x() != 0) {
-                    return "Run";
-                }
-                return "Stand";
-            case BEHAVIOUR_ATTACK:
-                return "Attack";
-            case BEHAVIOUR_HURT:
-                return "Hit";
-            case BEHAVIOUR_DEAD:
-                return "Dead";
-            default:
-                throw new AssertionError(state);
+        if (state.endsWith(BEHAVIOUR_IDLE)) {
+            Speed speed = data.get(entity, Speed.class);
+            if (speed == null) {
+                speed = new Speed(0, 0);
+            }
+            if (speed.y() > 0) {
+                return "Down";
+            }
+            if (speed.y() < 0) {
+                return "Up";
+            }
+            if (speed.x() != 0) {
+                return "Run";
+            }
+            return "Stand";
         }
+        if (state.endsWith(BEHAVIOUR_ATTACK)) {
+            return "Attack";
+        }
+        if (state.endsWith(BEHAVIOUR_HURT)) {
+            return "Hit";
+        }
+        if (state.endsWith(BEHAVIOUR_DEAD)) {
+            return "Dead";
+        }
+        throw new AssertionError(state);
     }
 
     private static Chunk convert(SpriteData spriteData, PositionConverter converter) {
