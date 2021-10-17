@@ -5,7 +5,7 @@
     "rotated": false,
     "trimmed": true,
     "spriteSourceSize": { "x": 11, "y": 7, "w": 124, "h": 124 },
-    "sourceSize": { "w": 144, "h": 368 },
+    "sourceSize": { "w": 144, "h": 144 },
     "duration": 800
    }
  ],
@@ -20,8 +20,7 @@
    { "name": "Stand", "from": 0, "to": 0, "direction": "forward" }
   ],
   "slices": [
-   { "name": "Hitbox", "color": "#0000ffff", "keys": [{ "frame": 0, "bounds": {"x": 16, "y": 16, "w": 112, "h": 112 }, "pivot": {"x": 56, "y": 112 } }] },
-   { "name": "Scan", "color": "#0000ffff", "keys": [{ "frame": 0, "bounds": {"x": 64, "y": 112, "w": 16, "h": 224 } }] }
+   { "name": "Hitbox", "color": "#0000ffff", "keys": [{ "frame": 0, "bounds": {"x": 16, "y": 16, "w": 112, "h": 112 }, "pivot": {"x": 56, "y": 112 } }] }
   ]
  }
 }

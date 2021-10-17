@@ -10,6 +10,9 @@ public record AseSprite(
 
     public int frameIndexByMillis(String animation, int millis) {
         List<AseFrame> animationFrames = animationFrames(animation).toList();
+        if (animationFrames.isEmpty()) {
+            throw new NullPointerException("Animation " + animation + " of " + meta.image() + " not found.");
+        }
         millis = Math.floorMod(millis, animationDurationMillis(animation));
         for (AseFrame frame : animationFrames) {
             millis -= frame.duration();

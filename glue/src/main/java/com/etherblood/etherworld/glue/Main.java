@@ -124,7 +124,34 @@ class Main {
 
         {
             int head = data.createEntity();
-            data.set(head, new Position(2568 * converter.getPixelSize(), 632 * converter.getPixelSize()));
+            {
+                String name = "GolemHead";
+                SpriteData sprite = assetLoader.loadSprite(name);
+                AseSlice hitboxSlice = sprite.info.meta().slices().stream().filter(x -> x.name().equals("Hitbox")).findFirst().get();
+                AseSliceKey hitboxKey = hitboxSlice.keys().get(0);
+                Position pivot = new Position(
+                        converter.pixelToPosition(hitboxKey.pivot().x() + hitboxKey.bounds().x()),
+                        converter.pixelToPosition(hitboxKey.pivot().y() + hitboxKey.bounds().y()));
+                RectangleHitbox hitbox = new RectangleHitbox(
+                        converter.pixelToPosition(hitboxKey.bounds().x()) - pivot.x(),
+                        converter.pixelToPosition(hitboxKey.bounds().y()) - pivot.y(),
+                        converter.pixelToPosition(hitboxKey.bounds().w()),
+                        converter.pixelToPosition(hitboxKey.bounds().h()));
+
+                data.set(head, new Position(2560 * converter.getPixelSize(), 720 * converter.getPixelSize()));
+                data.set(head, new GameCharacter(
+                        name,
+                        new PhysicParams(0, 0, 0, 0),
+                        new HurtParams(2 * TICKS_PER_SECOND, 0)));
+                data.set(head, new Health(9, 9));
+                data.set(head, new Hurtbox(hitbox));
+                data.set(head, new Obstaclebox(hitbox));
+                data.set(head, new BehaviourKey(name + BEHAVIOUR_IDLE, 0));
+
+                behaviours.put(name + BEHAVIOUR_IDLE, new IdleBehaviour(null, name + BEHAVIOUR_HURT, name + BEHAVIOUR_DEAD));
+                behaviours.put(name + BEHAVIOUR_HURT, new HurtBehaviour(name + BEHAVIOUR_IDLE));
+                behaviours.put(name + BEHAVIOUR_DEAD, new DeadBehaviour(name + BEHAVIOUR_IDLE));
+            }
 
             String name = "GolemHand";
             SpriteData sprite = assetLoader.loadSprite(name);
@@ -140,7 +167,7 @@ class Main {
                     converter.pixelToPosition(hitboxKey.bounds().h()));
 
             int leftHand = data.createEntity();
-            data.set(leftHand, new Position(2768 * converter.getPixelSize(), 832 * converter.getPixelSize()));
+            data.set(leftHand, new Position(2760 * converter.getPixelSize(), 832 * converter.getPixelSize()));
             data.set(leftHand, new Movebox(hitbox));
             data.set(leftHand, new Obstaclebox(hitbox));
             GameCharacter gameCharacter = new GameCharacter(
@@ -153,7 +180,7 @@ class Main {
             data.set(leftHand, FacingDirection.RIGHT);
 
             int rightHand = data.createEntity();
-            data.set(rightHand, new Position(2368 * converter.getPixelSize(), 832 * converter.getPixelSize()));
+            data.set(rightHand, new Position(2360 * converter.getPixelSize(), 832 * converter.getPixelSize()));
             data.set(rightHand, new Movebox(hitbox));
             data.set(rightHand, new Obstaclebox(hitbox));
             data.set(rightHand, gameCharacter);

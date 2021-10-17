@@ -1,0 +1,46 @@
+{ "frames": [
+   {
+    "filename": "0",
+    "frame": { "x": 117, "y": 0, "w": 117, "h": 154 },
+    "rotated": false,
+    "trimmed": true,
+    "spriteSourceSize": { "x": 13, "y": 12, "w": 117, "h": 154 },
+    "sourceSize": { "w": 144, "h": 176 },
+    "duration": 1000
+   },
+   {
+    "filename": "1",
+    "frame": { "x": 0, "y": 0, "w": 117, "h": 156 },
+    "rotated": false,
+    "trimmed": true,
+    "spriteSourceSize": { "x": 13, "y": 12, "w": 117, "h": 156 },
+    "sourceSize": { "w": 144, "h": 176 },
+    "duration": 2000
+   },
+   {
+    "filename": "2",
+    "frame": { "x": 117, "y": 154, "w": 115, "h": 144 },
+    "rotated": false,
+    "trimmed": true,
+    "spriteSourceSize": { "x": 13, "y": 12, "w": 115, "h": 144 },
+    "sourceSize": { "w": 144, "h": 176 },
+    "duration": 5000
+   }
+ ],
+ "meta": {
+  "app": "http://www.aseprite.org/",
+  "version": "1.2.29-x64",
+  "image": "GolemHead.png",
+  "format": "RGBA8888",
+  "size": { "w": 234, "h": 298 },
+  "scale": "1",
+  "frameTags": [
+   { "name": "Stand", "from": 0, "to": 0, "direction": "forward" },
+   { "name": "Hit", "from": 1, "to": 1, "direction": "forward" },
+   { "name": "Dead", "from": 2, "to": 2, "direction": "forward" }
+  ],
+  "slices": [
+   { "name": "Hitbox", "color": "#0000ffff", "keys": [{ "frame": 0, "bounds": {"x": 16, "y": 16, "w": 112, "h": 144 }, "pivot": {"x": 56, "y": 144 } }] }
+  ]
+ }
+}
