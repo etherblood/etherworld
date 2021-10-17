@@ -109,6 +109,34 @@ public class MoveSystem implements GameSystem {
                         }
                     }
                 }
+                for (int other : data.list(Obstaclebox.class)) {
+                    if (entity == other) {
+                        continue;
+                    }
+                    Position otherPos = data.get(other, Position.class);
+                    Obstaclebox obstaclebox = data.get(other, Obstaclebox.class);
+
+                    RectangleHitbox obstacle = obstaclebox.hitbox().translate(otherPos.x(), otherPos.y());
+                    RectangleHitbox targetHitbox = hitbox.translate(targetX, targetY);
+                    if (targetHitbox.intersects(obstacle)) {
+                        if (vx > 0) {
+                            if (hitbox.maxX() + position.x() > obstacle.minX()) {
+                                continue;
+                            }
+                            int diff = targetHitbox.maxX() - obstacle.minX();
+                            targetX -= diff;
+                            collideX = true;
+                        } else if (vx < 0) {
+                            if (hitbox.minX() + position.x() < obstacle.maxX()) {
+                                continue;
+                            }
+                            int diff = obstacle.maxX() - (targetX + hitbox.minX());
+                            targetX += diff;
+                            collideX = true;
+                        }
+                    }
+                }
+
                 targetY += vy;
                 for (RectangleHitbox obstacle : obstacles) {
                     RectangleHitbox targetHitbox = hitbox.translate(targetX, targetY);
