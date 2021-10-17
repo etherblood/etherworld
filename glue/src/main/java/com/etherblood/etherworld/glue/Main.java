@@ -2,21 +2,26 @@ package com.etherblood.etherworld.glue;
 
 import com.etherblood.etherworld.data.EntityData;
 import com.etherblood.etherworld.data.EntityDatabase;
-import com.etherblood.etherworld.engine.EntityState;
 import com.etherblood.etherworld.engine.Etherworld;
 import com.etherblood.etherworld.engine.GameLoop;
 import com.etherblood.etherworld.engine.PlayerAction;
 import com.etherblood.etherworld.engine.PositionConverter;
 import com.etherblood.etherworld.engine.RectangleHitbox;
+import com.etherblood.etherworld.engine.characters.AttackBehaviour;
 import com.etherblood.etherworld.engine.characters.AttackParams;
+import com.etherblood.etherworld.engine.characters.Behaviour;
+import com.etherblood.etherworld.engine.characters.DeadBehaviour;
+import com.etherblood.etherworld.engine.characters.HurtBehaviour;
 import com.etherblood.etherworld.engine.characters.HurtParams;
+import com.etherblood.etherworld.engine.characters.IdleBehaviour;
 import com.etherblood.etherworld.engine.characters.PhysicParams;
 import com.etherblood.etherworld.engine.chunks.Chunk;
 import com.etherblood.etherworld.engine.chunks.ChunkManager;
 import com.etherblood.etherworld.engine.chunks.ChunkPosition;
 import com.etherblood.etherworld.engine.chunks.LocalTilePosition;
 import com.etherblood.etherworld.engine.chunks.PixelPosition;
-import com.etherblood.etherworld.engine.components.CharacterState;
+import com.etherblood.etherworld.engine.components.Attackbox;
+import com.etherblood.etherworld.engine.components.BehaviourKey;
 import com.etherblood.etherworld.engine.components.FacingDirection;
 import com.etherblood.etherworld.engine.components.GameCharacter;
 import com.etherblood.etherworld.engine.components.Health;
@@ -41,6 +46,7 @@ import com.etherblood.etherworld.spriteloader.aseprite.AseSliceKey;
 import java.awt.Color;
 import java.awt.event.KeyEvent;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -52,6 +58,10 @@ class Main {
 
     private static final int TICKS_PER_SECOND = 60;
     private static final int MILLIS_PER_SECOND = 1000;
+    public static final String BEHAVIOUR_IDLE = "IDLE";
+    public static final String BEHAVIOUR_ATTACK = "ATTACK";
+    public static final String BEHAVIOUR_HURT = "HURT";
+    public static final String BEHAVIOUR_DEAD = "DEAD";
 
     public static void main(String... args) {
         AssetLoader assetLoader = new AssetLoader(
@@ -69,6 +79,11 @@ class Main {
                 new ChunkPosition(2, 0),
                 new ChunkPosition(2, 1)
         );
+        Map<String, Behaviour> behaviours = new HashMap<>();
+        behaviours.put(BEHAVIOUR_IDLE, new IdleBehaviour(BEHAVIOUR_ATTACK, BEHAVIOUR_HURT, BEHAVIOUR_DEAD));
+        behaviours.put(BEHAVIOUR_ATTACK, new AttackBehaviour(BEHAVIOUR_IDLE, BEHAVIOUR_HURT));
+        behaviours.put(BEHAVIOUR_HURT, new HurtBehaviour(BEHAVIOUR_IDLE));
+        behaviours.put(BEHAVIOUR_DEAD, new DeadBehaviour(BEHAVIOUR_IDLE));
         EntityDatabase data = new EntityDatabase();
         PositionConverter converter = new PositionConverter();
         Etherworld world = new Etherworld(
@@ -76,7 +91,9 @@ class Main {
                 new ChunkManager(
                         converter.getTileSize() * converter.getPixelSize(),
                         converter.getChunkSize(),
-                        position -> worldChunks.contains(position) ? convert(assetLoader.loadChunk(position), converter) : null));
+                        position -> worldChunks.contains(position) ? convert(assetLoader.loadChunk(position), converter) : null),
+                behaviours
+        );
 
         int player = data.createEntity();
         int tabby = createCharacter(world, assetLoader, converter, "Tabby");
@@ -91,6 +108,7 @@ class Main {
         data.set(slime, new Position(800 * converter.getPixelSize(), 24 * 16 * 16));
         data.set(slime, new Respawn(data.get(slime, Position.class)));
         data.set(slime, new Health(2, 2));
+        data.set(slime, new Attackbox(data.get(slime, Hurtbox.class).hitbox(), 1));
 
         int dummy = createCharacter(world, assetLoader, converter, "Tabby");
         data.set(dummy, FacingDirection.LEFT);
@@ -210,7 +228,7 @@ class Main {
         data.set(entity, new Movebox(hitbox));
         data.set(entity, new GameCharacter(name, physicParams, attackParams, hurtParams));
         data.set(entity, new Speed(0, 0));
-        data.set(entity, new CharacterState(EntityState.IDLE, world.getTick()));
+        data.set(entity, new BehaviourKey(BEHAVIOUR_IDLE, world.getTick()));
         data.set(entity, FacingDirection.RIGHT);
         return entity;
     }
@@ -234,6 +252,35 @@ class Main {
                 cameraWidth,
                 cameraHeight);
         rectangles.add(new DebugRectangle(camera, Color.WHITE, false));
+
+        ChunkPosition cameraMin = converter.floorChunk(new PixelPosition(camera.aX(), camera.aY()));
+        ChunkPosition cameraMax = converter.ceilChunk(new PixelPosition(camera.bX(), camera.bY()));
+        for (int y = cameraMin.y(); y < cameraMax.y(); y++) {
+            for (int x = cameraMin.x(); x < cameraMax.x(); x++) {
+                ChunkPosition point = new ChunkPosition(x, y);
+                SpriteData chunk = chunkMap.apply(point);
+                if (chunk != null) {
+                    AseFrame hitboxFrame = chunk.info.frames().stream().filter(t -> t.filename().equals("Hitbox")).findFirst().get();
+                    AseFrame backgroundFrame = chunk.info.frames().stream().filter(t -> t.filename().equals("Background")).findFirst().get();
+                    AseFrame foregroundFrame = chunk.info.frames().stream().filter(t -> t.filename().equals("Foreground")).findFirst().get();
+                    PixelPosition pixelPosition = converter.toPixel(point);
+                    RenderRectangle dest = new RenderRectangle(
+                            pixelPosition.x(),
+                            pixelPosition.y(),
+                            converter.getTileSize() * converter.getChunkSize().x(),
+                            converter.getTileSize() * converter.getChunkSize().y());
+
+                    chunks.add(new RenderChunk(
+                            new RenderRectangle(backgroundFrame.frame().x(), backgroundFrame.frame().y(), backgroundFrame.frame().w(), backgroundFrame.frame().h()),
+                            new RenderRectangle(hitboxFrame.frame().x(), hitboxFrame.frame().y(), hitboxFrame.frame().w(), hitboxFrame.frame().h()),
+                            new RenderRectangle(foregroundFrame.frame().x(), foregroundFrame.frame().y(), foregroundFrame.frame().w(), foregroundFrame.frame().h()),
+                            dest,
+                            chunk.image
+                    ));
+                    rectangles.add(new DebugRectangle(dest, Color.LIGHT_GRAY, false));
+                }
+            }
+        }
 
         for (int entity : data.list(MovingPlatform.class)) {
             String platformId = data.get(entity, MovingPlatform.class).id();
@@ -265,16 +312,6 @@ class Main {
             if (dest.intersects(camera)) {
                 sprites.add(new RenderSprite(source, dest, spriteData.image));
             }
-
-            RenderRectangle pixelHitbox = new RenderRectangle(
-                    -hitboxKey.pivot().x(),
-                    -hitboxKey.pivot().y(),
-                    hitboxKey.bounds().w(),
-                    hitboxKey.bounds().h())
-                    .translate(pixelPosition.x(), pixelPosition.y());
-            if (pixelHitbox.intersects(camera)) {
-                rectangles.add(new DebugRectangle(pixelHitbox, Color.BLUE, false));
-            }
         }
 
         for (int entity : data.list(GameCharacter.class)) {
@@ -284,7 +321,7 @@ class Main {
             PixelPosition pixelPosition = converter.floorPixel(position);
 
             int activeFrameIndex;
-            CharacterState animation = data.get(entity, CharacterState.class);
+            BehaviourKey animation = data.get(entity, BehaviourKey.class);
             if (animation != null) {
                 int ticks = (int) (world.getTick() - animation.startTick());
                 activeFrameIndex = spriteData.info.frameIndexByMillis(convert(data, entity, animation.value()), ticks * MILLIS_PER_SECOND / TICKS_PER_SECOND);
@@ -315,74 +352,55 @@ class Main {
             if (dest.intersects(camera)) {
                 sprites.add(new RenderSprite(source, dest, spriteData.image));
             }
+        }
 
-            RenderRectangle pixelHitbox = new RenderRectangle(
-                    -hitboxKey.pivot().x(),
-                    -hitboxKey.pivot().y(),
-                    hitboxKey.bounds().w(),
-                    hitboxKey.bounds().h())
-                    .translate(pixelPosition.x(), pixelPosition.y());
+        for (int entity : data.list(Obstaclebox.class)) {
+            Obstaclebox box = data.get(entity, Obstaclebox.class);
+            Position position = data.get(entity, Position.class);
+            FacingDirection facing = data.get(entity, FacingDirection.class);
+            RenderRectangle pixelHitbox = toPixelHitbox(converter, box.hitbox(), position, facing);
+            if (pixelHitbox.intersects(camera)) {
+                rectangles.add(new DebugRectangle(pixelHitbox, Color.BLACK, false));
+            }
+        }
+        for (int entity : data.list(Hurtbox.class)) {
+            Hurtbox box = data.get(entity, Hurtbox.class);
+            Position position = data.get(entity, Position.class);
+            FacingDirection facing = data.get(entity, FacingDirection.class);
+            RenderRectangle pixelHitbox = toPixelHitbox(converter, box.hitbox(), position, facing);
             if (pixelHitbox.intersects(camera)) {
                 rectangles.add(new DebugRectangle(pixelHitbox, Color.BLUE, false));
             }
-
-
-            AseSliceKey[] damages = spriteData.info.meta().slices().stream()
-                    .filter(x -> x.name().equals("Damage"))
-                    .flatMap(x -> x.keys().stream())
-                    .filter(x -> x.frame() == activeFrameIndex)
-                    .toArray(AseSliceKey[]::new);
-            for (AseSliceKey damage : damages) {
-                RenderRectangle damageDestination = new RenderRectangle(
-                        damage.bounds().x() + spriteOffset.x() + pixelPosition.x(),
-                        damage.bounds().y() + spriteOffset.y() + pixelPosition.y(),
-                        damage.bounds().w(),
-                        damage.bounds().h()
-                );
-                if (direction == FacingDirection.LEFT) {
-                    damageDestination = damageDestination.mirrorX(pixelPosition.x());
-                }
-                if (damageDestination.intersects(camera)) {
-                    rectangles.add(new DebugRectangle(damageDestination, Color.RED, false));
-                }
-            }
         }
-
-        ChunkPosition cameraMin = converter.floorChunk(new PixelPosition(camera.aX(), camera.aY()));
-        ChunkPosition cameraMax = converter.ceilChunk(new PixelPosition(camera.bX(), camera.bY()));
-        for (int y = cameraMin.y(); y < cameraMax.y(); y++) {
-            for (int x = cameraMin.x(); x < cameraMax.x(); x++) {
-                ChunkPosition point = new ChunkPosition(x, y);
-                SpriteData chunk = chunkMap.apply(point);
-                if (chunk != null) {
-                    AseFrame hitboxFrame = chunk.info.frames().stream().filter(t -> t.filename().equals("Hitbox")).findFirst().get();
-                    AseFrame backgroundFrame = chunk.info.frames().stream().filter(t -> t.filename().equals("Background")).findFirst().get();
-                    AseFrame foregroundFrame = chunk.info.frames().stream().filter(t -> t.filename().equals("Foreground")).findFirst().get();
-                    PixelPosition pixelPosition = converter.toPixel(point);
-                    RenderRectangle dest = new RenderRectangle(
-                            pixelPosition.x(),
-                            pixelPosition.y(),
-                            converter.getTileSize() * converter.getChunkSize().x(),
-                            converter.getTileSize() * converter.getChunkSize().y());
-
-                    chunks.add(new RenderChunk(
-                            new RenderRectangle(backgroundFrame.frame().x(), backgroundFrame.frame().y(), backgroundFrame.frame().w(), backgroundFrame.frame().h()),
-                            new RenderRectangle(hitboxFrame.frame().x(), hitboxFrame.frame().y(), hitboxFrame.frame().w(), hitboxFrame.frame().h()),
-                            new RenderRectangle(foregroundFrame.frame().x(), foregroundFrame.frame().y(), foregroundFrame.frame().w(), foregroundFrame.frame().h()),
-                            dest,
-                            chunk.image
-                    ));
-                    rectangles.add(new DebugRectangle(dest, Color.BLUE, false));
-                }
+        for (int entity : data.list(Attackbox.class)) {
+            Attackbox box = data.get(entity, Attackbox.class);
+            Position position = data.get(entity, Position.class);
+            FacingDirection facing = data.get(entity, FacingDirection.class);
+            RenderRectangle pixelHitbox = toPixelHitbox(converter, box.hitbox(), position, facing);
+            if (pixelHitbox.intersects(camera)) {
+                rectangles.add(new DebugRectangle(pixelHitbox, Color.RED, false));
             }
         }
 
         return new RenderTask(world.getTick(), Color.DARK_GRAY, camera, chunks, sprites, rectangles, lines);
     }
 
-    private static String convert(EntityData data, int entity, EntityState state) {
+    private static RenderRectangle toPixelHitbox(PositionConverter converter, RectangleHitbox hitbox, Position position, FacingDirection facing) {
+        if (facing == FacingDirection.LEFT) {
+            hitbox = hitbox.mirrorX(0);
+        }
+        hitbox = hitbox.translate(position.x(), position.y());
+        return new RenderRectangle(
+                converter.positionToFloorPixel(hitbox.x()),
+                converter.positionToFloorPixel(hitbox.y()),
+                converter.positionToFloorPixel(hitbox.width()),
+                converter.positionToFloorPixel(hitbox.height())
+        );
+    }
+
+    private static String convert(EntityData data, int entity, String state) {
         switch (state) {
-            case IDLE:
+            case BEHAVIOUR_IDLE:
                 Speed speed = data.get(entity, Speed.class);
                 if (speed == null) {
                     speed = new Speed(0, 0);
@@ -397,11 +415,11 @@ class Main {
                     return "Run";
                 }
                 return "Stand";
-            case ATTACK:
+            case BEHAVIOUR_ATTACK:
                 return "Attack";
-            case HURT:
+            case BEHAVIOUR_HURT:
                 return "Hit";
-            case DEAD:
+            case BEHAVIOUR_DEAD:
                 return "Dead";
             default:
                 throw new AssertionError(state);

@@ -1,11 +1,11 @@
 package com.etherblood.etherworld.engine.characters;
 
 import com.etherblood.etherworld.data.EntityData;
-import com.etherblood.etherworld.engine.EntityState;
 import com.etherblood.etherworld.engine.Etherworld;
 import com.etherblood.etherworld.engine.PlayerAction;
 import com.etherblood.etherworld.engine.RectangleHitbox;
-import com.etherblood.etherworld.engine.components.CharacterState;
+import com.etherblood.etherworld.engine.components.Attackbox;
+import com.etherblood.etherworld.engine.components.BehaviourKey;
 import com.etherblood.etherworld.engine.components.FacingDirection;
 import com.etherblood.etherworld.engine.components.GameCharacter;
 import com.etherblood.etherworld.engine.components.Health;
@@ -18,11 +18,20 @@ import java.util.Collections;
 import java.util.Map;
 import java.util.Set;
 
-public class AttackState implements State {
+public class AttackBehaviour implements Behaviour {
+
+    private final String idleBehaviour;
+    private final String hurtBehaviour;
+
+    public AttackBehaviour(String idleBehaviour, String hurtBehaviour) {
+        this.idleBehaviour = idleBehaviour;
+        this.hurtBehaviour = hurtBehaviour;
+    }
 
     @Override
-    public void tick(Etherworld world, Map<Integer, Set<PlayerAction>> playerActions, int entity, GameCharacter gameCharacter, int elapsedTicks) {
+    public void tick(Etherworld world, Map<Integer, Set<PlayerAction>> playerActions, int entity, int elapsedTicks) {
         EntityData data = world.getData();
+        GameCharacter gameCharacter = data.get(entity, GameCharacter.class);
         PhysicParams physicParams = gameCharacter.physicParams();
         AttackParams attackParams = gameCharacter.attackParams();
         Speed speed = data.get(entity, Speed.class);
@@ -51,36 +60,51 @@ public class AttackState implements State {
         }
         data.set(entity, new Speed(vx, vy));
 
-        if (attackParams.damageFrom() <= elapsedTicks && elapsedTicks <= attackParams.damageTo()) {
+        boolean cancelled = false;
+        Hurtbox hurtbox = data.get(entity, Hurtbox.class);
+        if (hurtbox != null) {
+            RectangleHitbox hurtHitbox = hurtbox.hitbox();
             Position position = data.get(entity, Position.class);
-            RectangleHitbox attackbox = attackParams.damageBox().translate(position.x(), position.y());
-            FacingDirection direction = data.get(entity, FacingDirection.class);
-            if (direction == FacingDirection.LEFT) {
-                attackbox = attackbox.mirrorX(position.x());
+            if (data.get(entity, FacingDirection.class) == FacingDirection.LEFT) {
+                hurtHitbox = hurtHitbox.mirrorX(position.x());
             }
-            for (int other : data.list(Hurtbox.class)) {
+            for (int other : data.list(Attackbox.class)) {
                 if (entity == other) {
                     continue;
                 }
                 Position otherPosition = data.get(other, Position.class);
-                RectangleHitbox hurtbox = data.get(other, Hurtbox.class).hitbox().translate(otherPosition.x(), otherPosition.y());
+                Attackbox attackbox = data.get(other, Attackbox.class);
+                RectangleHitbox attackHitbox = attackbox.hitbox().translate(otherPosition.x(), otherPosition.y());
                 if (data.get(other, FacingDirection.class) == FacingDirection.LEFT) {
-                    hurtbox = hurtbox.mirrorX(otherPosition.x());
+                    attackHitbox = attackHitbox.mirrorX(otherPosition.x());
                 }
-                if (attackbox.intersects(hurtbox)) {
-                    CharacterState otherAnimation = data.get(other, CharacterState.class);
-                    if (otherAnimation.value() != EntityState.HURT && otherAnimation.value() != EntityState.DEAD) {
-                        data.set(other, new CharacterState(EntityState.HURT, world.getTick()));
-                        Health health = data.get(other, Health.class);
-                        if (health != null) {
-                            data.set(other, health.damage(attackParams.damage()));
-                        }
+                if (attackHitbox.intersects(hurtHitbox)) {
+                    data.set(entity, new BehaviourKey(hurtBehaviour, world.getTick()));
+                    Health health = data.get(entity, Health.class);
+                    if (health != null) {
+                        data.set(entity, health.damage(attackbox.damage()));
                     }
+                    cancelled = true;
                 }
             }
         }
-        if (elapsedTicks >= attackParams.attackTicks()) {
-            data.set(entity, new CharacterState(EntityState.IDLE, world.getTick()));
+
+        if (!cancelled) {
+            if (attackParams.damageFrom() == elapsedTicks) {
+                data.set(entity, new Attackbox(attackParams.damageBox(), attackParams.damage()));
+            }
+            if (elapsedTicks == attackParams.damageTo() + 1) {
+                data.remove(entity, Attackbox.class);
+            }
+            if (elapsedTicks >= attackParams.attackTicks()) {
+                data.set(entity, new BehaviourKey(idleBehaviour, world.getTick()));
+            }
         }
+    }
+
+    @Override
+    public void cleanup(Etherworld world, Map<Integer, Set<PlayerAction>> playerActions, int entity, int elapsedTicks) {
+        EntityData data = world.getData();
+        data.remove(entity, Attackbox.class);
     }
 }
