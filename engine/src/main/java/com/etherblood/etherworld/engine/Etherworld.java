@@ -5,6 +5,7 @@ import com.etherblood.etherworld.engine.characters.Behaviour;
 import com.etherblood.etherworld.engine.chunks.ChunkManager;
 import com.etherblood.etherworld.engine.systems.BehaviourSystem;
 import com.etherblood.etherworld.engine.systems.GameSystem;
+import com.etherblood.etherworld.engine.systems.GolemSystem;
 import com.etherblood.etherworld.engine.systems.MoveSystem;
 import java.util.List;
 import java.util.Map;
@@ -22,6 +23,7 @@ public class Etherworld {
         this.chunks = chunks;
         systems = List.of(
                 new BehaviourSystem(behaviours),
+                new GolemSystem(),
                 new MoveSystem()
         );
         tick = 0;

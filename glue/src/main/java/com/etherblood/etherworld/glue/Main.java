@@ -33,6 +33,8 @@ import com.etherblood.etherworld.engine.components.OwnerId;
 import com.etherblood.etherworld.engine.components.Position;
 import com.etherblood.etherworld.engine.components.Respawn;
 import com.etherblood.etherworld.engine.components.Speed;
+import com.etherblood.etherworld.engine.components.StateKey;
+import com.etherblood.etherworld.engine.components.golem.GolemHand;
 import com.etherblood.etherworld.gui.DebugRectangle;
 import com.etherblood.etherworld.gui.Gui;
 import com.etherblood.etherworld.gui.RenderChunk;
@@ -121,6 +123,8 @@ class Main {
         data.set(fallacia, new Position(1100 * converter.getPixelSize(), 24 * 16 * 16));
 
         {
+            int head = data.createEntity();
+
             String name = "GolemHand";
             SpriteData sprite = assetLoader.loadSprite(name);
             AseSlice hitboxSlice = sprite.info.meta().slices().stream().filter(x -> x.name().equals("Hitbox")).findFirst().get();
@@ -134,13 +138,27 @@ class Main {
                     converter.pixelToPosition(hitboxKey.bounds().w()),
                     converter.pixelToPosition(hitboxKey.bounds().h()));
 
-            int entity = data.createEntity();
-            data.set(entity, new Position(2750 * converter.getPixelSize(), 768 * converter.getPixelSize()));
-            data.set(entity, new Obstaclebox(hitbox));
-            data.set(entity, new GameCharacter(
+            int leftHand = data.createEntity();
+            data.set(leftHand, new Position(2736 * converter.getPixelSize(), 832 * converter.getPixelSize()));
+            data.set(leftHand, new Movebox(hitbox));
+            data.set(leftHand, new Obstaclebox(hitbox));
+            GameCharacter gameCharacter = new GameCharacter(
                     name,
                     new PhysicParams(0, 0, 0, 0),
-                    new HurtParams(0, 0)));
+                    new HurtParams(0, 0));
+            data.set(leftHand, gameCharacter);
+            data.set(leftHand, new GolemHand(head));
+            data.set(leftHand, new StateKey("GolemHandScan", 0));
+            data.set(leftHand, FacingDirection.RIGHT);
+
+            int rightHand = data.createEntity();
+            data.set(rightHand, new Position(2336 * converter.getPixelSize(), 832 * converter.getPixelSize()));
+            data.set(rightHand, new Movebox(hitbox));
+            data.set(rightHand, new Obstaclebox(hitbox));
+            data.set(rightHand, gameCharacter);
+            data.set(rightHand, new GolemHand(head));
+            data.set(rightHand, FacingDirection.LEFT);
+            data.set(rightHand, new StateKey("GolemHandScan", 0));
         }
 
         {
@@ -246,7 +264,7 @@ class Main {
         behaviours.put(name + BEHAVIOUR_HURT, new HurtBehaviour(name + BEHAVIOUR_IDLE));
         behaviours.put(name + BEHAVIOUR_DEAD, new DeadBehaviour(name + BEHAVIOUR_IDLE));
 
-        PhysicParams physicParams = new PhysicParams(8 * 16, 20, 16 * 16, 12);
+        PhysicParams physicParams = new PhysicParams(8 * 16, 20, 12 * 16, 12);
         HurtParams hurtParams = new HurtParams(
                 sprite.info.animationDurationMillis("Hit") * TICKS_PER_SECOND / MILLIS_PER_SECOND,
                 5 * TICKS_PER_SECOND);
