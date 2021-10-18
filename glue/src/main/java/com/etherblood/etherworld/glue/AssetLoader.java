@@ -4,15 +4,15 @@ import com.etherblood.etherworld.engine.chunks.ChunkPosition;
 import com.etherblood.etherworld.spriteloader.SpriteData;
 import com.etherblood.etherworld.spriteloader.SpriteLoader;
 import java.io.IOException;
-import java.util.HashMap;
 import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 
 public class AssetLoader {
     private final SpriteLoader spriteLoader = new SpriteLoader();
     private final String chunkPath;
     private final String spritePath;
-    private final Map<ChunkPosition, SpriteData> chunks = new HashMap<>();
-    private final Map<String, SpriteData> sprites = new HashMap<>();
+    private final Map<ChunkPosition, SpriteData> chunks = new ConcurrentHashMap<>();
+    private final Map<String, SpriteData> sprites = new ConcurrentHashMap<>();
 
     public AssetLoader(String chunkPath, String spritePath) {
         this.chunkPath = chunkPath;
@@ -37,5 +37,10 @@ public class AssetLoader {
                 throw new RuntimeException(e);
             }
         });
+    }
+
+    public void clear() {
+        chunks.clear();
+        sprites.clear();
     }
 }

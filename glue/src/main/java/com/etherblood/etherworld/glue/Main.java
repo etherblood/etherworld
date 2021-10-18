@@ -89,12 +89,13 @@ class Main {
         Map<String, Behaviour> behaviours = new HashMap<>();
         EntityDatabase data = new EntityDatabase();
         PositionConverter converter = new PositionConverter();
+        ChunkManager chunks = new ChunkManager(
+                converter.getTileSize() * converter.getPixelSize(),
+                converter.getChunkSize(),
+                position -> worldChunks.contains(position) ? convert(assetLoader.loadChunk(position), converter) : null);
         Etherworld world = new Etherworld(
                 data,
-                new ChunkManager(
-                        converter.getTileSize() * converter.getPixelSize(),
-                        converter.getChunkSize(),
-                        position -> worldChunks.contains(position) ? convert(assetLoader.loadChunk(position), converter) : null),
+                chunks,
                 List.of(
                         new BehaviourSystem(behaviours),
                         new GolemHandSystem("GolemHead" + BEHAVIOUR_HURT),
@@ -223,7 +224,15 @@ class Main {
         }
 
         Gui gui = new Gui();
-        gui.start();
+        gui.start(e -> {
+            switch (e.getKeyCode()) {
+                case KeyEvent.VK_F5 -> {
+                    assetLoader.clear();
+                    chunks.clear();
+                }
+                case KeyEvent.VK_ESCAPE -> data.set(tabby, new BehaviourKey("Tabby" + BEHAVIOUR_DEAD, -999999));
+            }
+        });
         gui.render(createRenderTask(world, assetLoader::loadSprite, position -> worldChunks.contains(position) ? assetLoader.loadChunk(position) : null, tabby, converter));
 
         Map<Integer, PlayerAction> actionMappings = Map.of(

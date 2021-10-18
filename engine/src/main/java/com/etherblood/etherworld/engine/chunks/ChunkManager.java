@@ -2,17 +2,17 @@ package com.etherblood.etherworld.engine.chunks;
 
 import com.etherblood.etherworld.engine.MathUtil;
 import com.etherblood.etherworld.engine.components.Position;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.function.Function;
 
 public class ChunkManager {
 
     private final int tileSize;
     private final ChunkSize chunkSize;
-    private final Map<ChunkPosition, Chunk> chunks = new HashMap<>();
+    private final Map<ChunkPosition, Chunk> chunks = new ConcurrentHashMap<>();
     private final Function<ChunkPosition, Chunk> loader;
 
     public ChunkManager(int tileSize, ChunkSize chunkSize, Function<ChunkPosition, Chunk> loader) {
@@ -63,6 +63,10 @@ public class ChunkManager {
         return new LocalTilePosition(
                 Math.floorMod(position.x(), chunkSize.x()),
                 Math.floorMod(position.y(), chunkSize.y()));
+    }
+
+    public void clear() {
+        chunks.clear();
     }
 
 }

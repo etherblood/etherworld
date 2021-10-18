@@ -13,6 +13,7 @@ import java.util.Collections;
 import java.util.HashSet;
 import java.util.Set;
 import java.util.concurrent.atomic.AtomicReference;
+import java.util.function.Consumer;
 import javax.swing.JFrame;
 import javax.swing.SwingUtilities;
 import javax.swing.WindowConstants;
@@ -27,7 +28,7 @@ public class Gui {
 
     private PictureBox panel;
 
-    public void start() {
+    public void start(Consumer<KeyEvent> keyActions) {
         int windowWidth = 1600;
         int windowHeight = 800;
 
@@ -45,10 +46,10 @@ public class Gui {
             @Override
             public void keyPressed(KeyEvent e) {
                 pressedKeys.add(e.getKeyCode());
-                switch (e.getKeyCode()) {
-                    case KeyEvent.VK_F1 -> debug = !debug;
-                    case KeyEvent.VK_ESCAPE -> System.exit(0);
+                if (e.getKeyCode() == KeyEvent.VK_F1) {
+                    debug = !debug;
                 }
+                keyActions.accept(e);
             }
 
             @Override
@@ -131,7 +132,7 @@ public class Gui {
                 }
             }
         }
-        
+
 
         graphics.setColor(Color.WHITE);
         graphics.setTransform(AffineTransform.getTranslateInstance(0, 0));
