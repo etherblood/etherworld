@@ -5,7 +5,6 @@ import com.etherblood.etherworld.engine.Etherworld;
 import com.etherblood.etherworld.engine.PlayerAction;
 import com.etherblood.etherworld.engine.RectangleHitbox;
 import com.etherblood.etherworld.engine.components.Attackbox;
-import com.etherblood.etherworld.engine.components.BehaviourKey;
 import com.etherblood.etherworld.engine.components.FacingDirection;
 import com.etherblood.etherworld.engine.components.Health;
 import com.etherblood.etherworld.engine.components.Hurtbox;
@@ -16,17 +15,12 @@ import com.etherblood.etherworld.engine.components.Speed;
 import com.etherblood.etherworld.engine.golem.components.ChaseTarget;
 import com.etherblood.etherworld.engine.golem.components.GolemHand;
 import com.etherblood.etherworld.engine.golem.components.GolemHandStateKey;
+import com.etherblood.etherworld.engine.golem.components.GolemHeadStateKey;
 import com.etherblood.etherworld.engine.systems.GameSystem;
 import java.util.Map;
 import java.util.Set;
 
 public class GolemHandSystem implements GameSystem {
-
-    private final String headHurtBehaviour;
-
-    public GolemHandSystem(String headHurtBehaviour) {
-        this.headHurtBehaviour = headHurtBehaviour;
-    }
 
     @Override
     public void tick(Etherworld world, Map<Integer, Set<PlayerAction>> playerActions) {
@@ -41,9 +35,9 @@ public class GolemHandSystem implements GameSystem {
         int handDamage = 2;
 
         EntityData data = world.getData();
-        for (int entity : data.list(GolemHand.class)) {
-            Position position = data.get(entity, Position.class);
+        for (int entity : data.list(GolemHandStateKey.class)) {
             GolemHandStateKey stateKey = data.get(entity, GolemHandStateKey.class);
+            Position position = data.get(entity, Position.class);
             RectangleHitbox scan = scanBase.translate(position.x(), position.y());
             int head = data.get(entity, GolemHand.class).head();
             Position headPosition = data.get(head, Position.class);
@@ -51,11 +45,10 @@ public class GolemHandSystem implements GameSystem {
                 if (stateKey.value() != GolemHandState.DEAD) {
                     data.set(entity, new GolemHandStateKey(GolemHandState.DEAD, world.getTick()));
                     data.remove(entity, Attackbox.class);
-                    data.set(head, new Position(headPosition.x(), headPosition.y() + 16 * 64));// hacky workaround, this belongs into head code
                 }
                 Speed speed = data.get(entity, Speed.class);
                 data.set(entity, new Speed(0, speed.y() + gravityPerTick));
-            } else if (stateKey.value() != GolemHandState.RESET && data.get(head, BehaviourKey.class).value().equals(headHurtBehaviour)) {
+            } else if (stateKey.value() != GolemHandState.RESET && data.get(head, GolemHeadStateKey.class).value() == GolemHeadState.HURT) {
                 data.set(entity, new GolemHandStateKey(GolemHandState.RESET, world.getTick()));
                 data.remove(entity, ChaseTarget.class);
                 data.remove(entity, Attackbox.class);

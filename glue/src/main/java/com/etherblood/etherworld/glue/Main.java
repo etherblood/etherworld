@@ -7,21 +7,18 @@ import com.etherblood.etherworld.engine.GameLoop;
 import com.etherblood.etherworld.engine.PlayerAction;
 import com.etherblood.etherworld.engine.PositionConverter;
 import com.etherblood.etherworld.engine.RectangleHitbox;
-import com.etherblood.etherworld.engine.characters.AttackBehaviour;
-import com.etherblood.etherworld.engine.characters.AttackParams;
-import com.etherblood.etherworld.engine.characters.Behaviour;
-import com.etherblood.etherworld.engine.characters.DeadBehaviour;
-import com.etherblood.etherworld.engine.characters.HurtBehaviour;
-import com.etherblood.etherworld.engine.characters.HurtParams;
-import com.etherblood.etherworld.engine.characters.IdleBehaviour;
-import com.etherblood.etherworld.engine.characters.PhysicParams;
+import com.etherblood.etherworld.engine.characters.CharacterState;
+import com.etherblood.etherworld.engine.characters.CharacterSystem;
+import com.etherblood.etherworld.engine.characters.components.AttackParams;
+import com.etherblood.etherworld.engine.characters.components.CharacterStateKey;
+import com.etherblood.etherworld.engine.characters.components.HurtParams;
+import com.etherblood.etherworld.engine.characters.components.PhysicParams;
 import com.etherblood.etherworld.engine.chunks.Chunk;
 import com.etherblood.etherworld.engine.chunks.ChunkManager;
 import com.etherblood.etherworld.engine.chunks.ChunkPosition;
 import com.etherblood.etherworld.engine.chunks.LocalTilePosition;
 import com.etherblood.etherworld.engine.chunks.PixelPosition;
 import com.etherblood.etherworld.engine.components.Attackbox;
-import com.etherblood.etherworld.engine.components.BehaviourKey;
 import com.etherblood.etherworld.engine.components.FacingDirection;
 import com.etherblood.etherworld.engine.components.GameCharacter;
 import com.etherblood.etherworld.engine.components.Health;
@@ -35,9 +32,11 @@ import com.etherblood.etherworld.engine.components.Respawn;
 import com.etherblood.etherworld.engine.components.Speed;
 import com.etherblood.etherworld.engine.golem.GolemHandState;
 import com.etherblood.etherworld.engine.golem.GolemHandSystem;
+import com.etherblood.etherworld.engine.golem.GolemHeadState;
+import com.etherblood.etherworld.engine.golem.GolemHeadSystem;
 import com.etherblood.etherworld.engine.golem.components.GolemHand;
 import com.etherblood.etherworld.engine.golem.components.GolemHandStateKey;
-import com.etherblood.etherworld.engine.systems.BehaviourSystem;
+import com.etherblood.etherworld.engine.golem.components.GolemHeadStateKey;
 import com.etherblood.etherworld.engine.systems.MoveSystem;
 import com.etherblood.etherworld.gui.DebugRectangle;
 import com.etherblood.etherworld.gui.Gui;
@@ -52,7 +51,6 @@ import com.etherblood.etherworld.spriteloader.aseprite.AseSliceKey;
 import java.awt.Color;
 import java.awt.event.KeyEvent;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -64,10 +62,6 @@ class Main {
 
     private static final int TICKS_PER_SECOND = 60;
     private static final int MILLIS_PER_SECOND = 1000;
-    public static final String BEHAVIOUR_IDLE = "IDLE";
-    public static final String BEHAVIOUR_ATTACK = "ATTACK";
-    public static final String BEHAVIOUR_HURT = "HURT";
-    public static final String BEHAVIOUR_DEAD = "DEAD";
 
     public static void main(String... args) {
         AssetLoader assetLoader = new AssetLoader(
@@ -86,7 +80,6 @@ class Main {
                 new ChunkPosition(2, 1),
                 new ChunkPosition(2, 2)
         );
-        Map<String, Behaviour> behaviours = new HashMap<>();
         EntityDatabase data = new EntityDatabase();
         PositionConverter converter = new PositionConverter();
         ChunkManager chunks = new ChunkManager(
@@ -97,37 +90,38 @@ class Main {
                 data,
                 chunks,
                 List.of(
-                        new BehaviourSystem(behaviours),
-                        new GolemHandSystem("GolemHead" + BEHAVIOUR_HURT),
+                        new CharacterSystem(),
+                        new GolemHeadSystem(),
+                        new GolemHandSystem(),
                         new MoveSystem()
                 )
         );
 
         int player = data.createEntity();
-        int tabby = createCharacter(world, assetLoader, behaviours, converter, "Tabby");
+        int tabby = createCharacter(world, assetLoader, converter, "Tabby");
         data.set(tabby, new OwnerId(player));
         data.set(tabby, FacingDirection.RIGHT);
         data.set(tabby, new Position(0, 23 * 16 * 16));
         data.set(tabby, new Respawn(data.get(tabby, Position.class)));
         data.set(tabby, new Health(5, 5));
 
-        int slime = createCharacter(world, assetLoader, behaviours, converter, "Slime");
+        int slime = createCharacter(world, assetLoader, converter, "Slime");
         data.set(slime, FacingDirection.LEFT);
         data.set(slime, new Position(800 * converter.getPixelSize(), 24 * 16 * 16));
         data.set(slime, new Respawn(data.get(slime, Position.class)));
         data.set(slime, new Health(2, 2));
         data.set(slime, new Attackbox(data.get(slime, Hurtbox.class).hitbox(), 1));
 
-        int dummy = createCharacter(world, assetLoader, behaviours, converter, "Tabby");
+        int dummy = createCharacter(world, assetLoader, converter, "Tabby");
         data.set(dummy, FacingDirection.LEFT);
         data.set(dummy, new Position(896 * converter.getPixelSize(), 0));
         data.set(dummy, new Health(10, 10));
 
-        int amara = createCharacter(world, assetLoader, behaviours, converter, "Amara");
+        int amara = createCharacter(world, assetLoader, converter, "Amara");
         data.set(amara, FacingDirection.LEFT);
         data.set(amara, new Position(992 * converter.getPixelSize(), 24 * 16 * 16));
 
-        int fallacia = createCharacter(world, assetLoader, behaviours, converter, "Fallacia");
+        int fallacia = createCharacter(world, assetLoader, converter, "Fallacia");
         data.set(fallacia, FacingDirection.LEFT);
         data.set(fallacia, new Position(1088 * converter.getPixelSize(), 24 * 16 * 16));
 
@@ -148,18 +142,15 @@ class Main {
                         converter.pixelToPosition(hitboxKey.bounds().h()));
 
                 data.set(head, new Position(2560 * converter.getPixelSize(), 720 * converter.getPixelSize()));
-                data.set(head, new GameCharacter(
-                        name,
-                        new PhysicParams(0, 0, 0, 0),
-                        new HurtParams(1 * TICKS_PER_SECOND, 0)));// TODO: read value from file
+                data.set(head, new GameCharacter(name));
+                data.set(head, new HurtParams(1 * TICKS_PER_SECOND, 0));// TODO: read value from file
+
                 data.set(head, new Health(9, 9));
                 data.set(head, new Hurtbox(hitbox));
+                data.set(head, new Movebox(hitbox));
                 data.set(head, new Obstaclebox(hitbox));
-                data.set(head, new BehaviourKey(name + BEHAVIOUR_IDLE, 0));
-
-                behaviours.put(name + BEHAVIOUR_IDLE, new IdleBehaviour(null, name + BEHAVIOUR_HURT, name + BEHAVIOUR_DEAD));
-                behaviours.put(name + BEHAVIOUR_HURT, new HurtBehaviour(name + BEHAVIOUR_IDLE));
-                behaviours.put(name + BEHAVIOUR_DEAD, new DeadBehaviour(name + BEHAVIOUR_IDLE));
+                data.set(head, new Speed(0, 0));
+                data.set(head, new GolemHeadStateKey(GolemHeadState.IDLE, 0));
             }
 
             String name = "GolemHand";
@@ -179,11 +170,7 @@ class Main {
             data.set(leftHand, new Position(2760 * converter.getPixelSize(), 832 * converter.getPixelSize()));
             data.set(leftHand, new Movebox(hitbox));
             data.set(leftHand, new Obstaclebox(hitbox));
-            GameCharacter gameCharacter = new GameCharacter(
-                    name,
-                    new PhysicParams(0, 0, 0, 0),
-                    new HurtParams(0, 0));
-            data.set(leftHand, gameCharacter);
+            data.set(leftHand, new GameCharacter(name));
             data.set(leftHand, new GolemHand(head));
             data.set(leftHand, new GolemHandStateKey(GolemHandState.RESET, 0));
             data.set(leftHand, FacingDirection.RIGHT);
@@ -192,7 +179,7 @@ class Main {
             data.set(rightHand, new Position(2360 * converter.getPixelSize(), 832 * converter.getPixelSize()));
             data.set(rightHand, new Movebox(hitbox));
             data.set(rightHand, new Obstaclebox(hitbox));
-            data.set(rightHand, gameCharacter);
+            data.set(rightHand, new GameCharacter(name));
             data.set(rightHand, new GolemHand(head));
             data.set(rightHand, FacingDirection.LEFT);
             data.set(rightHand, new GolemHandStateKey(GolemHandState.RESET, 0));
@@ -230,7 +217,7 @@ class Main {
                     assetLoader.clear();
                     chunks.clear();
                 }
-                case KeyEvent.VK_ESCAPE -> data.set(tabby, new BehaviourKey("Tabby" + BEHAVIOUR_DEAD, -999999));
+                case KeyEvent.VK_ESCAPE -> data.set(tabby, new CharacterStateKey(CharacterState.DEAD, -999999));
             }
         });
         gui.render(createRenderTask(world, assetLoader::loadSprite, position -> worldChunks.contains(position) ? assetLoader.loadChunk(position) : null, tabby, converter));
@@ -249,7 +236,7 @@ class Main {
         loop.run();
     }
 
-    private static int createCharacter(Etherworld world, AssetLoader assetLoader, Map<String, Behaviour> behaviours, PositionConverter converter, String name) {
+    private static int createCharacter(Etherworld world, AssetLoader assetLoader, PositionConverter converter, String name) {
         SpriteData sprite = assetLoader.loadSprite(name);
         EntityData data = world.getData();
         AseSlice hitboxSlice = sprite.info.meta().slices().stream().filter(x -> x.name().equals("Hitbox")).findFirst().get();
@@ -263,6 +250,7 @@ class Main {
                 converter.pixelToPosition(hitboxKey.bounds().w()),
                 converter.pixelToPosition(hitboxKey.bounds().h()));
 
+        int entity = data.createEntity();
 
         Optional<AseSliceKey> optionalDamageKey = sprite.info.meta().slices().stream()
                 .filter(x -> x.name().equals("Damage"))
@@ -301,24 +289,21 @@ class Main {
                         endMillis * TICKS_PER_SECOND / MILLIS_PER_SECOND,
                         1,
                         sprite.info.animationDurationMillis("Attack") * TICKS_PER_SECOND / MILLIS_PER_SECOND);
-                behaviours.put(name + BEHAVIOUR_ATTACK, new AttackBehaviour(name + BEHAVIOUR_IDLE, name + BEHAVIOUR_HURT, attackParams));
+                data.set(entity, attackParams);
             }
         }
-
-        behaviours.put(name + BEHAVIOUR_IDLE, new IdleBehaviour(name + BEHAVIOUR_ATTACK, name + BEHAVIOUR_HURT, name + BEHAVIOUR_DEAD));
-        behaviours.put(name + BEHAVIOUR_HURT, new HurtBehaviour(name + BEHAVIOUR_IDLE));
-        behaviours.put(name + BEHAVIOUR_DEAD, new DeadBehaviour(name + BEHAVIOUR_IDLE));
 
         PhysicParams physicParams = new PhysicParams(8 * 16, 20, 12 * 16, 12);
         HurtParams hurtParams = new HurtParams(
                 sprite.info.animationDurationMillis("Hit") * TICKS_PER_SECOND / MILLIS_PER_SECOND,
                 5 * TICKS_PER_SECOND);
-        int entity = data.createEntity();
         data.set(entity, new Hurtbox(hitbox));
         data.set(entity, new Movebox(hitbox));
-        data.set(entity, new GameCharacter(name, physicParams, hurtParams));
+        data.set(entity, new GameCharacter(name));
+        data.set(entity, physicParams);
+        data.set(entity, hurtParams);
         data.set(entity, new Speed(0, 0));
-        data.set(entity, new BehaviourKey(name + BEHAVIOUR_IDLE, world.getTick()));
+        data.set(entity, new CharacterStateKey(CharacterState.IDLE, world.getTick()));
         data.set(entity, FacingDirection.RIGHT);
         return entity;
     }
@@ -410,14 +395,7 @@ class Main {
             Position position = data.get(entity, Position.class);
             PixelPosition pixelPosition = converter.floorPixel(position);
 
-            int activeFrameIndex;
-            BehaviourKey animation = data.get(entity, BehaviourKey.class);
-            if (animation != null) {
-                int ticks = (int) (world.getTick() - animation.startTick());
-                activeFrameIndex = spriteData.info.frameIndexByMillis(convert(data, entity, animation.value()), ticks * MILLIS_PER_SECOND / TICKS_PER_SECOND);
-            } else {
-                activeFrameIndex = 0;
-            }
+            int activeFrameIndex = getFrameIndex(world, spriteData, entity);
             AseSlice hitboxSlice = spriteData.info.meta().slices().stream().filter(x -> x.name().equals("Hitbox")).findFirst().get();
             AseSliceKey hitboxKey = hitboxSlice.keys().get(0);
             PixelPosition spriteOffset = new PixelPosition(
@@ -488,33 +466,85 @@ class Main {
         );
     }
 
-    private static String convert(EntityData data, int entity, String state) {
-        if (state.endsWith(BEHAVIOUR_IDLE)) {
-            Speed speed = data.get(entity, Speed.class);
-            if (speed == null) {
-                speed = new Speed(0, 0);
-            }
-            if (speed.y() > 0) {
-                return "Down";
-            }
-            if (speed.y() < 0) {
-                return "Up";
-            }
-            if (speed.x() != 0) {
-                return "Run";
-            }
-            return "Stand";
+    private static int getFrameIndex(Etherworld world, SpriteData spriteData, int entity) {
+        EntityData data = world.getData();
+        String animation = null;
+        long ticks = 0;
+        CharacterStateKey characterStateKey = data.get(entity, CharacterStateKey.class);
+        if (characterStateKey != null) {
+            animation = getAnimation(data, entity, characterStateKey.value());
+            ticks = world.getTick() - characterStateKey.startTick();
         }
-        if (state.endsWith(BEHAVIOUR_ATTACK)) {
-            return "Attack";
+
+        GolemHeadStateKey golemHeadStateKey = data.get(entity, GolemHeadStateKey.class);
+        if (golemHeadStateKey != null) {
+            animation = getAnimation(data, entity, golemHeadStateKey.value());
+            ticks = world.getTick() - golemHeadStateKey.startTick();
         }
-        if (state.endsWith(BEHAVIOUR_HURT)) {
-            return "Hit";
+
+        GolemHandStateKey golemHandStateKey = data.get(entity, GolemHandStateKey.class);
+        if (golemHandStateKey != null) {
+            animation = getAnimation(data, entity, golemHandStateKey.value());
+            ticks = world.getTick() - golemHandStateKey.startTick();
         }
-        if (state.endsWith(BEHAVIOUR_DEAD)) {
-            return "Dead";
+
+        int activeFrameIndex;
+        if (animation != null) {
+            activeFrameIndex = spriteData.info.frameIndexByMillis(animation, (int) (ticks * MILLIS_PER_SECOND / TICKS_PER_SECOND));
+        } else {
+            activeFrameIndex = 0;
         }
-        throw new AssertionError(state);
+        return activeFrameIndex;
+    }
+
+    private static String getAnimation(EntityData data, int entity, CharacterState state) {
+        switch (state) {
+            case IDLE -> {
+                Speed speed = data.get(entity, Speed.class);
+                if (speed == null) {
+                    speed = new Speed(0, 0);
+                }
+                if (speed.y() > 0) {
+                    return "Down";
+                }
+                if (speed.y() < 0) {
+                    return "Up";
+                }
+                if (speed.x() != 0) {
+                    return "Run";
+                }
+                return "Stand";
+            }
+            case ATTACK -> {
+                return "Attack";
+            }
+            case HURT -> {
+                return "Hit";
+            }
+            case DEAD -> {
+                return "Dead";
+            }
+            default -> throw new AssertionError(state);
+        }
+    }
+
+    private static String getAnimation(EntityData data, int entity, GolemHeadState state) {
+        switch (state) {
+            case IDLE -> {
+                return "Stand";
+            }
+            case HURT -> {
+                return "Hit";
+            }
+            case DEAD -> {
+                return "Dead";
+            }
+            default -> throw new AssertionError(state);
+        }
+    }
+
+    private static String getAnimation(EntityData data, int entity, GolemHandState state) {
+        return "Stand";
     }
 
     private static Chunk convert(SpriteData spriteData, PositionConverter converter) {

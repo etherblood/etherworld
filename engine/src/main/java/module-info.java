@@ -6,5 +6,6 @@ module com.etherblood.etherworld.engine {
     exports com.etherblood.etherworld.engine.golem;
     exports com.etherblood.etherworld.engine.systems;
     exports com.etherblood.etherworld.engine.golem.components;
+    exports com.etherblood.etherworld.engine.characters.components;
     requires com.etherblood.etherworld.data;
 }

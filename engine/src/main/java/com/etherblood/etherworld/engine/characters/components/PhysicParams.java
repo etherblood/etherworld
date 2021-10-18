@@ -1,4 +1,4 @@
-package com.etherblood.etherworld.engine.characters;
+package com.etherblood.etherworld.engine.characters.components;
 
 public record PhysicParams(
         int runSpeed,

@@ -1,7 +1,7 @@
 { "frames": [
    {
     "filename": "0",
-    "frame": { "x": 117, "y": 0, "w": 117, "h": 154 },
+    "frame": { "x": 0, "y": 156, "w": 117, "h": 154 },
     "rotated": false,
     "trimmed": true,
     "spriteSourceSize": { "x": 13, "y": 12, "w": 117, "h": 154 },
@@ -19,12 +19,12 @@
    },
    {
     "filename": "2",
-    "frame": { "x": 117, "y": 154, "w": 115, "h": 144 },
+    "frame": { "x": 117, "y": 0, "w": 117, "h": 156 },
     "rotated": false,
     "trimmed": true,
-    "spriteSourceSize": { "x": 13, "y": 12, "w": 115, "h": 144 },
+    "spriteSourceSize": { "x": 13, "y": 12, "w": 117, "h": 156 },
     "sourceSize": { "w": 144, "h": 176 },
-    "duration": 5000
+    "duration": 1000
    }
  ],
  "meta": {
@@ -32,7 +32,7 @@
   "version": "1.2.29-x64",
   "image": "GolemHead.png",
   "format": "RGBA8888",
-  "size": { "w": 234, "h": 298 },
+  "size": { "w": 234, "h": 310 },
   "scale": "1",
   "frameTags": [
    { "name": "Stand", "from": 0, "to": 0, "direction": "forward" },
