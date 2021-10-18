@@ -33,10 +33,11 @@ import com.etherblood.etherworld.engine.components.OwnerId;
 import com.etherblood.etherworld.engine.components.Position;
 import com.etherblood.etherworld.engine.components.Respawn;
 import com.etherblood.etherworld.engine.components.Speed;
-import com.etherblood.etherworld.engine.components.StateKey;
-import com.etherblood.etherworld.engine.components.golem.GolemHand;
+import com.etherblood.etherworld.engine.golem.GolemHandState;
+import com.etherblood.etherworld.engine.golem.GolemHandSystem;
+import com.etherblood.etherworld.engine.golem.components.GolemHand;
+import com.etherblood.etherworld.engine.golem.components.GolemHandStateKey;
 import com.etherblood.etherworld.engine.systems.BehaviourSystem;
-import com.etherblood.etherworld.engine.systems.GolemSystem;
 import com.etherblood.etherworld.engine.systems.MoveSystem;
 import com.etherblood.etherworld.gui.DebugRectangle;
 import com.etherblood.etherworld.gui.Gui;
@@ -96,7 +97,7 @@ class Main {
                         position -> worldChunks.contains(position) ? convert(assetLoader.loadChunk(position), converter) : null),
                 List.of(
                         new BehaviourSystem(behaviours),
-                        new GolemSystem("GolemHead" + BEHAVIOUR_HURT),
+                        new GolemHandSystem("GolemHead" + BEHAVIOUR_HURT),
                         new MoveSystem()
                 )
         );
@@ -118,16 +119,16 @@ class Main {
 
         int dummy = createCharacter(world, assetLoader, behaviours, converter, "Tabby");
         data.set(dummy, FacingDirection.LEFT);
-        data.set(dummy, new Position(900 * converter.getPixelSize(), 0));
+        data.set(dummy, new Position(896 * converter.getPixelSize(), 0));
         data.set(dummy, new Health(10, 10));
 
         int amara = createCharacter(world, assetLoader, behaviours, converter, "Amara");
         data.set(amara, FacingDirection.LEFT);
-        data.set(amara, new Position(1000 * converter.getPixelSize(), 24 * 16 * 16));
+        data.set(amara, new Position(992 * converter.getPixelSize(), 24 * 16 * 16));
 
         int fallacia = createCharacter(world, assetLoader, behaviours, converter, "Fallacia");
         data.set(fallacia, FacingDirection.LEFT);
-        data.set(fallacia, new Position(1100 * converter.getPixelSize(), 24 * 16 * 16));
+        data.set(fallacia, new Position(1088 * converter.getPixelSize(), 24 * 16 * 16));
 
         {
             int head = data.createEntity();
@@ -183,7 +184,7 @@ class Main {
                     new HurtParams(0, 0));
             data.set(leftHand, gameCharacter);
             data.set(leftHand, new GolemHand(head));
-            data.set(leftHand, new StateKey("GolemHandReset", 0));
+            data.set(leftHand, new GolemHandStateKey(GolemHandState.RESET, 0));
             data.set(leftHand, FacingDirection.RIGHT);
 
             int rightHand = data.createEntity();
@@ -193,7 +194,7 @@ class Main {
             data.set(rightHand, gameCharacter);
             data.set(rightHand, new GolemHand(head));
             data.set(rightHand, FacingDirection.LEFT);
-            data.set(rightHand, new StateKey("GolemHandReset", 0));
+            data.set(rightHand, new GolemHandStateKey(GolemHandState.RESET, 0));
         }
 
         {
