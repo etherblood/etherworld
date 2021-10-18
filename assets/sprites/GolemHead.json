@@ -15,7 +15,7 @@
     "trimmed": true,
     "spriteSourceSize": { "x": 13, "y": 12, "w": 117, "h": 156 },
     "sourceSize": { "w": 144, "h": 176 },
-    "duration": 2000
+    "duration": 1000
    },
    {
     "filename": "2",

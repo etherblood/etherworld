@@ -149,7 +149,7 @@ class Main {
                 data.set(head, new GameCharacter(
                         name,
                         new PhysicParams(0, 0, 0, 0),
-                        new HurtParams(2 * TICKS_PER_SECOND, 0)));
+                        new HurtParams(1 * TICKS_PER_SECOND, 0)));// TODO: read value from file
                 data.set(head, new Health(9, 9));
                 data.set(head, new Hurtbox(hitbox));
                 data.set(head, new Obstaclebox(hitbox));
@@ -172,7 +172,7 @@ class Main {
                     converter.pixelToPosition(hitboxKey.bounds().y()) - pivot.y(),
                     converter.pixelToPosition(hitboxKey.bounds().w()),
                     converter.pixelToPosition(hitboxKey.bounds().h()));
-            
+
             int leftHand = data.createEntity();
             data.set(leftHand, new Position(2760 * converter.getPixelSize(), 832 * converter.getPixelSize()));
             data.set(leftHand, new Movebox(hitbox));

@@ -1,10 +1,10 @@
 { "frames": [
    {
     "filename": "0",
-    "frame": { "x": 0, "y": 0, "w": 124, "h": 124 },
+    "frame": { "x": 0, "y": 0, "w": 122, "h": 124 },
     "rotated": false,
     "trimmed": true,
-    "spriteSourceSize": { "x": 11, "y": 7, "w": 124, "h": 124 },
+    "spriteSourceSize": { "x": 13, "y": 7, "w": 122, "h": 124 },
     "sourceSize": { "w": 144, "h": 144 },
     "duration": 800
    }
@@ -14,7 +14,7 @@
   "version": "1.2.29-x64",
   "image": "GolemHand.png",
   "format": "RGBA8888",
-  "size": { "w": 124, "h": 124 },
+  "size": { "w": 122, "h": 124 },
   "scale": "1",
   "frameTags": [
    { "name": "Stand", "from": 0, "to": 0, "direction": "forward" }
