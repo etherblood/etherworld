@@ -1,10 +1,10 @@
 { "frames": [
    {
     "filename": "0",
-    "frame": { "x": 0, "y": 0, "w": 155, "h": 155 },
+    "frame": { "x": 0, "y": 0, "w": 163, "h": 154 },
     "rotated": false,
     "trimmed": true,
-    "spriteSourceSize": { "x": 31, "y": 54, "w": 155, "h": 155 },
+    "spriteSourceSize": { "x": 26, "y": 55, "w": 163, "h": 154 },
     "sourceSize": { "w": 224, "h": 224 },
     "duration": 400
    }
@@ -12,9 +12,9 @@
  "meta": {
   "app": "http://www.aseprite.org/",
   "version": "1.2.29-x64",
-  "image": "Lupus.png",
+  "image": "Furor.png",
   "format": "RGBA8888",
-  "size": { "w": 155, "h": 155 },
+  "size": { "w": 163, "h": 154 },
   "scale": "1",
   "frameTags": [
    { "name": "Stand", "from": 0, "to": 0, "direction": "forward" }

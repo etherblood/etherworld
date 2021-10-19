@@ -125,7 +125,7 @@ class Main {
         data.set(fallacia, FacingDirection.LEFT);
         data.set(fallacia, new Position(1088 * converter.getPixelSize(), 24 * 16 * 16));
 
-        int lupus = createCharacter(world, assetLoader, converter, "Lupus");
+        int lupus = createCharacter(world, assetLoader, converter, "Furor");
         data.set(lupus, FacingDirection.LEFT);
         data.set(lupus, new Position(1200 * converter.getPixelSize(), 24 * 16 * 16));
 
