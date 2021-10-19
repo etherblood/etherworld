@@ -119,15 +119,15 @@ class Main {
 
         int amara = createCharacter(world, assetLoader, converter, "Amara");
         data.set(amara, FacingDirection.LEFT);
-        data.set(amara, new Position(992 * converter.getPixelSize(), 24 * 16 * 16));
+        data.set(amara, new Position(944 * converter.getPixelSize(), 24 * 16 * 16));
 
         int fallacia = createCharacter(world, assetLoader, converter, "Fallacia");
         data.set(fallacia, FacingDirection.LEFT);
-        data.set(fallacia, new Position(1088 * converter.getPixelSize(), 24 * 16 * 16));
+        data.set(fallacia, new Position(992 * converter.getPixelSize(), 24 * 16 * 16));
 
         int lupus = createCharacter(world, assetLoader, converter, "Furor");
         data.set(lupus, FacingDirection.LEFT);
-        data.set(lupus, new Position(1200 * converter.getPixelSize(), 24 * 16 * 16));
+        data.set(lupus, new Position(1104 * converter.getPixelSize(), 24 * 16 * 16));
 
         {
             int head = data.createEntity();

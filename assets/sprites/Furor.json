@@ -20,7 +20,8 @@
    { "name": "Stand", "from": 0, "to": 0, "direction": "forward" }
   ],
   "slices": [
-   { "name": "Hitbox", "color": "#0000ffff", "keys": [{ "frame": 0, "bounds": {"x": 80, "y": 64, "w": 64, "h": 144 }, "pivot": {"x": 32, "y": 144 } }] }
+   { "name": "Hitbox", "color": "#0000ffff", "keys": [{ "frame": 0, "bounds": {"x": 80, "y": 64, "w": 64, "h": 144 }, "pivot": {"x": 32, "y": 144 } }] },
+   { "name": "Head", "color": "#0000ffff", "keys": [{ "frame": 0, "bounds": {"x": 144, "y": 80, "w": 32, "h": 32 } }] }
   ]
  }
 }
