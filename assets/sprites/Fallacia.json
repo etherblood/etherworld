@@ -19,8 +19,8 @@
    }
  ],
  "meta": {
-  "app": "http://www.aseprite.org/",
-  "version": "1.2.29-x64",
+  "app": "https://www.aseprite.org/",
+  "version": "1.2.30-x64",
   "image": "Fallacia.png",
   "format": "RGBA8888",
   "size": { "w": 138, "h": 117 },

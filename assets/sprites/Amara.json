@@ -19,8 +19,8 @@
    }
  ],
  "meta": {
-  "app": "http://www.aseprite.org/",
-  "version": "1.2.29-x64",
+  "app": "https://www.aseprite.org/",
+  "version": "1.2.30-x64",
   "image": "Amara.png",
   "format": "RGBA8888",
   "size": { "w": 106, "h": 87 },
