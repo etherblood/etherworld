@@ -134,7 +134,7 @@ public class CharacterSystem implements GameSystem {
                 }
                 Position otherPosition = data.get(other, Position.class);
                 Attackbox attackbox = data.get(other, Attackbox.class);
-                RectangleHitbox attackHitbox = attackbox.hitbox().translate(otherPosition.x(), otherPosition.y());
+                RectangleHitbox attackHitbox = attackbox.hitbox().translate(otherPosition);
                 if (data.get(other, FacingDirection.class) == FacingDirection.LEFT) {
                     attackHitbox = attackHitbox.mirrorX(otherPosition.x());
                 }

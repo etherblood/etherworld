@@ -8,6 +8,8 @@ import com.etherblood.etherworld.engine.characters.components.HurtParams;
 import com.etherblood.etherworld.engine.components.Attackbox;
 import com.etherblood.etherworld.engine.components.Health;
 import com.etherblood.etherworld.engine.components.Hurtbox;
+import com.etherblood.etherworld.engine.components.Movebox;
+import com.etherblood.etherworld.engine.components.Obstaclebox;
 import com.etherblood.etherworld.engine.components.Speed;
 import com.etherblood.etherworld.engine.golem.components.GolemHeadStateKey;
 import com.etherblood.etherworld.engine.systems.GameSystem;
@@ -34,6 +36,7 @@ public class GolemHeadSystem implements GameSystem {
                         }
                     }
                     if (data.get(entity, Health.class).value() <= 0) {
+                        data.set(entity, new Movebox(data.get(entity, Obstaclebox.class).hitbox()));
                         data.set(entity, new GolemHeadStateKey(GolemHeadState.DEAD, world.getTick()));
                     }
                 }

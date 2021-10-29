@@ -37,7 +37,8 @@ import com.etherblood.etherworld.engine.golem.GolemHeadSystem;
 import com.etherblood.etherworld.engine.golem.components.GolemHand;
 import com.etherblood.etherworld.engine.golem.components.GolemHandStateKey;
 import com.etherblood.etherworld.engine.golem.components.GolemHeadStateKey;
-import com.etherblood.etherworld.engine.systems.MoveSystem;
+import com.etherblood.etherworld.engine.systems.MovementSystem;
+import com.etherblood.etherworld.engine.systems.MovingPlatformSystem;
 import com.etherblood.etherworld.gui.DebugRectangle;
 import com.etherblood.etherworld.gui.Gui;
 import com.etherblood.etherworld.gui.RenderChunk;
@@ -93,41 +94,42 @@ class Main {
                         new CharacterSystem(),
                         new GolemHeadSystem(),
                         new GolemHandSystem(),
-                        new MoveSystem()
+                        new MovingPlatformSystem(),
+                        new MovementSystem()
                 )
         );
 
         int player = data.createEntity();
-        int tabby = createCharacter(world, assetLoader, converter, "Tabby");
+        int tabby = createCharacter(world, assetLoader, converter, "Tabby", data.createEntity());
         data.set(tabby, new OwnerId(player));
         data.set(tabby, FacingDirection.RIGHT);
         data.set(tabby, new Position(0, 23 * 16 * 16));
         data.set(tabby, new Respawn(data.get(tabby, Position.class)));
         data.set(tabby, new Health(5, 5));
 
-        int slime = createCharacter(world, assetLoader, converter, "Slime");
+        int slime = createCharacter(world, assetLoader, converter, "Slime", data.createEntity());
         data.set(slime, FacingDirection.LEFT);
         data.set(slime, new Position(800 * converter.getPixelSize(), 24 * 16 * 16));
         data.set(slime, new Respawn(data.get(slime, Position.class)));
         data.set(slime, new Health(2, 2));
         data.set(slime, new Attackbox(data.get(slime, Hurtbox.class).hitbox(), 1));
 
-        int dummy = createCharacter(world, assetLoader, converter, "Tabby");
+        int dummy = createCharacter(world, assetLoader, converter, "Tabby", data.createEntity());
         data.set(dummy, FacingDirection.LEFT);
         data.set(dummy, new Position(896 * converter.getPixelSize(), 0));
         data.set(dummy, new Health(10, 10));
 
-        int amara = createCharacter(world, assetLoader, converter, "Amara");
+        int amara = createCharacter(world, assetLoader, converter, "Amara", data.createEntity());
         data.set(amara, FacingDirection.LEFT);
         data.set(amara, new Position(944 * converter.getPixelSize(), 24 * 16 * 16));
 
-        int fallacia = createCharacter(world, assetLoader, converter, "Fallacia");
+        int fallacia = createCharacter(world, assetLoader, converter, "Fallacia", data.createEntity());
         data.set(fallacia, FacingDirection.LEFT);
         data.set(fallacia, new Position(992 * converter.getPixelSize(), 24 * 16 * 16));
 
-        int lupus = createCharacter(world, assetLoader, converter, "Furor");
-        data.set(lupus, FacingDirection.LEFT);
-        data.set(lupus, new Position(1104 * converter.getPixelSize(), 24 * 16 * 16));
+        int furor = createCharacter(world, assetLoader, converter, "Furor", data.createEntity());
+        data.set(furor, FacingDirection.LEFT);
+        data.set(furor, new Position(1104 * converter.getPixelSize(), 24 * 16 * 16));
 
         {
             int head = data.createEntity();
@@ -151,7 +153,6 @@ class Main {
 
                 data.set(head, new Health(9, 9));
                 data.set(head, new Hurtbox(hitbox));
-                data.set(head, new Movebox(hitbox));
                 data.set(head, new Obstaclebox(hitbox));
                 data.set(head, new Speed(0, 0));
                 data.set(head, new GolemHeadStateKey(GolemHeadState.IDLE, 0));
@@ -217,6 +218,19 @@ class Main {
         Gui gui = new Gui();
         gui.start(e -> {
             switch (e.getKeyCode()) {
+                case KeyEvent.VK_F2 -> {
+                    List<String> availableCharacters = List.of("Tabby", "Amara", "Fallacia", "Furor", "Slime");
+                    for (int entity : data.findByValue(new OwnerId(player))) {
+                        GameCharacter gameCharacter = data.get(entity, GameCharacter.class);
+                        if (gameCharacter != null) {
+                            int index = availableCharacters.indexOf(gameCharacter.id());
+                            int next = (index + 1) % availableCharacters.size();
+
+                            // hackish solution, we hope everything from previous character gets overwritten...
+                            createCharacter(world, assetLoader, converter, availableCharacters.get(next), entity);
+                        }
+                    }
+                }
                 case KeyEvent.VK_F5 -> {
                     assetLoader.clear();
                     chunks.clear();
@@ -240,7 +254,7 @@ class Main {
         loop.run();
     }
 
-    private static int createCharacter(Etherworld world, AssetLoader assetLoader, PositionConverter converter, String name) {
+    private static int createCharacter(Etherworld world, AssetLoader assetLoader, PositionConverter converter, String name, int entity) {
         SpriteData sprite = assetLoader.loadSprite(name);
         EntityData data = world.getData();
         AseSlice hitboxSlice = sprite.info.meta().slices().stream().filter(x -> x.name().equals("Hitbox")).findFirst().get();
@@ -253,8 +267,6 @@ class Main {
                 converter.pixelToPosition(hitboxKey.bounds().y()) - pivot.y(),
                 converter.pixelToPosition(hitboxKey.bounds().w()),
                 converter.pixelToPosition(hitboxKey.bounds().h()));
-
-        int entity = data.createEntity();
 
         Optional<AseSliceKey> optionalDamageKey = sprite.info.meta().slices().stream()
                 .filter(x -> x.name().equals("Damage"))
@@ -461,7 +473,7 @@ class Main {
         if (facing == FacingDirection.LEFT) {
             hitbox = hitbox.mirrorX(0);
         }
-        hitbox = hitbox.translate(position.x(), position.y());
+        hitbox = hitbox.translate(position);
         return new RenderRectangle(
                 converter.positionToFloorPixel(hitbox.x()),
                 converter.positionToFloorPixel(hitbox.y()),
@@ -493,7 +505,7 @@ class Main {
         }
 
         int activeFrameIndex;
-        if (animation != null) {
+        if (spriteData.info.hasAnimation(animation)) {
             activeFrameIndex = spriteData.info.frameIndexByMillis(animation, (int) (ticks * MILLIS_PER_SECOND / TICKS_PER_SECOND));
         } else {
             activeFrameIndex = 0;

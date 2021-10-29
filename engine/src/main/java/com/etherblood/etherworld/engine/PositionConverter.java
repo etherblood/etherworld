@@ -4,8 +4,8 @@ import com.etherblood.etherworld.engine.chunks.ChunkPosition;
 import com.etherblood.etherworld.engine.chunks.ChunkSize;
 import com.etherblood.etherworld.engine.chunks.LocalTilePosition;
 import com.etherblood.etherworld.engine.chunks.PixelPosition;
-import com.etherblood.etherworld.engine.chunks.TilePosition;
 import com.etherblood.etherworld.engine.components.Position;
+import com.etherblood.etherworld.engine.math.MathUtil;
 
 public class PositionConverter {
     private final int pixelToPosition = 16;
@@ -18,12 +18,6 @@ public class PositionConverter {
 
     public int positionToFloorPixel(int position) {
         return Math.floorDiv(position, pixelToPosition);
-    }
-
-    public ChunkPosition floorChunk(TilePosition position) {
-        return new ChunkPosition(
-                Math.floorDiv(position.x(), chunkToTile.x()),
-                Math.floorDiv(position.y(), chunkToTile.y()));
     }
 
     public ChunkPosition floorChunk(PixelPosition position) {
@@ -44,28 +38,10 @@ public class PositionConverter {
                 MathUtil.ceilDiv(position.y(), chunkToTile.y() * tileToPixel));
     }
 
-    public LocalTilePosition toLocal(TilePosition position) {
-        return new LocalTilePosition(
-                Math.floorMod(position.x(), chunkToTile.x()),
-                Math.floorMod(position.y(), chunkToTile.y()));
-    }
-
-    public TilePosition floorTile(Position position) {
-        return new TilePosition(
-                Math.floorDiv(position.x(), pixelToPosition * tileToPixel),
-                Math.floorDiv(position.y(), pixelToPosition * tileToPixel));
-    }
-
     public PixelPosition floorPixel(Position position) {
         return new PixelPosition(
                 Math.floorDiv(position.x(), pixelToPosition),
                 Math.floorDiv(position.y(), pixelToPosition));
-    }
-
-    public TilePosition ceilTile(Position position) {
-        return new TilePosition(
-                MathUtil.ceilDiv(position.x(), pixelToPosition * tileToPixel),
-                MathUtil.ceilDiv(position.y(), pixelToPosition * tileToPixel));
     }
 
     public int getPixelSize() {

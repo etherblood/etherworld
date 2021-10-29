@@ -15,7 +15,7 @@ public class EntityUtil {
         Hurtbox hurtbox = data.get(entity, Hurtbox.class);
         if (hurtbox != null) {
             Position position = data.get(entity, Position.class);
-            RectangleHitbox hurtHitbox = hurtbox.hitbox().translate(position.x(), position.y());
+            RectangleHitbox hurtHitbox = hurtbox.hitbox().translate(position);
             if (data.get(entity, FacingDirection.class) == FacingDirection.LEFT) {
                 hurtHitbox = hurtHitbox.mirrorX(position.x());
             }
@@ -25,7 +25,7 @@ public class EntityUtil {
                 }
                 Position otherPosition = data.get(other, Position.class);
                 Attackbox attackbox = data.get(other, Attackbox.class);
-                RectangleHitbox attackHitbox = attackbox.hitbox().translate(otherPosition.x(), otherPosition.y());
+                RectangleHitbox attackHitbox = attackbox.hitbox().translate(otherPosition);
                 if (data.get(other, FacingDirection.class) == FacingDirection.LEFT) {
                     attackHitbox = attackHitbox.mirrorX(otherPosition.x());
                 }

@@ -38,7 +38,7 @@ public class GolemHandSystem implements GameSystem {
         for (int entity : data.list(GolemHandStateKey.class)) {
             GolemHandStateKey stateKey = data.get(entity, GolemHandStateKey.class);
             Position position = data.get(entity, Position.class);
-            RectangleHitbox scan = scanBase.translate(position.x(), position.y());
+            RectangleHitbox scan = scanBase.translate(position);
             int head = data.get(entity, GolemHand.class).head();
             Position headPosition = data.get(head, Position.class);
             if (data.get(head, Health.class).value() <= 0) {
@@ -80,7 +80,7 @@ public class GolemHandSystem implements GameSystem {
                     case SCAN:
                         for (int other : data.list(Hurtbox.class)) {
                             Position otherPosition = data.get(other, Position.class);
-                            RectangleHitbox target = data.get(other, Hurtbox.class).hitbox().translate(otherPosition.x(), otherPosition.y());
+                            RectangleHitbox target = data.get(other, Hurtbox.class).hitbox().translate(otherPosition);
                             if (scan.intersects(target)) {
                                 data.set(entity, new GolemHandStateKey(GolemHandState.CHASE, world.getTick()));
                                 data.set(entity, new ChaseTarget(other));
@@ -91,14 +91,14 @@ public class GolemHandSystem implements GameSystem {
                     case CHASE:
                         int other = data.get(entity, ChaseTarget.class).target();
                         Position otherPosition = data.get(other, Position.class);
-                        RectangleHitbox target = data.get(other, Hurtbox.class).hitbox().translate(otherPosition.x(), otherPosition.y());
+                        RectangleHitbox target = data.get(other, Hurtbox.class).hitbox().translate(otherPosition);
                         if (!scan.intersects(target)) {
                             data.set(entity, new GolemHandStateKey(GolemHandState.SCAN, world.getTick()));
                             data.set(entity, new Speed(0, 0));
                             data.remove(entity, ChaseTarget.class);
                             break;
                         }
-                        RectangleHitbox hitbox = data.get(entity, Movebox.class).hitbox().translate(position.x(), position.y());
+                        RectangleHitbox hitbox = data.get(entity, Movebox.class).hitbox().translate(position);
                         if (target.maxX() < position.x()) {
                             int vx = -chaseSpeed;
                             if (data.get(entity, FacingDirection.class) != FacingDirection.LEFT) {

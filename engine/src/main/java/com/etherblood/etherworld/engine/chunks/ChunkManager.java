@@ -1,7 +1,7 @@
 package com.etherblood.etherworld.engine.chunks;
 
-import com.etherblood.etherworld.engine.MathUtil;
 import com.etherblood.etherworld.engine.components.Position;
+import com.etherblood.etherworld.engine.math.MathUtil;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;

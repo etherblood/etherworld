@@ -23,6 +23,10 @@ public record AseSprite(
         throw new AssertionError(animation + ": " + millis + "ms");
     }
 
+    public boolean hasAnimation(String animation) {
+        return animationFrames(animation).anyMatch(x -> true);
+    }
+
     public int animationDurationMillis(String animation) {
         return animationFrames(animation).mapToInt(AseFrame::duration).sum();
     }
