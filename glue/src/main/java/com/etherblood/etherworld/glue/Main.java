@@ -51,6 +51,8 @@ import com.etherblood.etherworld.spriteloader.aseprite.AseSlice;
 import com.etherblood.etherworld.spriteloader.aseprite.AseSliceKey;
 import java.awt.Color;
 import java.awt.event.KeyEvent;
+import java.io.File;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -58,13 +60,14 @@ import java.util.Optional;
 import java.util.Set;
 import java.util.function.Function;
 import java.util.stream.Collectors;
+import javax.imageio.ImageIO;
 
 class Main {
 
     private static final int TICKS_PER_SECOND = 60;
     private static final int MILLIS_PER_SECOND = 1000;
 
-    public static void main(String... args) {
+    public static void main(String... args) throws IOException {
         AssetLoader assetLoader = new AssetLoader(
                 "assets/chunks",
                 "assets/sprites");
@@ -237,7 +240,7 @@ class Main {
                 }
                 case KeyEvent.VK_ESCAPE -> data.set(tabby, new CharacterStateKey(CharacterState.DEAD, -999999));
             }
-        });
+        }, ImageIO.read(new File("assets/icons/Tabby.png")));
         gui.render(createRenderTask(world, assetLoader::loadSprite, position -> worldChunks.contains(position) ? assetLoader.loadChunk(position) : null, tabby, converter));
 
         Map<Integer, PlayerAction> actionMappings = Map.of(

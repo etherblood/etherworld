@@ -1,20 +1,20 @@
 { "frames": [
    {
     "filename": "0",
-    "frame": { "x": 0, "y": 0, "w": 163, "h": 154 },
+    "frame": { "x": 0, "y": 0, "w": 165, "h": 152 },
     "rotated": false,
     "trimmed": true,
-    "spriteSourceSize": { "x": 26, "y": 55, "w": 163, "h": 154 },
+    "spriteSourceSize": { "x": 24, "y": 56, "w": 165, "h": 152 },
     "sourceSize": { "w": 224, "h": 224 },
     "duration": 400
    }
  ],
  "meta": {
-  "app": "http://www.aseprite.org/",
-  "version": "1.2.29-x64",
+  "app": "https://www.aseprite.org/",
+  "version": "1.2.30-x64",
   "image": "Furor.png",
   "format": "RGBA8888",
-  "size": { "w": 163, "h": 154 },
+  "size": { "w": 165, "h": 152 },
   "scale": "1",
   "frameTags": [
    { "name": "Stand", "from": 0, "to": 0, "direction": "forward" }

@@ -28,7 +28,7 @@ public class Gui {
 
     private PictureBox panel;
 
-    public void start(Consumer<KeyEvent> keyActions) {
+    public void start(Consumer<KeyEvent> keyActions, Image icon) {
         int windowWidth = 1600;
         int windowHeight = 800;
 
@@ -41,6 +41,7 @@ public class Gui {
         panel.setVisible(true);
         jFrame.setSize(windowWidth, windowHeight);
         jFrame.add(panel, BorderLayout.CENTER);
+        jFrame.setIconImage(icon);
 
         jFrame.addKeyListener(new KeyAdapter() {
             @Override
