@@ -7,6 +7,15 @@
     "spriteSourceSize": { "x": 24, "y": 56, "w": 165, "h": 152 },
     "sourceSize": { "w": 224, "h": 224 },
     "duration": 400
+   },
+   {
+    "filename": "1",
+    "frame": { "x": 165, "y": 0, "w": 165, "h": 151 },
+    "rotated": false,
+    "trimmed": true,
+    "spriteSourceSize": { "x": 23, "y": 57, "w": 165, "h": 151 },
+    "sourceSize": { "w": 224, "h": 224 },
+    "duration": 400
    }
  ],
  "meta": {
@@ -14,10 +23,10 @@
   "version": "1.2.30-x64",
   "image": "Furor.png",
   "format": "RGBA8888",
-  "size": { "w": 165, "h": 152 },
+  "size": { "w": 330, "h": 152 },
   "scale": "1",
   "frameTags": [
-   { "name": "Stand", "from": 0, "to": 0, "direction": "forward" }
+   { "name": "Stand", "from": 0, "to": 1, "direction": "forward" }
   ],
   "slices": [
    { "name": "Hitbox", "color": "#0000ffff", "keys": [{ "frame": 0, "bounds": {"x": 80, "y": 64, "w": 64, "h": 144 }, "pivot": {"x": 32, "y": 144 } }] },
