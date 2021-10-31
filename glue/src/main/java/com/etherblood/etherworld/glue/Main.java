@@ -469,7 +469,7 @@ class Main {
             }
         }
 
-        return new RenderTask(world.getTick(), Color.DARK_GRAY, camera, chunks, sprites, rectangles, lines);
+        return new RenderTask(world.getTick(), Color.GRAY, camera, chunks, sprites, rectangles, lines);
     }
 
     private static RenderRectangle toPixelHitbox(PositionConverter converter, RectangleHitbox hitbox, Position position, FacingDirection facing) {
