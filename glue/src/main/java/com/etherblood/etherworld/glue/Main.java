@@ -26,6 +26,7 @@ import com.etherblood.etherworld.engine.components.Hurtbox;
 import com.etherblood.etherworld.engine.components.Movebox;
 import com.etherblood.etherworld.engine.components.MovingPlatform;
 import com.etherblood.etherworld.engine.components.Obstaclebox;
+import com.etherblood.etherworld.engine.components.OnGround;
 import com.etherblood.etherworld.engine.components.OwnerId;
 import com.etherblood.etherworld.engine.components.Position;
 import com.etherblood.etherworld.engine.components.Respawn;
@@ -523,16 +524,16 @@ class Main {
                 if (speed == null) {
                     speed = new Speed(0, 0);
                 }
-                if (speed.y() > 0) {
-                    return "Down";
+                if (data.has(entity, OnGround.class)) {
+                    if (speed.x() != 0) {
+                        return "Run";
+                    }
+                    return "Stand";
                 }
                 if (speed.y() < 0) {
                     return "Up";
                 }
-                if (speed.x() != 0) {
-                    return "Run";
-                }
-                return "Stand";
+                return "Down";
             }
             case ATTACK -> {
                 return "Attack";
