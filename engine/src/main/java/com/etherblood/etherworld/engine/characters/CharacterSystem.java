@@ -26,6 +26,8 @@ public class CharacterSystem implements GameSystem {
 
     @Override
     public void tick(Etherworld world, Map<Integer, Set<PlayerAction>> playerActions) {
+        // TODO: we effectively skip the first frame of every state, due to setting the next state at the end of frames
+
         EntityData data = world.getData();
         for (int entity : data.list(CharacterStateKey.class)) {
             data.remove(entity, Attackbox.class);
@@ -88,7 +90,7 @@ public class CharacterSystem implements GameSystem {
             }
         } else if (state == CharacterState.ATTACK) {
             AttackParams attackParams = data.get(entity, AttackParams.class);
-            if (attackParams.damageFrom() == elapsedTicks) {
+            if (attackParams.damageFrom() <= elapsedTicks && elapsedTicks <= attackParams.damageTo()) {
                 data.set(entity, new Attackbox(attackParams.damageBox(), attackParams.damage()));
             }
             if (elapsedTicks >= attackParams.attackTicks()) {
