@@ -6,14 +6,6 @@ public record Collision(
         Body a,
         Body b,
         Fraction timeOfIntersection,
-        CollisionDirection normal) implements Comparable<Collision> {
+        CollisionDirection normal) {
 
-    @Override
-    public int compareTo(Collision o) {
-        int compare = timeOfIntersection.compareTo(o.timeOfIntersection());
-        if (compare == 0) {
-            compare = Integer.compare(normal().priority(), o.normal.priority());
-        }
-        return compare;
-    }
 }

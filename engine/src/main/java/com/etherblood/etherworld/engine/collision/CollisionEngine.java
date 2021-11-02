@@ -60,6 +60,10 @@ public class CollisionEngine {
             Fraction timeOfIntersection = intersections.stream().min(Comparator.comparing(Collision::timeOfIntersection)).get().timeOfIntersection();
             List<Collision> collisions = intersections.stream()
                     .filter(collision -> collision.timeOfIntersection().compareTo(timeOfIntersection) == 0)
+                    .sorted(Comparator.comparingInt(collision -> collision.normal().priority()))
+
+                    //TODO: better workaround for multiple collisions with different axes?
+                    .limit(1)
                     .toList();
             for (Collision info : collisions) {
                 Body body = info.a();
@@ -73,9 +77,6 @@ public class CollisionEngine {
 
                 // TODO: result should also contain info about positions & speeds at timeOfIntersection?
                 result.computeIfAbsent(body.id, x -> new ArrayList<>()).add(info);
-
-                //TODO: better workaround for multiple collisions with different axes?
-                break;
             }
         }
         for (Body body : bodies) {
