@@ -143,7 +143,7 @@ public class BodyTest {
         assertTrue(boundsIntersect);
         assertTrue(intersect.isIntersecting());
         assertThat(intersect.time(), comparesEqualTo(new Fraction(1, 2)));
-        assertEquals(AxisDirection.Y_POSITIVE, intersect.normal());
+        assertEquals(1, intersect.normal().y());
     }
 
     @Test
@@ -171,6 +171,6 @@ public class BodyTest {
         assertTrue(boundsIntersect);
         assertTrue(intersect.isIntersecting());
         assertThat(intersect.time(), comparesEqualTo(Fraction.ofInt(0)));
-        assertEquals(AxisDirection.X_NEGATIVE, intersect.normal());
+        assertEquals(-1, intersect.normal().x());
     }
 }

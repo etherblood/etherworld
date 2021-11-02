@@ -96,24 +96,26 @@ public class Body {
         if (intersection == null) {
             return IntersectionInfo.noIntersection();
         }
-        AxisDirection direction;
         Fraction intersectStart = intersection.start();
+        Fraction intersectXStart = intersectX.start();
         Fraction intersectYStart = intersectY.start();
-        if (intersectStart.compareTo(intersectYStart) == 0
-                && v.y() != 0) {
-            if (v.y() > 0) {
-                direction = AxisDirection.Y_POSITIVE;
-            } else {
-                direction = AxisDirection.Y_NEGATIVE;
-            }
-        } else if (v.x() > 0) {
-            direction = AxisDirection.X_POSITIVE;
-        } else if (v.x() < 0) {
-            direction = AxisDirection.X_NEGATIVE;
+        int x;
+        int y;
+        if (intersectStart.compareTo(intersectXStart) == 0) {
+            x = v.x();
         } else {
+            x = 0;
+        }
+        if (intersectStart.compareTo(intersectYStart) == 0) {
+            y = v.y();
+        } else {
+            y = 0;
+        }
+        if (x == 0 && y == 0) {
             return IntersectionInfo.noIntersection();
         }
-        return new IntersectionInfo(intersectStart, direction);
+
+        return new IntersectionInfo(intersectStart, new CollisionDirection(x, y));
     }
 
     @Override

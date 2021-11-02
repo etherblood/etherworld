@@ -73,6 +73,9 @@ public class CollisionEngine {
 
                 // TODO: result should also contain info about positions & speeds at timeOfIntersection?
                 result.computeIfAbsent(body.id, x -> new ArrayList<>()).add(info);
+
+                //TODO: better workaround for multiple collisions with different axes?
+                break;
             }
         }
         for (Body body : bodies) {

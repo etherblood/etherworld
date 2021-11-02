@@ -2,7 +2,7 @@ package com.etherblood.etherworld.engine.collision;
 
 import com.etherblood.etherworld.engine.math.Fraction;
 
-public record IntersectionInfo(Fraction time, AxisDirection normal) {
+public record IntersectionInfo(Fraction time, CollisionDirection normal) {
 
     public static IntersectionInfo noIntersection() {
         return new IntersectionInfo(null, null);

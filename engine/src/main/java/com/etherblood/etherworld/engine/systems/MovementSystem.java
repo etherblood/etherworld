@@ -9,7 +9,6 @@ import com.etherblood.etherworld.engine.chunks.ChunkManager;
 import com.etherblood.etherworld.engine.chunks.ChunkPosition;
 import com.etherblood.etherworld.engine.chunks.LocalTilePosition;
 import com.etherblood.etherworld.engine.chunks.TilePosition;
-import com.etherblood.etherworld.engine.collision.AxisDirection;
 import com.etherblood.etherworld.engine.collision.Body;
 import com.etherblood.etherworld.engine.collision.Collision;
 import com.etherblood.etherworld.engine.collision.CollisionEngine;
@@ -73,7 +72,7 @@ public class MovementSystem implements GameSystem {
             data.remove(entity, OnGround.class);
             data.remove(entity, OnPlatform.class);
             for (Collision collision : collisions.getOrDefault(entity, Collections.emptyList())) {
-                if (collision.normal() == AxisDirection.Y_POSITIVE) {
+                if (collision.normal().y() > 0) {
                     if (collision.b().id != null) {
                         data.set(entity, new OnPlatform(collision.b().id));
                     }
