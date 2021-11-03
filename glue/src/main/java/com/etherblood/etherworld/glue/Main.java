@@ -223,7 +223,7 @@ class Main {
         gui.start(e -> {
             switch (e.getKeyCode()) {
                 case KeyEvent.VK_F2 -> {
-                    List<String> availableCharacters = List.of("Tabby", "Amara", "Fallacia", "Furor", "Slime");
+                    List<String> availableCharacters = List.of("Tabby", "Amara", "Fallacia", "Furor", "Slime", "amazing_wolf");
                     for (int entity : data.findByValue(new OwnerId(player))) {
                         GameCharacter gameCharacter = data.get(entity, GameCharacter.class);
                         if (gameCharacter != null) {
@@ -302,7 +302,10 @@ class Main {
                 millis += attackFrame.duration();
             }
 
-            if (startMillis != null && endMillis != null) {
+            if (startMillis != null) {
+                if (endMillis == null) {
+                    endMillis = millis - 1;
+                }
                 AttackParams attackParams = new AttackParams(
                         damagebox,
                         startMillis * TICKS_PER_SECOND / MILLIS_PER_SECOND,

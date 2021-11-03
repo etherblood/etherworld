@@ -34,7 +34,7 @@ public class AssetLoader {
             try {
                 return spriteLoader.getFullSprite(spritePath, n + ".json");
             } catch (IOException e) {
-                throw new RuntimeException(e);
+                throw new RuntimeException("Error when loading " + spritePath + "/" + n + ".json", e);
             }
         });
     }
