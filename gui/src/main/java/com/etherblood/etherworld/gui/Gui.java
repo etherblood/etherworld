@@ -29,8 +29,8 @@ public class Gui {
     private PictureBox panel;
 
     public void start(Consumer<KeyEvent> keyActions, Image icon) {
-        int windowWidth = 1600;
-        int windowHeight = 800;
+        int windowWidth = 640 * 2;
+        int windowHeight = 360 * 2;
 
         JFrame jFrame = new JFrame("Gaem?");
         jFrame.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
@@ -81,7 +81,7 @@ public class Gui {
     }
 
     private void render(Graphics2D graphics, RenderTask renderTask) {
-        AffineTransform transform = AffineTransform.getScaleInstance(2, 2);
+        AffineTransform transform = AffineTransform.getScaleInstance(renderTask.scale(), renderTask.scale());
         transform.translate(-renderTask.camera().x(), -renderTask.camera().y());
         graphics.setTransform(transform);
         graphics.setBackground(renderTask.background());
@@ -139,7 +139,7 @@ public class Gui {
         graphics.setTransform(AffineTransform.getTranslateInstance(0, 0));
         if (debug) {
             for (int i = 0; i < renderTask.lines().size(); i++) {
-                graphics.drawString(renderTask.lines().get(i), 20, 20 + i * graphics.getFontMetrics().getHeight());
+                graphics.drawString(renderTask.lines().get(i), 20, (i + 1) * graphics.getFontMetrics().getHeight());
             }
         }
 

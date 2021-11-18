@@ -21,6 +21,7 @@ public class CollisionEngine {
                                               Function<RectangleHitbox, List<Body>> findStaticCandidates) {
         Map<Integer, List<Collision>> result = new HashMap<>();
         while (true) {
+            // TODO: broad phase, split bodies into multiple smaller groups which are isolated from each other
             List<Collision> intersections = new ArrayList<>();
             for (Body body : bodies) {
                 // TODO: reuse lists from previous iteration when oldBounds.contains(newBounds)?

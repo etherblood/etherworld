@@ -5,6 +5,7 @@ import java.util.List;
 import java.util.Objects;
 
 public record RenderTask(
+        int scale,
         long tick,
         Color background,
         RenderRectangle camera,
@@ -14,6 +15,9 @@ public record RenderTask(
         List<String> lines
 ) {
     public RenderTask {
+        if (scale <= 0) {
+            throw new IllegalArgumentException("Scale must be positive.");
+        }
         Objects.requireNonNull(background);
         Objects.requireNonNull(camera);
         Objects.requireNonNull(chunks);

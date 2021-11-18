@@ -7,6 +7,7 @@ import com.etherblood.etherworld.engine.GameLoop;
 import com.etherblood.etherworld.engine.PlayerAction;
 import com.etherblood.etherworld.engine.PositionConverter;
 import com.etherblood.etherworld.engine.RectangleHitbox;
+import com.etherblood.etherworld.engine.characters.CharacterParams;
 import com.etherblood.etherworld.engine.characters.CharacterState;
 import com.etherblood.etherworld.engine.characters.CharacterSystem;
 import com.etherblood.etherworld.engine.characters.components.AttackParams;
@@ -55,6 +56,7 @@ import java.awt.event.KeyEvent;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -62,13 +64,22 @@ import java.util.Set;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 import javax.imageio.ImageIO;
+import javax.sound.sampled.LineUnavailableException;
+import javax.sound.sampled.UnsupportedAudioFileException;
 
 class Main {
 
     private static final int TICKS_PER_SECOND = 60;
     private static final int MILLIS_PER_SECOND = 1000;
 
-    public static void main(String... args) throws IOException {
+    public static void main(String... args) throws IOException, LineUnavailableException, UnsupportedAudioFileException {
+//https://stackoverflow.com/tags/javasound/info
+//        Clip clip = AudioSystem.getClip();
+//        // getAudioInputStream() also accepts a File or InputStream
+//        AudioInputStream ais = AudioSystem.getAudioInputStream(new File("C:/Users/Philipp/Saved Games/Spirit Lunia 2.7/Sounds/Temp/SecretFind.wav"));
+//        clip.open(ais);
+//        clip.loop(0);
+
         AssetLoader assetLoader = new AssetLoader(
                 "assets/chunks",
                 "assets/sprites");
@@ -91,11 +102,12 @@ class Main {
                 converter.getTileSize() * converter.getPixelSize(),
                 converter.getChunkSize(),
                 position -> worldChunks.contains(position) ? convert(assetLoader.loadChunk(position), converter) : null);
+        Map<String, CharacterParams> characterParams = new HashMap<>();
         Etherworld world = new Etherworld(
                 data,
                 chunks,
                 List.of(
-                        new CharacterSystem(),
+                        new CharacterSystem(characterParams),
                         new GolemHeadSystem(),
                         new GolemHandSystem(),
                         new MovingPlatformSystem(),
@@ -104,34 +116,34 @@ class Main {
         );
 
         int player = data.createEntity();
-        int tabby = createCharacter(world, assetLoader, converter, "Tabby", data.createEntity());
+        int tabby = createCharacter(world, assetLoader, converter, characterParams, "Tabby", data.createEntity());
         data.set(tabby, new OwnerId(player));
         data.set(tabby, FacingDirection.RIGHT);
         data.set(tabby, new Position(0, 23 * 16 * 16));
         data.set(tabby, new Respawn(data.get(tabby, Position.class)));
         data.set(tabby, new Health(5, 5));
 
-        int slime = createCharacter(world, assetLoader, converter, "Slime", data.createEntity());
+        int slime = createCharacter(world, assetLoader, converter, characterParams, "Slime", data.createEntity());
         data.set(slime, FacingDirection.LEFT);
         data.set(slime, new Position(800 * converter.getPixelSize(), 24 * 16 * 16));
         data.set(slime, new Respawn(data.get(slime, Position.class)));
         data.set(slime, new Health(2, 2));
         data.set(slime, new Attackbox(data.get(slime, Hurtbox.class).hitbox(), 1));
 
-        int dummy = createCharacter(world, assetLoader, converter, "Tabby", data.createEntity());
+        int dummy = createCharacter(world, assetLoader, converter, characterParams, "Tabby", data.createEntity());
         data.set(dummy, FacingDirection.LEFT);
         data.set(dummy, new Position(896 * converter.getPixelSize(), 0));
         data.set(dummy, new Health(10, 10));
 
-        int amara = createCharacter(world, assetLoader, converter, "Amara", data.createEntity());
+        int amara = createCharacter(world, assetLoader, converter, characterParams, "Amara", data.createEntity());
         data.set(amara, FacingDirection.LEFT);
         data.set(amara, new Position(944 * converter.getPixelSize(), 24 * 16 * 16));
 
-        int fallacia = createCharacter(world, assetLoader, converter, "Fallacia", data.createEntity());
+        int fallacia = createCharacter(world, assetLoader, converter, characterParams, "Fallacia", data.createEntity());
         data.set(fallacia, FacingDirection.LEFT);
         data.set(fallacia, new Position(992 * converter.getPixelSize(), 24 * 16 * 16));
 
-        int furor = createCharacter(world, assetLoader, converter, "Furor", data.createEntity());
+        int furor = createCharacter(world, assetLoader, converter, characterParams, "Furor", data.createEntity());
         data.set(furor, FacingDirection.LEFT);
         data.set(furor, new Position(1104 * converter.getPixelSize(), 24 * 16 * 16));
 
@@ -231,7 +243,7 @@ class Main {
                             int next = (index + 1) % availableCharacters.size();
 
                             // hackish solution, we hope everything from previous character gets overwritten...
-                            createCharacter(world, assetLoader, converter, availableCharacters.get(next), entity);
+                            createCharacter(world, assetLoader, converter, characterParams, availableCharacters.get(next), entity);
                         }
                     }
                 }
@@ -247,6 +259,7 @@ class Main {
         Map<Integer, PlayerAction> actionMappings = Map.of(
                 KeyEvent.VK_LEFT, PlayerAction.LEFT,
                 KeyEvent.VK_UP, PlayerAction.JUMP,
+                KeyEvent.VK_DOWN, PlayerAction.CROUCH,
                 KeyEvent.VK_RIGHT, PlayerAction.RIGHT,
                 KeyEvent.VK_A, PlayerAction.ATTACK
         );
@@ -258,7 +271,7 @@ class Main {
         loop.run();
     }
 
-    private static int createCharacter(Etherworld world, AssetLoader assetLoader, PositionConverter converter, String name, int entity) {
+    private static int createCharacter(Etherworld world, AssetLoader assetLoader, PositionConverter converter, Map<String, CharacterParams> characterParams, String name, int entity) {
         SpriteData sprite = assetLoader.loadSprite(name);
         EntityData data = world.getData();
         AseSlice hitboxSlice = sprite.info.meta().slices().stream().filter(x -> x.name().equals("Hitbox")).findFirst().get();
@@ -272,6 +285,7 @@ class Main {
                 converter.pixelToPosition(hitboxKey.bounds().w()),
                 converter.pixelToPosition(hitboxKey.bounds().h()));
 
+        AttackParams attackParams = null;
         Optional<AseSliceKey> optionalDamageKey = sprite.info.meta().slices().stream()
                 .filter(x -> x.name().equals("Damage"))
                 .flatMap(x -> x.keys().stream())
@@ -306,35 +320,37 @@ class Main {
                 if (endMillis == null) {
                     endMillis = millis - 1;
                 }
-                AttackParams attackParams = new AttackParams(
+                attackParams = new AttackParams(
                         damagebox,
                         startMillis * TICKS_PER_SECOND / MILLIS_PER_SECOND,
                         endMillis * TICKS_PER_SECOND / MILLIS_PER_SECOND,
                         1,
                         sprite.info.animationDurationMillis("Attack") * TICKS_PER_SECOND / MILLIS_PER_SECOND);
-                data.set(entity, attackParams);
             }
         }
 
-        PhysicParams physicParams = new PhysicParams(8 * 16, 20, 12 * 16, 12);
+        PhysicParams physicParams = new PhysicParams(hitbox, 8 * 16, 20, 12 * 16, 12);
         HurtParams hurtParams = new HurtParams(
                 sprite.info.animationDurationMillis("Hit") * TICKS_PER_SECOND / MILLIS_PER_SECOND,
                 5 * TICKS_PER_SECOND);
         data.set(entity, new Hurtbox(hitbox));
         data.set(entity, new Movebox(hitbox));
         data.set(entity, new GameCharacter(name));
-        data.set(entity, physicParams);
-        data.set(entity, hurtParams);
         data.set(entity, new Speed(0, 0));
         data.set(entity, new CharacterStateKey(CharacterState.IDLE, world.getTick()));
         data.set(entity, FacingDirection.RIGHT);
+        if (!characterParams.containsKey(name)) {
+            CharacterParams params = new CharacterParams(physicParams, attackParams, hurtParams);
+            characterParams.put(name, params);
+        }
         return entity;
     }
 
 
     private static RenderTask createRenderTask(Etherworld world, Function<String, SpriteData> spriteMap, Function<ChunkPosition, SpriteData> chunkMap, int cameraPerson, PositionConverter converter) {
-        int cameraWidth = 800;
-        int cameraHeight = 400;
+        int scale = 2;
+        int cameraWidth = 640;
+        int cameraHeight = 360;
         int cameraOffsetX = 0 - cameraWidth / 2;
         int cameraOffsetY = -72 - cameraHeight / 2;
         List<RenderChunk> chunks = new ArrayList<>();
@@ -473,7 +489,7 @@ class Main {
             }
         }
 
-        return new RenderTask(world.getTick(), Color.GRAY, camera, chunks, sprites, rectangles, lines);
+        return new RenderTask(scale, world.getTick(), Color.GRAY, camera, chunks, sprites, rectangles, lines);
     }
 
     private static RenderRectangle toPixelHitbox(PositionConverter converter, RectangleHitbox hitbox, Position position, FacingDirection facing) {
