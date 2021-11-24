@@ -64,22 +64,13 @@ import java.util.Set;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 import javax.imageio.ImageIO;
-import javax.sound.sampled.LineUnavailableException;
-import javax.sound.sampled.UnsupportedAudioFileException;
 
 class Main {
 
     private static final int TICKS_PER_SECOND = 60;
     private static final int MILLIS_PER_SECOND = 1000;
 
-    public static void main(String... args) throws IOException, LineUnavailableException, UnsupportedAudioFileException {
-//https://stackoverflow.com/tags/javasound/info
-//        Clip clip = AudioSystem.getClip();
-//        // getAudioInputStream() also accepts a File or InputStream
-//        AudioInputStream ais = AudioSystem.getAudioInputStream(new File("C:/Users/Philipp/Saved Games/Spirit Lunia 2.7/Sounds/Temp/SecretFind.wav"));
-//        clip.open(ais);
-//        clip.loop(0);
-
+    public static void main(String... args) throws IOException {
         AssetLoader assetLoader = new AssetLoader(
                 "assets/chunks",
                 "assets/sprites");
