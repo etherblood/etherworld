@@ -593,11 +593,33 @@
         "h": 112
       },
       "duration": 100
+    },
+    {
+      "filename": "27",
+      "frame": {
+        "x": 298,
+        "y": 77,
+        "w": 30,
+        "h": 49
+      },
+      "rotated": false,
+      "trimmed": true,
+      "spriteSourceSize": {
+        "x": 41,
+        "y": 47,
+        "w": 30,
+        "h": 49
+      },
+      "sourceSize": {
+        "w": 112,
+        "h": 112
+      },
+      "duration": 100
     }
   ],
   "meta": {
-    "app": "http://www.aseprite.org/",
-    "version": "1.2.29-x64",
+    "app": "https://www.aseprite.org/",
+    "version": "1.2.30-x64",
     "image": "Tabby.png",
     "format": "RGBA8888",
     "size": {
@@ -653,6 +675,12 @@
         "from": 22,
         "to": 26,
         "direction": "pingpong"
+      },
+      {
+        "name": "Crouch",
+        "from": 27,
+        "to": 27,
+        "direction": "forward"
       }
     ],
     "slices": [
@@ -662,19 +690,6 @@
         "keys": [
           {
             "frame": 0,
-            "bounds": {
-              "x": 48,
-              "y": 24,
-              "w": 16,
-              "h": 72
-            },
-            "pivot": {
-              "x": 8,
-              "y": 72
-            }
-          },
-          {
-            "frame": 17,
             "bounds": {
               "x": 48,
               "y": 24,
@@ -699,6 +714,25 @@
               "y": 48,
               "w": 32,
               "h": 24
+            }
+          }
+        ]
+      },
+      {
+        "name": "Crouch",
+        "color": "#0000ffff",
+        "keys": [
+          {
+            "frame": 0,
+            "bounds": {
+              "x": 48,
+              "y": 56,
+              "w": 16,
+              "h": 40
+            },
+            "pivot": {
+              "x": 8,
+              "y": 40
             }
           }
         ]

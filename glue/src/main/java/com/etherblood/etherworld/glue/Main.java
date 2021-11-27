@@ -12,6 +12,7 @@ import com.etherblood.etherworld.engine.characters.CharacterState;
 import com.etherblood.etherworld.engine.characters.CharacterSystem;
 import com.etherblood.etherworld.engine.characters.components.AttackParams;
 import com.etherblood.etherworld.engine.characters.components.CharacterStateKey;
+import com.etherblood.etherworld.engine.characters.components.CrouchParams;
 import com.etherblood.etherworld.engine.characters.components.HurtParams;
 import com.etherblood.etherworld.engine.characters.components.PhysicParams;
 import com.etherblood.etherworld.engine.chunks.Chunk;
@@ -314,11 +315,23 @@ class Main {
                 attackParams = new AttackParams(
                         damagebox,
                         startMillis * TICKS_PER_SECOND / MILLIS_PER_SECOND,
-                        endMillis * TICKS_PER_SECOND / MILLIS_PER_SECOND,
+                        endMillis * TICKS_PER_SECOND / MILLIS_PER_SECOND + 1,
                         1,
                         sprite.info.animationDurationMillis("Attack") * TICKS_PER_SECOND / MILLIS_PER_SECOND);
             }
         }
+        Optional<AseSlice> crouchSlice = sprite.info.meta().slices().stream().filter(x -> x.name().equals("Crouch")).findFirst();
+        CrouchParams crouchParams = crouchSlice.map(aseSlice -> {
+            AseSliceKey aseSliceKey = aseSlice.keys().get(0);
+            Position p = new Position(
+                    converter.pixelToPosition(hitboxKey.pivot().x() + hitboxKey.bounds().x()),
+                    converter.pixelToPosition(hitboxKey.pivot().y() + hitboxKey.bounds().y()));
+            return new CrouchParams(new RectangleHitbox(
+                    converter.pixelToPosition(aseSliceKey.bounds().x()) - p.x(),
+                    converter.pixelToPosition(aseSliceKey.bounds().y()) - p.y(),
+                    converter.pixelToPosition(aseSliceKey.bounds().w()),
+                    converter.pixelToPosition(aseSliceKey.bounds().h())));
+        }).orElse(null);
 
         PhysicParams physicParams = new PhysicParams(hitbox, 8 * 16, 20, 12 * 16, 12);
         HurtParams hurtParams = new HurtParams(
@@ -331,7 +344,7 @@ class Main {
         data.set(entity, new CharacterStateKey(CharacterState.IDLE, world.getTick()));
         data.set(entity, FacingDirection.RIGHT);
         if (!characterParams.containsKey(name)) {
-            CharacterParams params = new CharacterParams(physicParams, attackParams, hurtParams);
+            CharacterParams params = new CharacterParams(physicParams, attackParams, hurtParams, crouchParams);
             characterParams.put(name, params);
         }
         return entity;
@@ -553,6 +566,9 @@ class Main {
             }
             case DEAD -> {
                 return "Dead";
+            }
+            case CROUCH -> {
+                return "Crouch";
             }
             default -> throw new AssertionError(state);
         }

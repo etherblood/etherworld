@@ -4,8 +4,8 @@ import com.etherblood.etherworld.engine.RectangleHitbox;
 
 public record AttackParams(
         RectangleHitbox damageBox,
-        int damageFrom,
-        int damageTo,
+        int damageStart,
+        int damageEnd,
         int damage,
         int attackTicks
 ) {
