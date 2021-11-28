@@ -104,7 +104,7 @@ public class CharacterSystem implements GameSystem {
             }
 
             if (crouchAction) {
-                if (state != CharacterState.CROUCH) {
+                if (state == CharacterState.IDLE) {
                     data.set(entity, new CharacterStateKey(CharacterState.CROUCH, world.getTick()));
                     state = CharacterState.CROUCH;
                     data.set(entity, new Movebox(params.crouch().hitbox()));
@@ -146,6 +146,9 @@ public class CharacterSystem implements GameSystem {
 
         // apply selected state
         applyPhysics(world, state != CharacterState.DEAD ? playerActions : null, params, entity, state, data);
+        CharacterStateKey stateKey = data.get(entity, CharacterStateKey.class);
+        state = stateKey.value();
+        elapsedTicks = (int) (world.getTick() - stateKey.startTick());
 
         if (state == CharacterState.ATTACK) {
             AttackParams attackParams = params.attack();
