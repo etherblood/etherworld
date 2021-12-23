@@ -84,6 +84,11 @@ public class Gui {
         AffineTransform transform = AffineTransform.getScaleInstance(renderTask.scale(), renderTask.scale());
         transform.translate(-renderTask.camera().x(), -renderTask.camera().y());
         graphics.setTransform(transform);
+        graphics.setClip(
+                renderTask.camera().x(),
+                renderTask.camera().y(),
+                renderTask.camera().width(),
+                renderTask.camera().height());
         graphics.setBackground(renderTask.background());
         graphics.clearRect(
                 renderTask.camera().x(),
