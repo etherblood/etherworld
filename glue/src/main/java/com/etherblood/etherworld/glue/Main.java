@@ -50,6 +50,8 @@ import com.etherblood.etherworld.gui.RenderSprite;
 import com.etherblood.etherworld.gui.RenderTask;
 import com.etherblood.etherworld.spriteloader.SpriteData;
 import com.etherblood.etherworld.spriteloader.aseprite.AseFrame;
+import com.etherblood.etherworld.spriteloader.aseprite.AsePoint;
+import com.etherblood.etherworld.spriteloader.aseprite.AseRectangle;
 import com.etherblood.etherworld.spriteloader.aseprite.AseSlice;
 import com.etherblood.etherworld.spriteloader.aseprite.AseSliceKey;
 import java.awt.Color;
@@ -268,14 +270,16 @@ class Main {
         EntityData data = world.getData();
         AseSlice hitboxSlice = sprite.info.meta().slices().stream().filter(x -> x.name().equals("Hitbox")).findFirst().get();
         AseSliceKey hitboxKey = hitboxSlice.keys().get(0);
+        AsePoint pixelPivot = hitboxKey.pivot().scale(sprite.info.meta().scale());
+        AseRectangle pixelBounds = hitboxKey.bounds().scale(sprite.info.meta().scale());
         Position pivot = new Position(
-                converter.pixelToPosition(hitboxKey.pivot().x() + hitboxKey.bounds().x()),
-                converter.pixelToPosition(hitboxKey.pivot().y() + hitboxKey.bounds().y()));
+                converter.pixelToPosition(pixelPivot.x() + pixelBounds.x()),
+                converter.pixelToPosition(pixelPivot.y() + pixelBounds.y()));
         RectangleHitbox hitbox = new RectangleHitbox(
-                converter.pixelToPosition(hitboxKey.bounds().x()) - pivot.x(),
-                converter.pixelToPosition(hitboxKey.bounds().y()) - pivot.y(),
-                converter.pixelToPosition(hitboxKey.bounds().w()),
-                converter.pixelToPosition(hitboxKey.bounds().h()));
+                converter.pixelToPosition(pixelBounds.x()) - pivot.x(),
+                converter.pixelToPosition(pixelBounds.y()) - pivot.y(),
+                converter.pixelToPosition(pixelBounds.w()),
+                converter.pixelToPosition(pixelBounds.h()));
 
         AttackParams attackParams = null;
         Optional<AseSliceKey> optionalDamageKey = sprite.info.meta().slices().stream()
@@ -284,11 +288,12 @@ class Main {
                 .findFirst();
         if (optionalDamageKey.isPresent()) {
             AseSliceKey damageKey = optionalDamageKey.get();
+            AseRectangle damagePixelBounds = damageKey.bounds().scale(sprite.info.meta().scale());
             RectangleHitbox damagebox = new RectangleHitbox(
-                    converter.pixelToPosition(damageKey.bounds().x()) - pivot.x(),
-                    converter.pixelToPosition(damageKey.bounds().y()) - pivot.y(),
-                    converter.pixelToPosition(damageKey.bounds().w()),
-                    converter.pixelToPosition(damageKey.bounds().h()));
+                    converter.pixelToPosition(damagePixelBounds.x()) - pivot.x(),
+                    converter.pixelToPosition(damagePixelBounds.y()) - pivot.y(),
+                    converter.pixelToPosition(damagePixelBounds.w()),
+                    converter.pixelToPosition(damagePixelBounds.h()));
 
             Integer startMillis = null;
             Integer endMillis = null;
@@ -324,13 +329,14 @@ class Main {
         CrouchParams crouchParams = crouchSlice.map(aseSlice -> {
             AseSliceKey aseSliceKey = aseSlice.keys().get(0);
             Position p = new Position(
-                    converter.pixelToPosition(hitboxKey.pivot().x() + hitboxKey.bounds().x()),
-                    converter.pixelToPosition(hitboxKey.pivot().y() + hitboxKey.bounds().y()));
+                    converter.pixelToPosition(pixelPivot.x() + pixelBounds.x()),
+                    converter.pixelToPosition(pixelPivot.y() + pixelBounds.y()));
+            AseRectangle crouchPixelBounds = aseSliceKey.bounds().scale(sprite.info.meta().scale());
             return new CrouchParams(new RectangleHitbox(
-                    converter.pixelToPosition(aseSliceKey.bounds().x()) - p.x(),
-                    converter.pixelToPosition(aseSliceKey.bounds().y()) - p.y(),
-                    converter.pixelToPosition(aseSliceKey.bounds().w()),
-                    converter.pixelToPosition(aseSliceKey.bounds().h())));
+                    converter.pixelToPosition(crouchPixelBounds.x()) - p.x(),
+                    converter.pixelToPosition(crouchPixelBounds.y()) - p.y(),
+                    converter.pixelToPosition(crouchPixelBounds.w()),
+                    converter.pixelToPosition(crouchPixelBounds.h())));
         }).orElse(null);
 
         PhysicParams physicParams = new PhysicParams(hitbox, 8 * 16, 20, 12 * 16, 12);
@@ -408,16 +414,20 @@ class Main {
             int activeFrameIndex = 0;
             AseSlice hitboxSlice = spriteData.info.meta().slices().stream().filter(x -> x.name().equals("Obstacle")).findFirst().get();
             AseSliceKey hitboxKey = hitboxSlice.keys().get(0);
+            int scaleFactor = spriteData.info.meta().scale();
+            AseRectangle bounds = hitboxKey.bounds().scale(scaleFactor);
+            AsePoint pivot = hitboxKey.pivot().scale(scaleFactor);
             PixelPosition spriteOffset = new PixelPosition(
-                    -hitboxKey.bounds().x() - hitboxKey.pivot().x(),
-                    -hitboxKey.bounds().y() - hitboxKey.pivot().y());
+                    -bounds.x() - pivot.x(),
+                    -bounds.y() - pivot.y());
 
             AseFrame activeFrame = spriteData.info.frames().get(activeFrameIndex);
+            AseRectangle spriteSourceSize = activeFrame.spriteSourceSize().scale(scaleFactor);
             RenderRectangle dest = new RenderRectangle(
-                    activeFrame.spriteSourceSize().x() + spriteOffset.x() + pixelPosition.x(),
-                    activeFrame.spriteSourceSize().y() + spriteOffset.y() + pixelPosition.y(),
-                    activeFrame.spriteSourceSize().w(),
-                    activeFrame.spriteSourceSize().h());
+                    spriteSourceSize.x() + spriteOffset.x() + pixelPosition.x(),
+                    spriteSourceSize.y() + spriteOffset.y() + pixelPosition.y(),
+                    spriteSourceSize.w(),
+                    spriteSourceSize.h());
             FacingDirection direction = data.get(entity, FacingDirection.class);
             if (direction == FacingDirection.LEFT) {
                 dest = dest.mirrorX(pixelPosition.x());
@@ -440,17 +450,21 @@ class Main {
 
             int activeFrameIndex = getFrameIndex(world, spriteData, entity);
             AseSlice hitboxSlice = spriteData.info.meta().slices().stream().filter(x -> x.name().equals("Hitbox")).findFirst().get();
+            int scaleFactor = spriteData.info.meta().scale();
             AseSliceKey hitboxKey = hitboxSlice.keys().get(0);
+            AseRectangle bounds = hitboxKey.bounds().scale(scaleFactor);
+            AsePoint pivot = hitboxKey.pivot().scale(scaleFactor);
             PixelPosition spriteOffset = new PixelPosition(
-                    -hitboxKey.bounds().x() - hitboxKey.pivot().x(),
-                    -hitboxKey.bounds().y() - hitboxKey.pivot().y());
+                    -bounds.x() - pivot.x(),
+                    -bounds.y() - pivot.y());
 
             AseFrame activeFrame = spriteData.info.frames().get(activeFrameIndex);
+            AseRectangle spriteSourceSize = activeFrame.spriteSourceSize().scale(scaleFactor);
             RenderRectangle dest = new RenderRectangle(
-                    activeFrame.spriteSourceSize().x() + spriteOffset.x() + pixelPosition.x(),
-                    activeFrame.spriteSourceSize().y() + spriteOffset.y() + pixelPosition.y(),
-                    activeFrame.spriteSourceSize().w(),
-                    activeFrame.spriteSourceSize().h());
+                    spriteSourceSize.x() + spriteOffset.x() + pixelPosition.x(),
+                    spriteSourceSize.y() + spriteOffset.y() + pixelPosition.y(),
+                    spriteSourceSize.w(),
+                    spriteSourceSize.h());
             FacingDirection direction = data.get(entity, FacingDirection.class);
             if (direction == FacingDirection.LEFT) {
                 dest = dest.mirrorX(pixelPosition.x());

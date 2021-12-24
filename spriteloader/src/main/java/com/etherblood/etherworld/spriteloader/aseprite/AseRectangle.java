@@ -5,4 +5,8 @@ public record AseRectangle(
         int y,
         int w,
         int h) {
+
+    public AseRectangle scale(int factor) {
+        return new AseRectangle(x * factor, y * factor, w * factor, h * factor);
+    }
 }

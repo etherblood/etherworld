@@ -1,56 +1,275 @@
-{ "frames": [
-   {
-    "filename": "0",
-    "frame": { "x": 0, "y": 90, "w": 50, "h": 94 },
-    "rotated": false,
-    "trimmed": true,
-    "spriteSourceSize": { "x": 56, "y": 34, "w": 50, "h": 94 },
-    "sourceSize": { "w": 160, "h": 128 },
-    "duration": 500
-   },
-   {
-    "filename": "1",
-    "frame": { "x": 62, "y": 0, "w": 50, "h": 96 },
-    "rotated": false,
-    "trimmed": true,
-    "spriteSourceSize": { "x": 56, "y": 32, "w": 50, "h": 96 },
-    "sourceSize": { "w": 160, "h": 128 },
-    "duration": 500
-   },
-   {
-    "filename": "2",
-    "frame": { "x": 62, "y": 0, "w": 50, "h": 96 },
-    "rotated": false,
-    "trimmed": true,
-    "spriteSourceSize": { "x": 56, "y": 32, "w": 50, "h": 96 },
-    "sourceSize": { "w": 160, "h": 128 },
-    "duration": 300
-   },
-   {
-    "filename": "3",
-    "frame": { "x": 0, "y": 0, "w": 62, "h": 90 },
-    "rotated": false,
-    "trimmed": true,
-    "spriteSourceSize": { "x": 50, "y": 32, "w": 62, "h": 90 },
-    "sourceSize": { "w": 160, "h": 128 },
-    "duration": 300
-   }
- ],
- "meta": {
-  "app": "https://www.aseprite.org/",
-  "version": "1.2.30-x64",
-  "image": "Fang.png",
-  "format": "RGBA8888",
-  "size": { "w": 112, "h": 184 },
-  "scale": "1",
-  "frameTags": [
-   { "name": "Stand", "from": 0, "to": 1, "direction": "forward" },
-   { "name": "Run", "from": 2, "to": 3, "direction": "forward" },
-   { "name": "Up", "from": 3, "to": 3, "direction": "forward" },
-   { "name": "Down", "from": 3, "to": 3, "direction": "forward" }
+{
+  "frames": [
+    {
+      "filename": "0",
+      "frame": {
+        "x": 86,
+        "y": 0,
+        "w": 25,
+        "h": 47
+      },
+      "rotated": false,
+      "trimmed": true,
+      "spriteSourceSize": {
+        "x": 12,
+        "y": 1,
+        "w": 25,
+        "h": 47
+      },
+      "sourceSize": {
+        "w": 48,
+        "h": 48
+      },
+      "duration": 500
+    },
+    {
+      "filename": "1",
+      "frame": {
+        "x": 61,
+        "y": 0,
+        "w": 25,
+        "h": 48
+      },
+      "rotated": false,
+      "trimmed": true,
+      "spriteSourceSize": {
+        "x": 12,
+        "y": 0,
+        "w": 25,
+        "h": 48
+      },
+      "sourceSize": {
+        "w": 48,
+        "h": 48
+      },
+      "duration": 500
+    },
+    {
+      "filename": "2",
+      "frame": {
+        "x": 61,
+        "y": 0,
+        "w": 25,
+        "h": 48
+      },
+      "rotated": false,
+      "trimmed": true,
+      "spriteSourceSize": {
+        "x": 12,
+        "y": 0,
+        "w": 25,
+        "h": 48
+      },
+      "sourceSize": {
+        "w": 48,
+        "h": 48
+      },
+      "duration": 200
+    },
+    {
+      "filename": "3",
+      "frame": {
+        "x": 31,
+        "y": 0,
+        "w": 30,
+        "h": 44
+      },
+      "rotated": false,
+      "trimmed": true,
+      "spriteSourceSize": {
+        "x": 9,
+        "y": 1,
+        "w": 30,
+        "h": 44
+      },
+      "sourceSize": {
+        "w": 48,
+        "h": 48
+      },
+      "duration": 200
+    },
+    {
+      "filename": "4",
+      "frame": {
+        "x": 61,
+        "y": 0,
+        "w": 25,
+        "h": 48
+      },
+      "rotated": false,
+      "trimmed": true,
+      "spriteSourceSize": {
+        "x": 12,
+        "y": 0,
+        "w": 25,
+        "h": 48
+      },
+      "sourceSize": {
+        "w": 48,
+        "h": 48
+      },
+      "duration": 200
+    },
+    {
+      "filename": "5",
+      "frame": {
+        "x": 0,
+        "y": 0,
+        "w": 31,
+        "h": 45
+      },
+      "rotated": false,
+      "trimmed": true,
+      "spriteSourceSize": {
+        "x": 9,
+        "y": 1,
+        "w": 31,
+        "h": 45
+      },
+      "sourceSize": {
+        "w": 48,
+        "h": 48
+      },
+      "duration": 200
+    },
+    {
+      "filename": "6",
+      "frame": {
+        "x": 111,
+        "y": 0,
+        "w": 25,
+        "h": 37
+      },
+      "rotated": false,
+      "trimmed": true,
+      "spriteSourceSize": {
+        "x": 12,
+        "y": 11,
+        "w": 25,
+        "h": 37
+      },
+      "sourceSize": {
+        "w": 48,
+        "h": 48
+      },
+      "duration": 500
+    },
+    {
+      "filename": "7",
+      "frame": {
+        "x": 0,
+        "y": 45,
+        "w": 48,
+        "h": 17
+      },
+      "rotated": false,
+      "trimmed": true,
+      "spriteSourceSize": {
+        "x": 0,
+        "y": 31,
+        "w": 48,
+        "h": 17
+      },
+      "sourceSize": {
+        "w": 48,
+        "h": 48
+      },
+      "duration": 500
+    }
   ],
-  "slices": [
-   { "name": "Hitbox", "color": "#0000ffff", "keys": [{ "frame": 3, "bounds": {"x": 64, "y": 32, "w": 32, "h": 96 }, "pivot": {"x": 16, "y": 96 } }] }
-  ]
- }
+  "meta": {
+    "app": "https://www.aseprite.org/",
+    "version": "1.2.30-x64",
+    "image": "Fang.png",
+    "format": "RGBA8888",
+    "size": {
+      "w": 136,
+      "h": 62
+    },
+    "scale": "2",
+    "frameTags": [
+      {
+        "name": "Stand",
+        "from": 0,
+        "to": 1,
+        "direction": "forward"
+      },
+      {
+        "name": "Run",
+        "from": 2,
+        "to": 5,
+        "direction": "forward"
+      },
+      {
+        "name": "Down",
+        "from": 5,
+        "to": 5,
+        "direction": "forward"
+      },
+      {
+        "name": "Up",
+        "from": 5,
+        "to": 5,
+        "direction": "forward"
+      },
+      {
+        "name": "Hit",
+        "from": 5,
+        "to": 5,
+        "direction": "forward"
+      },
+      {
+        "name": "Crouch",
+        "from": 6,
+        "to": 6,
+        "direction": "forward"
+      },
+      {
+        "name": "Dead",
+        "from": 7,
+        "to": 7,
+        "direction": "forward"
+      }
+    ],
+    "slices": [
+      {
+        "name": "Hitbox",
+        "color": "#0000ffff",
+        "keys": [
+          {
+            "frame": 0,
+            "bounds": {
+              "x": 18,
+              "y": 4,
+              "w": 12,
+              "h": 44
+            },
+            "pivot": {
+              "x": 6,
+              "y": 44
+            }
+          }
+        ]
+      },
+      {
+        "name": "Crouch",
+        "color": "#0000ffff",
+        "keys": [
+          {
+            "frame": 0,
+            "bounds": {
+              "x": 18,
+              "y": 16,
+              "w": 12,
+              "h": 32
+            },
+            "pivot": {
+              "x": 6,
+              "y": 32
+            }
+          }
+        ]
+      }
+    ]
+  }
 }

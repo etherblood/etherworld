@@ -10,8 +10,8 @@ import java.awt.event.KeyEvent;
 import java.awt.geom.AffineTransform;
 import java.awt.image.BufferedImage;
 import java.util.Collections;
-import java.util.HashSet;
 import java.util.Set;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.atomic.AtomicReference;
 import java.util.function.Consumer;
 import javax.swing.JFrame;
@@ -20,7 +20,7 @@ import javax.swing.WindowConstants;
 
 public class Gui {
     private final AtomicReference<RenderTask> renderTask = new AtomicReference<>();
-    private final Set<Integer> pressedKeys = Collections.synchronizedSet(new HashSet<>());
+    private final Set<Integer> pressedKeys = Collections.newSetFromMap(new ConcurrentHashMap<>());
     private boolean debug = false;
     private long runningFrameSecond;
     private int runningFrameCount;
