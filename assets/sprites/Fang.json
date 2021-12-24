@@ -1,0 +1,56 @@
+{ "frames": [
+   {
+    "filename": "0",
+    "frame": { "x": 0, "y": 90, "w": 50, "h": 94 },
+    "rotated": false,
+    "trimmed": true,
+    "spriteSourceSize": { "x": 56, "y": 34, "w": 50, "h": 94 },
+    "sourceSize": { "w": 160, "h": 128 },
+    "duration": 500
+   },
+   {
+    "filename": "1",
+    "frame": { "x": 62, "y": 0, "w": 50, "h": 96 },
+    "rotated": false,
+    "trimmed": true,
+    "spriteSourceSize": { "x": 56, "y": 32, "w": 50, "h": 96 },
+    "sourceSize": { "w": 160, "h": 128 },
+    "duration": 500
+   },
+   {
+    "filename": "2",
+    "frame": { "x": 62, "y": 0, "w": 50, "h": 96 },
+    "rotated": false,
+    "trimmed": true,
+    "spriteSourceSize": { "x": 56, "y": 32, "w": 50, "h": 96 },
+    "sourceSize": { "w": 160, "h": 128 },
+    "duration": 300
+   },
+   {
+    "filename": "3",
+    "frame": { "x": 0, "y": 0, "w": 62, "h": 90 },
+    "rotated": false,
+    "trimmed": true,
+    "spriteSourceSize": { "x": 50, "y": 32, "w": 62, "h": 90 },
+    "sourceSize": { "w": 160, "h": 128 },
+    "duration": 300
+   }
+ ],
+ "meta": {
+  "app": "https://www.aseprite.org/",
+  "version": "1.2.30-x64",
+  "image": "Fang.png",
+  "format": "RGBA8888",
+  "size": { "w": 112, "h": 184 },
+  "scale": "1",
+  "frameTags": [
+   { "name": "Stand", "from": 0, "to": 1, "direction": "forward" },
+   { "name": "Run", "from": 2, "to": 3, "direction": "forward" },
+   { "name": "Up", "from": 3, "to": 3, "direction": "forward" },
+   { "name": "Down", "from": 3, "to": 3, "direction": "forward" }
+  ],
+  "slices": [
+   { "name": "Hitbox", "color": "#0000ffff", "keys": [{ "frame": 3, "bounds": {"x": 64, "y": 32, "w": 32, "h": 96 }, "pivot": {"x": 16, "y": 96 } }] }
+  ]
+ }
+}

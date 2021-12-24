@@ -108,7 +108,7 @@ class Main {
         );
 
         int player = data.createEntity();
-        int tabby = createCharacter(world, assetLoader, converter, characterParams, "Tabby", data.createEntity());
+        int tabby = createCharacter(world, assetLoader, converter, characterParams, "Fang", data.createEntity());
         data.set(tabby, new OwnerId(player));
         data.set(tabby, FacingDirection.RIGHT);
         data.set(tabby, new Position(0, 23 * 16 * 16));
@@ -227,7 +227,7 @@ class Main {
         gui.start(e -> {
             switch (e.getKeyCode()) {
                 case KeyEvent.VK_F2 -> {
-                    List<String> availableCharacters = List.of("Tabby", "Amara", "Fallacia", "Furor", "Slime", "amazing_wolf");
+                    List<String> availableCharacters = List.of("Fang", "Tabby", "Amara", "Fallacia", "Furor", "Slime", "amazing_wolf");
                     for (int entity : data.findByValue(new OwnerId(player))) {
                         GameCharacter gameCharacter = data.get(entity, GameCharacter.class);
                         if (gameCharacter != null) {
