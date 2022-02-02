@@ -237,7 +237,8 @@ class Main {
                             int next = (index + 1) % availableCharacters.size();
 
                             // hackish solution, we hope everything from previous character gets overwritten...
-                            createCharacter(world, assetLoader, converter, characterParams, availableCharacters.get(next), entity);
+                            String name = availableCharacters.get(next);
+                            createCharacter(world, assetLoader, converter, characterParams, name, entity);
                         }
                     }
                 }
