@@ -1,6 +1,7 @@
 package com.etherblood.etherworld.engine.collision;
 
 public record CollisionDirection(int x, int y) {
+
     public CollisionDirection(int x, int y) {
         this.x = Integer.signum(x);
         this.y = Integer.signum(y);

@@ -7,6 +7,19 @@ import static org.junit.Assert.assertEquals;
 public class FractionTest {
 
     @Test
+    public void reduce() {
+        // given
+        Fraction fraction = new Fraction(5, 15);
+
+        // when
+        Fraction reduced = fraction.reduce();
+
+        // then
+        assertEquals(1, reduced.numerator());
+        assertEquals(3, reduced.denominator());
+    }
+
+    @Test
     public void reduceZero() {
         // given
         Fraction fraction = new Fraction(0, 15);
@@ -20,16 +33,16 @@ public class FractionTest {
     }
 
     @Test
-    public void reduce() {
+    public void reduceNegative() {
         // given
-        Fraction fraction = new Fraction(5, 15);
+        Fraction fraction = new Fraction(-15, 3);
 
         // when
         Fraction reduced = fraction.reduce();
 
         // then
-        assertEquals(1, reduced.numerator());
-        assertEquals(3, reduced.denominator());
+        assertEquals(-5, reduced.numerator());
+        assertEquals(1, reduced.denominator());
     }
 
     @Test
