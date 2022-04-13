@@ -229,7 +229,7 @@ class Main {
         gui.start(e -> {
             switch (e.getKeyCode()) {
                 case KeyEvent.VK_F2 -> {
-                    List<String> availableCharacters = List.of("Tabby", "Amara", "Fallacia", "Furor", "Slime", "amazing_wolf", "Fang");
+                    List<String> availableCharacters = List.of("Aryll", "Tabby", "Amara", "Fallacia", "Furor", "Slime", "amazing_wolf", "Fang");
                     for (int entity : data.findByValue(new OwnerId(player))) {
                         GameCharacter gameCharacter = data.get(entity, GameCharacter.class);
                         if (gameCharacter != null) {
