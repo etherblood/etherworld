@@ -24,7 +24,7 @@
     "trimmed": true,
     "spriteSourceSize": { "x": 24, "y": 29, "w": 62, "h": 99 },
     "sourceSize": { "w": 144, "h": 144 },
-    "duration": 400
+    "duration": 250
    },
    {
     "filename": "3",
@@ -33,7 +33,7 @@
     "trimmed": true,
     "spriteSourceSize": { "x": 23, "y": 31, "w": 78, "h": 94 },
     "sourceSize": { "w": 144, "h": 144 },
-    "duration": 400
+    "duration": 250
    },
    {
     "filename": "4",
@@ -61,7 +61,7 @@
    { "name": "Dead", "from": 4, "to": 4, "direction": "forward" }
   ],
   "slices": [
-   { "name": "Hitbox", "color": "#0000ffff", "keys": [{ "frame": 1, "bounds": {"x": 64, "y": 36, "w": 16, "h": 92 }, "pivot": {"x": 8, "y": 92 } }] }
+   { "name": "Hitbox", "color": "#0000ffff", "keys": [{ "frame": 0, "bounds": {"x": 64, "y": 36, "w": 16, "h": 92 }, "pivot": {"x": 8, "y": 92 } }] }
   ]
  }
 }
