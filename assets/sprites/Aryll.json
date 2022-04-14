@@ -1,67 +1,293 @@
-{ "frames": [
-   {
-    "filename": "0",
-    "frame": { "x": 0, "y": 94, "w": 62, "h": 99 },
-    "rotated": false,
-    "trimmed": true,
-    "spriteSourceSize": { "x": 24, "y": 29, "w": 62, "h": 99 },
-    "sourceSize": { "w": 144, "h": 144 },
-    "duration": 600
-   },
-   {
-    "filename": "1",
-    "frame": { "x": 78, "y": 0, "w": 64, "h": 98 },
-    "rotated": false,
-    "trimmed": true,
-    "spriteSourceSize": { "x": 23, "y": 30, "w": 64, "h": 98 },
-    "sourceSize": { "w": 144, "h": 144 },
-    "duration": 400
-   },
-   {
-    "filename": "2",
-    "frame": { "x": 0, "y": 94, "w": 62, "h": 99 },
-    "rotated": false,
-    "trimmed": true,
-    "spriteSourceSize": { "x": 24, "y": 29, "w": 62, "h": 99 },
-    "sourceSize": { "w": 144, "h": 144 },
-    "duration": 250
-   },
-   {
-    "filename": "3",
-    "frame": { "x": 0, "y": 0, "w": 78, "h": 94 },
-    "rotated": false,
-    "trimmed": true,
-    "spriteSourceSize": { "x": 23, "y": 31, "w": 78, "h": 94 },
-    "sourceSize": { "w": 144, "h": 144 },
-    "duration": 250
-   },
-   {
-    "filename": "4",
-    "frame": { "x": 62, "y": 98, "w": 99, "h": 37 },
-    "rotated": false,
-    "trimmed": true,
-    "spriteSourceSize": { "x": 29, "y": 105, "w": 99, "h": 37 },
-    "sourceSize": { "w": 144, "h": 144 },
-    "duration": 600
-   }
- ],
- "meta": {
-  "app": "https://www.aseprite.org/",
-  "version": "1.2.34.1-x64",
-  "image": "Aryll.png",
-  "format": "RGBA8888",
-  "size": { "w": 161, "h": 193 },
-  "scale": "1",
-  "frameTags": [
-   { "name": "Stand", "from": 0, "to": 1, "direction": "forward" },
-   { "name": "Run", "from": 2, "to": 3, "direction": "forward" },
-   { "name": "Down", "from": 3, "to": 3, "direction": "forward" },
-   { "name": "Up", "from": 3, "to": 3, "direction": "forward" },
-   { "name": "Hit", "from": 3, "to": 3, "direction": "forward" },
-   { "name": "Dead", "from": 4, "to": 4, "direction": "forward" }
+{
+  "frames": [
+    {
+      "filename": "0",
+      "frame": {
+        "x": 0,
+        "y": 87,
+        "w": 62,
+        "h": 99
+      },
+      "rotated": false,
+      "trimmed": true,
+      "spriteSourceSize": {
+        "x": 24,
+        "y": 29,
+        "w": 62,
+        "h": 99
+      },
+      "sourceSize": {
+        "w": 176,
+        "h": 144
+      },
+      "duration": 600
+    },
+    {
+      "filename": "1",
+      "frame": {
+        "x": 231,
+        "y": 86,
+        "w": 64,
+        "h": 98
+      },
+      "rotated": false,
+      "trimmed": true,
+      "spriteSourceSize": {
+        "x": 23,
+        "y": 30,
+        "w": 64,
+        "h": 98
+      },
+      "sourceSize": {
+        "w": 176,
+        "h": 144
+      },
+      "duration": 400
+    },
+    {
+      "filename": "2",
+      "frame": {
+        "x": 0,
+        "y": 87,
+        "w": 62,
+        "h": 99
+      },
+      "rotated": false,
+      "trimmed": true,
+      "spriteSourceSize": {
+        "x": 24,
+        "y": 29,
+        "w": 62,
+        "h": 99
+      },
+      "sourceSize": {
+        "w": 176,
+        "h": 144
+      },
+      "duration": 250
+    },
+    {
+      "filename": "3",
+      "frame": {
+        "x": 154,
+        "y": 86,
+        "w": 77,
+        "h": 94
+      },
+      "rotated": false,
+      "trimmed": true,
+      "spriteSourceSize": {
+        "x": 23,
+        "y": 31,
+        "w": 77,
+        "h": 94
+      },
+      "sourceSize": {
+        "w": 176,
+        "h": 144
+      },
+      "duration": 250
+    },
+    {
+      "filename": "4",
+      "frame": {
+        "x": 295,
+        "y": 87,
+        "w": 99,
+        "h": 37
+      },
+      "rotated": false,
+      "trimmed": true,
+      "spriteSourceSize": {
+        "x": 29,
+        "y": 105,
+        "w": 99,
+        "h": 37
+      },
+      "sourceSize": {
+        "w": 176,
+        "h": 144
+      },
+      "duration": 600
+    },
+    {
+      "filename": "5",
+      "frame": {
+        "x": 0,
+        "y": 0,
+        "w": 154,
+        "h": 87
+      },
+      "rotated": false,
+      "trimmed": true,
+      "spriteSourceSize": {
+        "x": 20,
+        "y": 41,
+        "w": 154,
+        "h": 87
+      },
+      "sourceSize": {
+        "w": 176,
+        "h": 144
+      },
+      "duration": 32
+    },
+    {
+      "filename": "6",
+      "frame": {
+        "x": 299,
+        "y": 0,
+        "w": 143,
+        "h": 87
+      },
+      "rotated": false,
+      "trimmed": true,
+      "spriteSourceSize": {
+        "x": 31,
+        "y": 41,
+        "w": 143,
+        "h": 87
+      },
+      "sourceSize": {
+        "w": 176,
+        "h": 144
+      },
+      "duration": 32
+    },
+    {
+      "filename": "7",
+      "frame": {
+        "x": 154,
+        "y": 0,
+        "w": 145,
+        "h": 86
+      },
+      "rotated": false,
+      "trimmed": true,
+      "spriteSourceSize": {
+        "x": 29,
+        "y": 42,
+        "w": 145,
+        "h": 86
+      },
+      "sourceSize": {
+        "w": 176,
+        "h": 144
+      },
+      "duration": 300
+    },
+    {
+      "filename": "8",
+      "frame": {
+        "x": 0,
+        "y": 87,
+        "w": 62,
+        "h": 99
+      },
+      "rotated": false,
+      "trimmed": true,
+      "spriteSourceSize": {
+        "x": 24,
+        "y": 29,
+        "w": 62,
+        "h": 99
+      },
+      "sourceSize": {
+        "w": 176,
+        "h": 144
+      },
+      "duration": 400
+    }
   ],
-  "slices": [
-   { "name": "Hitbox", "color": "#0000ffff", "keys": [{ "frame": 0, "bounds": {"x": 64, "y": 36, "w": 16, "h": 92 }, "pivot": {"x": 8, "y": 92 } }] }
-  ]
- }
+  "meta": {
+    "app": "https://www.aseprite.org/",
+    "version": "1.2.34.1-x64",
+    "image": "Aryll.png",
+    "format": "RGBA8888",
+    "size": {
+      "w": 442,
+      "h": 186
+    },
+    "scale": "1",
+    "frameTags": [
+      {
+        "name": "Stand",
+        "from": 0,
+        "to": 1,
+        "direction": "forward"
+      },
+      {
+        "name": "Run",
+        "from": 2,
+        "to": 3,
+        "direction": "forward"
+      },
+      {
+        "name": "Down",
+        "from": 3,
+        "to": 3,
+        "direction": "forward"
+      },
+      {
+        "name": "Up",
+        "from": 3,
+        "to": 3,
+        "direction": "forward"
+      },
+      {
+        "name": "Hit",
+        "from": 3,
+        "to": 3,
+        "direction": "forward"
+      },
+      {
+        "name": "Dead",
+        "from": 4,
+        "to": 4,
+        "direction": "forward"
+      },
+      {
+        "name": "Attack",
+        "from": 5,
+        "to": 8,
+        "direction": "forward"
+      }
+    ],
+    "slices": [
+      {
+        "name": "Hitbox",
+        "color": "#0000ffff",
+        "keys": [
+          {
+            "frame": 0,
+            "bounds": {
+              "x": 64,
+              "y": 36,
+              "w": 16,
+              "h": 92
+            },
+            "pivot": {
+              "x": 8,
+              "y": 92
+            }
+          }
+        ]
+      },
+      {
+        "name": "Damage",
+        "color": "#0000ffff",
+        "keys": [
+          {
+            "frame": 5,
+            "bounds": {
+              "x": 80,
+              "y": 64,
+              "w": 96,
+              "h": 32
+            }
+          }
+        ]
+      }
+    ]
+  }
 }
