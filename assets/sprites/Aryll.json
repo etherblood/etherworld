@@ -1,105 +1,293 @@
-{ "frames": [
-   {
-    "filename": "0",
-    "frame": { "x": 0, "y": 102, "w": 72, "h": 112 },
-    "rotated": false,
-    "trimmed": true,
-    "spriteSourceSize": { "x": 16, "y": 32, "w": 72, "h": 112 },
-    "sourceSize": { "w": 200, "h": 160 },
-    "duration": 600
-   },
-   {
-    "filename": "1",
-    "frame": { "x": 433, "y": 100, "w": 74, "h": 111 },
-    "rotated": false,
-    "trimmed": true,
-    "spriteSourceSize": { "x": 15, "y": 33, "w": 74, "h": 111 },
-    "sourceSize": { "w": 200, "h": 160 },
-    "duration": 400
-   },
-   {
-    "filename": "2",
-    "frame": { "x": 0, "y": 102, "w": 72, "h": 112 },
-    "rotated": false,
-    "trimmed": true,
-    "spriteSourceSize": { "x": 16, "y": 32, "w": 72, "h": 112 },
-    "sourceSize": { "w": 200, "h": 160 },
-    "duration": 250
-   },
-   {
-    "filename": "3",
-    "frame": { "x": 343, "y": 100, "w": 90, "h": 109 },
-    "rotated": false,
-    "trimmed": true,
-    "spriteSourceSize": { "x": 15, "y": 32, "w": 90, "h": 109 },
-    "sourceSize": { "w": 200, "h": 160 },
-    "duration": 250
-   },
-   {
-    "filename": "4",
-    "frame": { "x": 72, "y": 102, "w": 115, "h": 43 },
-    "rotated": false,
-    "trimmed": true,
-    "spriteSourceSize": { "x": 22, "y": 117, "w": 115, "h": 43 },
-    "sourceSize": { "w": 200, "h": 160 },
-    "duration": 600
-   },
-   {
-    "filename": "5",
-    "frame": { "x": 0, "y": 0, "w": 178, "h": 102 },
-    "rotated": false,
-    "trimmed": true,
-    "spriteSourceSize": { "x": 12, "y": 42, "w": 178, "h": 102 },
-    "sourceSize": { "w": 200, "h": 160 },
-    "duration": 32
-   },
-   {
-    "filename": "6",
-    "frame": { "x": 178, "y": 0, "w": 165, "h": 102 },
-    "rotated": false,
-    "trimmed": true,
-    "spriteSourceSize": { "x": 25, "y": 42, "w": 165, "h": 102 },
-    "sourceSize": { "w": 200, "h": 160 },
-    "duration": 32
-   },
-   {
-    "filename": "7",
-    "frame": { "x": 343, "y": 0, "w": 168, "h": 100 },
-    "rotated": false,
-    "trimmed": true,
-    "spriteSourceSize": { "x": 22, "y": 44, "w": 168, "h": 100 },
-    "sourceSize": { "w": 200, "h": 160 },
-    "duration": 300
-   },
-   {
-    "filename": "8",
-    "frame": { "x": 0, "y": 102, "w": 72, "h": 112 },
-    "rotated": false,
-    "trimmed": true,
-    "spriteSourceSize": { "x": 16, "y": 32, "w": 72, "h": 112 },
-    "sourceSize": { "w": 200, "h": 160 },
-    "duration": 100
-   }
- ],
- "meta": {
-  "app": "https://www.aseprite.org/",
-  "version": "1.2.34.1-x64",
-  "image": "Aryll.png",
-  "format": "RGBA8888",
-  "size": { "w": 511, "h": 214 },
-  "scale": "1",
-  "frameTags": [
-   { "name": "Stand", "from": 0, "to": 1, "direction": "forward" },
-   { "name": "Run", "from": 2, "to": 3, "direction": "forward" },
-   { "name": "Down", "from": 3, "to": 3, "direction": "forward" },
-   { "name": "Up", "from": 3, "to": 3, "direction": "forward" },
-   { "name": "Hit", "from": 3, "to": 3, "direction": "forward" },
-   { "name": "Dead", "from": 4, "to": 4, "direction": "forward" },
-   { "name": "Attack", "from": 5, "to": 8, "direction": "forward" }
+{
+  "frames": [
+    {
+      "filename": "0",
+      "frame": {
+        "x": 0,
+        "y": 102,
+        "w": 72,
+        "h": 112
+      },
+      "rotated": false,
+      "trimmed": true,
+      "spriteSourceSize": {
+        "x": 16,
+        "y": 32,
+        "w": 72,
+        "h": 112
+      },
+      "sourceSize": {
+        "w": 200,
+        "h": 160
+      },
+      "duration": 600
+    },
+    {
+      "filename": "1",
+      "frame": {
+        "x": 433,
+        "y": 100,
+        "w": 74,
+        "h": 111
+      },
+      "rotated": false,
+      "trimmed": true,
+      "spriteSourceSize": {
+        "x": 15,
+        "y": 33,
+        "w": 74,
+        "h": 111
+      },
+      "sourceSize": {
+        "w": 200,
+        "h": 160
+      },
+      "duration": 400
+    },
+    {
+      "filename": "2",
+      "frame": {
+        "x": 0,
+        "y": 102,
+        "w": 72,
+        "h": 112
+      },
+      "rotated": false,
+      "trimmed": true,
+      "spriteSourceSize": {
+        "x": 16,
+        "y": 32,
+        "w": 72,
+        "h": 112
+      },
+      "sourceSize": {
+        "w": 200,
+        "h": 160
+      },
+      "duration": 250
+    },
+    {
+      "filename": "3",
+      "frame": {
+        "x": 343,
+        "y": 100,
+        "w": 90,
+        "h": 109
+      },
+      "rotated": false,
+      "trimmed": true,
+      "spriteSourceSize": {
+        "x": 15,
+        "y": 32,
+        "w": 90,
+        "h": 109
+      },
+      "sourceSize": {
+        "w": 200,
+        "h": 160
+      },
+      "duration": 250
+    },
+    {
+      "filename": "4",
+      "frame": {
+        "x": 72,
+        "y": 102,
+        "w": 115,
+        "h": 43
+      },
+      "rotated": false,
+      "trimmed": true,
+      "spriteSourceSize": {
+        "x": 22,
+        "y": 117,
+        "w": 115,
+        "h": 43
+      },
+      "sourceSize": {
+        "w": 200,
+        "h": 160
+      },
+      "duration": 600
+    },
+    {
+      "filename": "5",
+      "frame": {
+        "x": 0,
+        "y": 0,
+        "w": 178,
+        "h": 102
+      },
+      "rotated": false,
+      "trimmed": true,
+      "spriteSourceSize": {
+        "x": 12,
+        "y": 42,
+        "w": 178,
+        "h": 102
+      },
+      "sourceSize": {
+        "w": 200,
+        "h": 160
+      },
+      "duration": 32
+    },
+    {
+      "filename": "6",
+      "frame": {
+        "x": 178,
+        "y": 0,
+        "w": 165,
+        "h": 102
+      },
+      "rotated": false,
+      "trimmed": true,
+      "spriteSourceSize": {
+        "x": 25,
+        "y": 42,
+        "w": 165,
+        "h": 102
+      },
+      "sourceSize": {
+        "w": 200,
+        "h": 160
+      },
+      "duration": 32
+    },
+    {
+      "filename": "7",
+      "frame": {
+        "x": 343,
+        "y": 0,
+        "w": 168,
+        "h": 100
+      },
+      "rotated": false,
+      "trimmed": true,
+      "spriteSourceSize": {
+        "x": 22,
+        "y": 44,
+        "w": 168,
+        "h": 100
+      },
+      "sourceSize": {
+        "w": 200,
+        "h": 160
+      },
+      "duration": 300
+    },
+    {
+      "filename": "8",
+      "frame": {
+        "x": 0,
+        "y": 102,
+        "w": 72,
+        "h": 112
+      },
+      "rotated": false,
+      "trimmed": true,
+      "spriteSourceSize": {
+        "x": 16,
+        "y": 32,
+        "w": 72,
+        "h": 112
+      },
+      "sourceSize": {
+        "w": 200,
+        "h": 160
+      },
+      "duration": 100
+    }
   ],
-  "slices": [
-   { "name": "Hitbox", "color": "#0000ffff", "keys": [{ "frame": 0, "bounds": {"x": 62, "y": 37, "w": 21, "h": 107 }, "pivot": {"x": 9, "y": 110 } }] },
-   { "name": "Damage", "color": "#0000ffff", "keys": [{ "frame": 5, "bounds": {"x": 83, "y": 70, "w": 108, "h": 29 } }] }
-  ]
- }
+  "meta": {
+    "app": "https://www.aseprite.org/",
+    "version": "1.2.34.1-x64",
+    "image": "Aryll.png",
+    "format": "RGBA8888",
+    "size": {
+      "w": 511,
+      "h": 214
+    },
+    "scale": "1",
+    "frameTags": [
+      {
+        "name": "Stand",
+        "from": 0,
+        "to": 1,
+        "direction": "forward"
+      },
+      {
+        "name": "Run",
+        "from": 2,
+        "to": 3,
+        "direction": "forward"
+      },
+      {
+        "name": "Down",
+        "from": 3,
+        "to": 3,
+        "direction": "forward"
+      },
+      {
+        "name": "Up",
+        "from": 3,
+        "to": 3,
+        "direction": "forward"
+      },
+      {
+        "name": "Hit",
+        "from": 3,
+        "to": 3,
+        "direction": "forward"
+      },
+      {
+        "name": "Dead",
+        "from": 4,
+        "to": 4,
+        "direction": "forward"
+      },
+      {
+        "name": "Attack",
+        "from": 5,
+        "to": 8,
+        "direction": "forward"
+      }
+    ],
+    "slices": [
+      {
+        "name": "Hitbox",
+        "color": "#0000ffff",
+        "keys": [
+          {
+            "frame": 0,
+            "bounds": {
+              "x": 63,
+              "y": 37,
+              "w": 20,
+              "h": 107
+            },
+            "pivot": {
+              "x": 10,
+              "y": 107
+            }
+          }
+        ]
+      },
+      {
+        "name": "Damage",
+        "color": "#0000ffff",
+        "keys": [
+          {
+            "frame": 5,
+            "bounds": {
+              "x": 83,
+              "y": 70,
+              "w": 108,
+              "h": 29
+            }
+          }
+        ]
+      }
+    ]
+  }
 }
